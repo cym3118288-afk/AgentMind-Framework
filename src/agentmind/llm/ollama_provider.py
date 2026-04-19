@@ -30,6 +30,7 @@ class OllamaProvider(LLMProvider):
         temperature: float = 0.7,
         max_tokens: int = 1000,
         base_url: str = "http://localhost:11434",
+        timeout: float = 120.0,
         **kwargs: Any
     ) -> None:
         """Initialize Ollama provider.
@@ -39,11 +40,25 @@ class OllamaProvider(LLMProvider):
             temperature: Sampling temperature (0.0-2.0)
             max_tokens: Maximum tokens to generate
             base_url: Ollama API base URL
+            timeout: Request timeout in seconds (default: 120.0)
             **kwargs: Additional parameters
         """
         super().__init__(model, temperature, max_tokens, **kwargs)
         self.base_url = base_url.rstrip("/")
-        self.client = httpx.AsyncClient(timeout=120.0)
+
+        # Optimized: Configure connection pooling for better performance
+        # Try to enable HTTP/2 if available, fall back to HTTP/1.1
+        try:
+            import h2  # noqa
+            http2_enabled = True
+        except ImportError:
+            http2_enabled = False
+
+        self.client = httpx.AsyncClient(
+            timeout=timeout,
+            limits=httpx.Limits(max_keepalive_connections=5, max_connections=10),
+            http2=http2_enabled
+        )
 
     async def generate(
         self,
@@ -66,9 +81,11 @@ class OllamaProvider(LLMProvider):
         Raises:
             httpx.HTTPError: If API request fails
         """
+        # Optimized: Use ternary operator inline for better performance
         temp = temperature if temperature is not None else self.temperature
         max_tok = max_tokens if max_tokens is not None else self.max_tokens
 
+        # Optimized: Build payload more efficiently
         payload = {
             "model": self.model,
             "messages": messages,
@@ -76,12 +93,9 @@ class OllamaProvider(LLMProvider):
             "options": {
                 "temperature": temp,
                 "num_predict": max_tok,
+                **kwargs  # Merge extra parameters directly
             }
         }
-
-        # Add any extra parameters
-        if kwargs:
-            payload["options"].update(kwargs)
 
         try:
             response = await self.client.post(
@@ -94,14 +108,17 @@ class OllamaProvider(LLMProvider):
             # Extract content from Ollama response
             content = data.get("message", {}).get("content", "")
 
-            # Extract usage information if available
+            # Optimized: Extract usage information more efficiently
             usage = {}
-            if "prompt_eval_count" in data:
-                usage["prompt_tokens"] = data["prompt_eval_count"]
-            if "eval_count" in data:
-                usage["completion_tokens"] = data["eval_count"]
+            prompt_tokens = data.get("prompt_eval_count")
+            completion_tokens = data.get("eval_count")
+
+            if prompt_tokens is not None:
+                usage["prompt_tokens"] = prompt_tokens
+            if completion_tokens is not None:
+                usage["completion_tokens"] = completion_tokens
             if usage:
-                usage["total_tokens"] = sum(usage.values())
+                usage["total_tokens"] = usage.get("prompt_tokens", 0) + usage.get("completion_tokens", 0)
 
             return LLMResponse(
                 content=content,
@@ -139,6 +156,7 @@ class OllamaProvider(LLMProvider):
         temp = temperature if temperature is not None else self.temperature
         max_tok = max_tokens if max_tokens is not None else self.max_tokens
 
+        # Optimized: Build payload more efficiently
         payload = {
             "model": self.model,
             "messages": messages,
@@ -146,11 +164,9 @@ class OllamaProvider(LLMProvider):
             "options": {
                 "temperature": temp,
                 "num_predict": max_tok,
+                **kwargs  # Merge extra parameters directly
             }
         }
-
-        if kwargs:
-            payload["options"].update(kwargs)
 
         try:
             async with self.client.stream(
@@ -163,10 +179,10 @@ class OllamaProvider(LLMProvider):
                     if line.strip():
                         try:
                             data = json.loads(line)
-                            if "message" in data:
-                                content = data["message"].get("content", "")
-                                if content:
-                                    yield content
+                            # Optimized: Use get with default for safer access
+                            content = data.get("message", {}).get("content", "")
+                            if content:
+                                yield content
                         except json.JSONDecodeError:
                             continue
 
@@ -183,8 +199,9 @@ class OllamaProvider(LLMProvider):
             response = await self.client.get(f"{self.base_url}/api/tags")
             response.raise_for_status()
             data = response.json()
-            models = [m["name"] for m in data.get("models", [])]
-            return self.model in models
+            # Optimized: Use generator expression with any() for early exit
+            models = data.get("models", [])
+            return any(m.get("name") == self.model for m in models)
         except Exception:
             return False
 

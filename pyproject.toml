@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "agentmind"
-version = "0.1.0"
+version = "0.2.0"
 description = "Lightweight, controllable multi-agent collaboration framework with local-first design"
 readme = "README.md"
 license = {text = "MIT"}
@@ -92,6 +92,16 @@ api = [
 cli = [
     "click>=8.1.0",
     "rich>=13.0.0",
+]
+
+# Advanced features (Phase 4)
+visualization = [
+    "gradio>=4.0.0",
+]
+
+evaluation = [
+    "pandas>=2.0.0",
+    "matplotlib>=3.7.0",
 ]
 
 [project.scripts]

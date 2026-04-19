@@ -291,11 +291,14 @@ agentmind/
   - [x] Docker image with Ollama
   - [x] CLI tool
   - [ ] Multi-modal support
-- [ ] Phase 4: Advanced features (Days 41-60)
-  - [ ] Vector memory backends
-  - [ ] Agent learning & adaptation
-  - [ ] Distributed agents
-  - [ ] Visual workflow builder
+- [x] Phase 4: Advanced features (Days 41-60)
+  - [x] Self-improvement mechanisms (prompt optimization, debate, feedback loops)
+  - [x] Template marketplace (20+ built-in templates)
+  - [x] Evaluation suite (GAIA/AgentBench subsets, benchmarks)
+  - [x] Visualization dashboard (Gradio UI)
+  - [x] Advanced orchestration (consensus, dynamic spawning, parallel decomposition)
+  - [ ] Integration examples (LangChain, LlamaIndex, etc.)
+  - [ ] Performance optimizations (caching, batching)
 
 See [ROADMAP.md](ROADMAP.md) for details.
 

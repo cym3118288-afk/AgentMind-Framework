@@ -4,7 +4,7 @@ This roadmap outlines the development plan for AgentMind, a lightweight and cont
 
 ## Vision
 
-Build the most lightweight, controllable, and local-first multi-agent framework that developers love to use. Target: 1000+ GitHub stars by focusing on simplicity, transparency, and developer experience.
+Build the most lightweight, controllable, and local-first multi-agent framework that developers love to use. Focus on simplicity, transparency, and excellent developer experience.
 
 ## Core Principles
 
@@ -241,11 +241,10 @@ Build the most lightweight, controllable, and local-first multi-agent framework 
 - ⭐ Zero-config local setup with Ollama
 
 ### Community
-- ⭐ 1000+ GitHub stars (Phase 4 target)
-- ⭐ 5000+ stars (long-term goal)
-- ⭐ 50+ contributors
-- ⭐ 100+ projects using AgentMind
+- ⭐ Active contributor community
+- ⭐ Projects using AgentMind in production
 - ⭐ Featured in Awesome-LLM lists
+- ⭐ Regular community engagement
 
 ### Differentiation
 - **Lightest**: Smaller than CrewAI, LangGraph, AutoGen

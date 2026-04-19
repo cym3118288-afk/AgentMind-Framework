@@ -21,6 +21,7 @@ from rich.tree import Tree
 from agentmind import Agent, AgentMind
 from agentmind.llm import OllamaProvider, LiteLLMProvider
 from agentmind.utils.observability import Tracer
+from agentmind.plugins.cli import plugin_cli
 
 console = Console()
 logging.basicConfig(level=logging.WARNING)
@@ -585,6 +586,10 @@ def version():
     console.print("Version: 0.3.0")
     console.print("Framework: AgentMind")
     console.print("\nFor more information, visit: https://github.com/cym3118288-afk/AgentMind-Framework")
+
+
+# Add plugin commands
+cli.add_command(plugin_cli)
 
 
 if __name__ == "__main__":

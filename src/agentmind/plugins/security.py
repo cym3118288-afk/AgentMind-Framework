@@ -25,7 +25,9 @@ class PluginPermissions(BaseModel):
     """Complete permission set for a plugin."""
 
     plugin_name: str = Field(..., description="Plugin name")
-    permissions: List[PluginPermission] = Field(default_factory=list, description="List of permissions")
+    permissions: List[PluginPermission] = Field(
+        default_factory=list, description="List of permissions"
+    )
     allow_network: bool = Field(default=False, description="Allow network access")
     allow_filesystem: bool = Field(default=False, description="Allow filesystem access")
     allow_subprocess: bool = Field(default=False, description="Allow subprocess execution")
@@ -76,7 +78,7 @@ class PermissionManager:
             allow_filesystem=False,
             allow_subprocess=False,
             max_memory_mb=512,
-            max_cpu_percent=50.0
+            max_cpu_percent=50.0,
         )
 
     def register_permissions(self, permissions: PluginPermissions) -> None:
@@ -99,12 +101,7 @@ class PermissionManager:
         """
         return self._permissions.get(plugin_name, self._default_permissions)
 
-    def check_permission(
-        self,
-        plugin_name: str,
-        resource: str,
-        action: str
-    ) -> bool:
+    def check_permission(self, plugin_name: str, resource: str, action: str) -> bool:
         """Check if plugin has permission for an action.
 
         Args:
@@ -168,12 +165,7 @@ class SandboxExecutor:
         self._active_contexts: Dict[str, ExecutionContext] = {}
 
     async def execute_with_timeout(
-        self,
-        plugin_name: str,
-        func: Any,
-        timeout: float,
-        *args,
-        **kwargs
+        self, plugin_name: str, func: Any, timeout: float, *args, **kwargs
     ) -> Any:
         """Execute function with timeout.
 
@@ -191,10 +183,7 @@ class SandboxExecutor:
             asyncio.TimeoutError: If execution times out
         """
         try:
-            result = await asyncio.wait_for(
-                func(*args, **kwargs),
-                timeout=timeout
-            )
+            result = await asyncio.wait_for(func(*args, **kwargs), timeout=timeout)
             return result
         except asyncio.TimeoutError:
             logger.error(f"Plugin {plugin_name} execution timed out after {timeout}s")
@@ -206,7 +195,7 @@ class SandboxExecutor:
         func: Any,
         resource_limits: Optional[ResourceLimits] = None,
         *args,
-        **kwargs
+        **kwargs,
     ) -> Any:
         """Execute function in sandboxed environment.
 
@@ -227,7 +216,7 @@ class SandboxExecutor:
             plugin_name=plugin_name,
             timeout=limits.max_execution_time,
             resource_limits=limits,
-            permissions=self.permission_manager.get_permissions(plugin_name)
+            permissions=self.permission_manager.get_permissions(plugin_name),
         )
 
         self._active_contexts[plugin_name] = context
@@ -242,11 +231,16 @@ class SandboxExecutor:
 
                 # CPU time limit
                 if limits.max_cpu_time:
-                    resource.setrlimit(resource.RLIMIT_CPU, (int(limits.max_cpu_time), int(limits.max_cpu_time)))
+                    resource.setrlimit(
+                        resource.RLIMIT_CPU, (int(limits.max_cpu_time), int(limits.max_cpu_time))
+                    )
 
                 # File descriptor limit
                 if limits.max_file_descriptors:
-                    resource.setrlimit(resource.RLIMIT_NOFILE, (limits.max_file_descriptors, limits.max_file_descriptors))
+                    resource.setrlimit(
+                        resource.RLIMIT_NOFILE,
+                        (limits.max_file_descriptors, limits.max_file_descriptors),
+                    )
 
             except (AttributeError, ValueError) as e:
                 # Resource limits not available on this platform
@@ -254,11 +248,7 @@ class SandboxExecutor:
 
             # Execute with timeout
             result = await self.execute_with_timeout(
-                plugin_name,
-                func,
-                limits.max_execution_time,
-                *args,
-                **kwargs
+                plugin_name, func, limits.max_execution_time, *args, **kwargs
             )
 
             return result
@@ -270,8 +260,12 @@ class SandboxExecutor:
 
             # Reset resource limits
             try:
-                resource.setrlimit(resource.RLIMIT_AS, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
-                resource.setrlimit(resource.RLIMIT_CPU, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
+                resource.setrlimit(
+                    resource.RLIMIT_AS, (resource.RLIM_INFINITY, resource.RLIM_INFINITY)
+                )
+                resource.setrlimit(
+                    resource.RLIMIT_CPU, (resource.RLIM_INFINITY, resource.RLIM_INFINITY)
+                )
             except (AttributeError, ValueError):
                 pass
 
@@ -313,12 +307,7 @@ class SignatureVerifier:
         self._signatures[key] = signature
         logger.info(f"Registered signature for {key}")
 
-    def verify_checksum(
-        self,
-        plugin_name: str,
-        version: str,
-        content: bytes
-    ) -> bool:
+    def verify_checksum(self, plugin_name: str, version: str, content: bytes) -> bool:
         """Verify plugin checksum.
 
         Args:
@@ -340,7 +329,9 @@ class SignatureVerifier:
         matches = calculated == signature.checksum
 
         if not matches:
-            logger.error(f"Checksum mismatch for {key}: expected {signature.checksum}, got {calculated}")
+            logger.error(
+                f"Checksum mismatch for {key}: expected {signature.checksum}, got {calculated}"
+            )
 
         return matches
 
@@ -379,11 +370,14 @@ def require_permission(resource: str, action: str):
         resource: Resource name
         action: Action name
     """
+
     def decorator(func):
         @wraps(func)
         async def wrapper(self, *args, **kwargs):
             # Get plugin name from instance
-            plugin_name = getattr(self, 'get_metadata', lambda: type('obj', (object,), {'name': 'unknown'})())().name
+            plugin_name = getattr(
+                self, "get_metadata", lambda: type("obj", (object,), {"name": "unknown"})()
+            )().name
 
             # Check permission (would need access to permission manager)
             # This is a simplified version - in production, inject permission manager
@@ -392,4 +386,5 @@ def require_permission(resource: str, action: str):
             return await func(self, *args, **kwargs)
 
         return wrapper
+
     return decorator

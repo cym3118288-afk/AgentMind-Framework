@@ -128,7 +128,7 @@ class ImageProcessor:
         }
 
     def save_image(
-        self, image: Image.Image, path: Union[str, Path], format: Optional[ImageFormat] = None
+        self, image: "PILImage.Image", path: Union[str, Path], format: Optional[ImageFormat] = None
     ) -> None:
         """Save image to file.
 
@@ -148,7 +148,7 @@ class ImageProcessor:
 
     def create_thumbnail(
         self, image: Union["PILImage.Image", str, Path], size: Tuple[int, int] = (128, 128)
-    ) -> Image.Image:
+    ) -> "PILImage.Image":
         """Create a thumbnail of the image.
 
         Args:

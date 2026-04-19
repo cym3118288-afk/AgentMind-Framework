@@ -2,17 +2,141 @@
 
 This module provides the AgentMind class which manages multiple agents,
 coordinates their communication, and orchestrates collaborative problem-solving.
+
+Enhanced with:
+- Global orchestration with multi-agent coordination strategies
+- Checkpointing and recovery with crash recovery
+- Advanced task management with DAG dependencies
+- System observability with real-time metrics
+- Collaboration patterns with conflict resolution
 """
 
 import asyncio
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple
+from enum import Enum
+from collections import defaultdict, deque
 
 from ..llm.provider import LLMProvider
 from .agent import Agent
 from .types import CollaborationResult, CollaborationStrategy, Message, MessageRole
+
+
+class TaskPriority(str, Enum):
+    """Task priority levels."""
+
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    CRITICAL = "critical"
+
+
+class TaskStatus(str, Enum):
+    """Task execution status."""
+
+    PENDING = "pending"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    CANCELLED = "cancelled"
+    BLOCKED = "blocked"
+
+
+class CoordinationStrategy(str, Enum):
+    """Multi-agent coordination strategies."""
+
+    CENTRALIZED = "centralized"  # Central coordinator
+    DECENTRALIZED = "decentralized"  # Peer-to-peer
+    AUCTION = "auction"  # Task bidding
+    VOTING = "voting"  # Democratic decision
+    CONSENSUS = "consensus"  # Require agreement
+
+
+class ConflictResolutionStrategy(str, Enum):
+    """Strategies for resolving agent conflicts."""
+
+    PRIORITY = "priority"  # Higher priority wins
+    VOTING = "voting"  # Majority vote
+    SUPERVISOR = "supervisor"  # Supervisor decides
+    MERGE = "merge"  # Merge conflicting results
+
+
+class Task:
+    """Represents a task in the system with dependencies."""
+
+    def __init__(
+        self,
+        task_id: str,
+        description: str,
+        priority: TaskPriority = TaskPriority.MEDIUM,
+        assigned_agents: Optional[List[str]] = None,
+        dependencies: Optional[List[str]] = None,
+        timeout: Optional[float] = None,
+        retry_policy: Optional[Dict[str, Any]] = None,
+        metadata: Optional[Dict[str, Any]] = None,
+    ):
+        self.task_id = task_id
+        self.description = description
+        self.priority = priority
+        self.assigned_agents = assigned_agents or []
+        self.dependencies = dependencies or []
+        self.timeout = timeout
+        self.retry_policy = retry_policy or {"max_retries": 3, "backoff": 1.0}
+        self.metadata = metadata or {}
+        self.status = TaskStatus.PENDING
+        self.result: Optional[Any] = None
+        self.error: Optional[str] = None
+        self.created_at = datetime.now()
+        self.started_at: Optional[datetime] = None
+        self.completed_at: Optional[datetime] = None
+        self.retry_count = 0
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert task to dictionary."""
+        return {
+            "task_id": self.task_id,
+            "description": self.description,
+            "priority": self.priority.value,
+            "assigned_agents": self.assigned_agents,
+            "dependencies": self.dependencies,
+            "status": self.status.value,
+            "created_at": self.created_at.isoformat(),
+            "started_at": self.started_at.isoformat() if self.started_at else None,
+            "completed_at": self.completed_at.isoformat() if self.completed_at else None,
+            "retry_count": self.retry_count,
+        }
+
+
+class ResourceAllocation:
+    """Manages resource allocation across agents."""
+
+    def __init__(self, max_concurrent_tasks: int = 10):
+        self.max_concurrent_tasks = max_concurrent_tasks
+        self.allocated_resources: Dict[str, int] = {}
+        self.resource_limits: Dict[str, int] = {}
+
+    def allocate(self, agent_name: str, amount: int = 1) -> bool:
+        """Allocate resources to an agent."""
+        current = self.allocated_resources.get(agent_name, 0)
+        limit = self.resource_limits.get(agent_name, self.max_concurrent_tasks)
+
+        if current + amount <= limit:
+            self.allocated_resources[agent_name] = current + amount
+            return True
+        return False
+
+    def release(self, agent_name: str, amount: int = 1) -> None:
+        """Release resources from an agent."""
+        current = self.allocated_resources.get(agent_name, 0)
+        self.allocated_resources[agent_name] = max(0, current - amount)
+
+    def get_available(self, agent_name: str) -> int:
+        """Get available resources for an agent."""
+        current = self.allocated_resources.get(agent_name, 0)
+        limit = self.resource_limits.get(agent_name, self.max_concurrent_tasks)
+        return limit - current
 
 
 class AgentMind:

@@ -12,7 +12,11 @@ from typing import Optional
 
 from agentmind.plugins.manager import PluginManager
 from agentmind.plugins.loader import PluginRegistry
-from agentmind.plugins.marketplace import PluginRegistry as MarketplaceRegistry, PluginManifest, PluginCategory
+from agentmind.plugins.marketplace import (
+    PluginRegistry as MarketplaceRegistry,
+    PluginManifest,
+    PluginCategory,
+)
 from agentmind.plugins.config import ConfigManager
 from agentmind.plugins.dependencies import DependencyResolver
 from agentmind.plugins.audit import PluginAuditLogger
@@ -28,7 +32,13 @@ def plugin_cli():
 
 @plugin_cli.command()
 @click.argument("name")
-@click.option("--type", "plugin_type", type=click.Choice(["tool", "integration", "memory", "llm", "orchestration", "middleware"]), default="tool", help="Plugin type")
+@click.option(
+    "--type",
+    "plugin_type",
+    type=click.Choice(["tool", "integration", "memory", "llm", "orchestration", "middleware"]),
+    default="tool",
+    help="Plugin type",
+)
 @click.option("--author", default="Your Name", help="Plugin author")
 @click.option("--description", default="A new AgentMind plugin", help="Plugin description")
 @click.option("--output", type=click.Path(), help="Output directory")
@@ -69,7 +79,7 @@ __all__ = ["{name.replace('-', '_').title()}Plugin"]
     (package_dir / "plugin.py").write_text(plugin_content)
 
     # Create setup.py
-    setup_content = f'''from setuptools import setup, find_packages
+    setup_content = f"""from setuptools import setup, find_packages
 
 setup(
     name="agentmind-plugin-{name}",
@@ -87,11 +97,11 @@ setup(
     }},
     python_requires=">=3.8",
 )
-'''
+"""
     (output_dir / "setup.py").write_text(setup_content)
 
     # Create README.md
-    readme_content = f'''# {name}
+    readme_content = f"""# {name}
 
 {description}
 
@@ -125,7 +135,7 @@ pytest tests/
 ## License
 
 MIT
-'''
+"""
     (output_dir / "README.md").write_text(readme_content)
 
     # Create tests directory
@@ -166,7 +176,7 @@ async def test_plugin_shutdown():
     (tests_dir / "test_plugin.py").write_text(test_content)
 
     # Create config example
-    config_content = f'''# Configuration for {name} plugin
+    config_content = f"""# Configuration for {name} plugin
 
 enabled: true
 environment: development
@@ -174,7 +184,7 @@ environment: development
 settings:
   # Add your plugin-specific settings here
   example_setting: "value"
-'''
+"""
     (output_dir / "config.example.yaml").write_text(config_content)
 
     # Display success
@@ -200,7 +210,7 @@ settings:
 
 def _generate_plugin_code(name: str, plugin_type: str, author: str, description: str) -> str:
     """Generate plugin code based on type."""
-    class_name = name.replace('-', '_').title() + "Plugin"
+    class_name = name.replace("-", "_").title() + "Plugin"
 
     if plugin_type == "tool":
         return f'''"""
@@ -392,7 +402,11 @@ def list():
             metadata.version,
             metadata.plugin_type.value,
             metadata.author,
-            metadata.description[:50] + "..." if len(metadata.description) > 50 else metadata.description
+            (
+                metadata.description[:50] + "..."
+                if len(metadata.description) > 50
+                else metadata.description
+            ),
         )
 
     console.print(table)
@@ -454,7 +468,11 @@ def uninstall(plugin_name: str):
 
 @plugin_cli.command()
 @click.option("--query", help="Search query")
-@click.option("--category", type=click.Choice(["llm_provider", "memory", "tools", "integration"]), help="Filter by category")
+@click.option(
+    "--category",
+    type=click.Choice(["llm_provider", "memory", "tools", "integration"]),
+    help="Filter by category",
+)
 @click.option("--min-rating", type=float, help="Minimum rating")
 def search(query: Optional[str], category: Optional[str], min_rating: Optional[float]):
     """Search for plugins in marketplace."""
@@ -463,11 +481,7 @@ def search(query: Optional[str], category: Optional[str], min_rating: Optional[f
     marketplace = MarketplaceRegistry()
 
     cat = PluginCategory(category) if category else None
-    results = marketplace.search_plugins(
-        query=query,
-        category=cat,
-        min_rating=min_rating
-    )
+    results = marketplace.search_plugins(query=query, category=cat, min_rating=min_rating)
 
     if not results:
         console.print("[yellow]No plugins found[/yellow]")
@@ -486,7 +500,11 @@ def search(query: Optional[str], category: Optional[str], min_rating: Optional[f
             manifest.version,
             f"{'⭐' * int(manifest.average_rating)} ({manifest.average_rating:.1f})",
             str(manifest.downloads),
-            manifest.description[:40] + "..." if len(manifest.description) > 40 else manifest.description
+            (
+                manifest.description[:40] + "..."
+                if len(manifest.description) > 40
+                else manifest.description
+            ),
         )
 
     console.print(table)
@@ -504,7 +522,7 @@ def test(plugin_name: str):
     result = subprocess.run(
         [sys.executable, "-m", "pytest", f"tests/test_{plugin_name}.py", "-v"],
         capture_output=True,
-        text=True
+        text=True,
     )
 
     console.print(result.stdout)

@@ -105,8 +105,7 @@ class PluginLifecycleManager:
         """
         self._states[plugin_name] = PluginState.UNINITIALIZED
         self._health_status[plugin_name] = HealthStatus(
-            healthy=False,
-            state=PluginState.UNINITIALIZED
+            healthy=False, state=PluginState.UNINITIALIZED
         )
         self._hooks[plugin_name] = LifecycleHooks()
         self._error_counts[plugin_name] = 0
@@ -180,7 +179,9 @@ class PluginLifecycleManager:
             True if successful
         """
         if self._states.get(plugin_name) not in [PluginState.INACTIVE, PluginState.SUSPENDED]:
-            logger.warning(f"Cannot activate plugin {plugin_name} in state {self._states.get(plugin_name)}")
+            logger.warning(
+                f"Cannot activate plugin {plugin_name} in state {self._states.get(plugin_name)}"
+            )
             return False
 
         try:
@@ -215,7 +216,9 @@ class PluginLifecycleManager:
             True if successful
         """
         if self._states.get(plugin_name) != PluginState.ACTIVE:
-            logger.warning(f"Cannot deactivate plugin {plugin_name} in state {self._states.get(plugin_name)}")
+            logger.warning(
+                f"Cannot deactivate plugin {plugin_name} in state {self._states.get(plugin_name)}"
+            )
             return False
 
         try:
@@ -289,7 +292,7 @@ class PluginLifecycleManager:
                 await hooks.execute("on_health_check", plugin)
 
             # Check plugin health
-            healthy = plugin.health_check() if hasattr(plugin, 'health_check') else True
+            healthy = plugin.health_check() if hasattr(plugin, "health_check") else True
 
             # Calculate uptime
             uptime = 0.0
@@ -302,7 +305,7 @@ class PluginLifecycleManager:
                 last_check=datetime.now(),
                 error_count=self._error_counts.get(plugin_name, 0),
                 uptime_seconds=uptime,
-                details={}
+                details={},
             )
 
             self._health_status[plugin_name] = status
@@ -314,7 +317,7 @@ class PluginLifecycleManager:
                 healthy=False,
                 state=PluginState.ERROR,
                 error_count=self._error_counts.get(plugin_name, 0) + 1,
-                details={"error": str(e)}
+                details={"error": str(e)},
             )
 
     def get_state(self, plugin_name: str) -> Optional[PluginState]:

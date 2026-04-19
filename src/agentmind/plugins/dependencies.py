@@ -12,7 +12,9 @@ class PluginDependency(BaseModel):
     """Plugin dependency specification."""
 
     name: str = Field(..., description="Plugin name")
-    version_spec: str = Field(default="*", description="Version specification (e.g., '>=1.0.0,<2.0.0')")
+    version_spec: str = Field(
+        default="*", description="Version specification (e.g., '>=1.0.0,<2.0.0')"
+    )
     optional: bool = Field(default=False, description="Whether dependency is optional")
 
 
@@ -33,10 +35,7 @@ class DependencyGraph:
         self._nodes: Dict[str, DependencyNode] = {}
 
     def add_plugin(
-        self,
-        name: str,
-        version: str,
-        dependencies: Optional[List[PluginDependency]] = None
+        self, name: str, version: str, dependencies: Optional[List[PluginDependency]] = None
     ) -> None:
         """Add a plugin to the dependency graph.
 
@@ -49,13 +48,11 @@ class DependencyGraph:
             logger.warning(f"Plugin {name} already in graph, updating")
 
         self._nodes[name] = DependencyNode(
-            name=name,
-            version=version,
-            dependencies=dependencies or []
+            name=name, version=version, dependencies=dependencies or []
         )
 
         # Update dependents
-        for dep in (dependencies or []):
+        for dep in dependencies or []:
             if dep.name in self._nodes:
                 if name not in self._nodes[dep.name].dependents:
                     self._nodes[dep.name].dependents.append(name)
@@ -292,10 +289,7 @@ class DependencyResolver:
         self.version_checker = VersionChecker()
 
     def add_plugin(
-        self,
-        name: str,
-        version: str,
-        dependencies: Optional[List[PluginDependency]] = None
+        self, name: str, version: str, dependencies: Optional[List[PluginDependency]] = None
     ) -> None:
         """Add a plugin to the resolver.
 
@@ -307,9 +301,7 @@ class DependencyResolver:
         self.graph.add_plugin(name, version, dependencies)
 
     def check_dependencies(
-        self,
-        plugin_name: str,
-        available_plugins: Dict[str, str]
+        self, plugin_name: str, available_plugins: Dict[str, str]
     ) -> Tuple[bool, List[str]]:
         """Check if all dependencies are satisfied.
 
@@ -333,14 +325,14 @@ class DependencyResolver:
 
             installed_version = available_plugins[dep.name]
             if not self.version_checker.check_version(installed_version, dep.version_spec):
-                missing.append(f"{dep.name} (requires {dep.version_spec}, found {installed_version})")
+                missing.append(
+                    f"{dep.name} (requires {dep.version_spec}, found {installed_version})"
+                )
 
         return len(missing) == 0, missing
 
     def resolve_load_order(
-        self,
-        plugin_names: List[str],
-        available_plugins: Dict[str, str]
+        self, plugin_names: List[str], available_plugins: Dict[str, str]
     ) -> Tuple[Optional[List[str]], List[str]]:
         """Resolve load order for plugins.
 

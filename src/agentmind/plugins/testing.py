@@ -22,7 +22,7 @@ class MockPlugin(Plugin):
         self,
         name: str = "mock-plugin",
         version: str = "1.0.0",
-        config: Optional[Dict[str, Any]] = None
+        config: Optional[Dict[str, Any]] = None,
     ):
         """Initialize mock plugin."""
         super().__init__(config)
@@ -144,7 +144,7 @@ class PluginTestHarness:
 
         # Test health check
         try:
-            healthy = self.plugin.health_check() if hasattr(self.plugin, 'health_check') else True
+            healthy = self.plugin.health_check() if hasattr(self.plugin, "health_check") else True
             results["health_check"] = healthy
         except Exception as e:
             results["health_check"] = False
@@ -228,6 +228,7 @@ class PluginTestHarness:
 
 # Pytest fixtures
 
+
 @pytest.fixture
 def mock_plugin():
     """Fixture for mock plugin."""
@@ -292,10 +293,11 @@ async def initialized_plugin(mock_plugin):
 
 # Helper functions for testing
 
+
 def create_test_plugin(
     name: str = "test-plugin",
     plugin_type: PluginType = PluginType.TOOL,
-    dependencies: Optional[List[str]] = None
+    dependencies: Optional[List[str]] = None,
 ) -> Type[Plugin]:
     """Create a test plugin class.
 
@@ -307,6 +309,7 @@ def create_test_plugin(
     Returns:
         Plugin class
     """
+
     class TestPlugin(Plugin):
         def get_metadata(self) -> PluginMetadata:
             return PluginMetadata(
@@ -327,7 +330,9 @@ def create_test_plugin(
     return TestPlugin
 
 
-async def run_plugin_test_suite(plugin_class: Type[Plugin], config: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+async def run_plugin_test_suite(
+    plugin_class: Type[Plugin], config: Optional[Dict[str, Any]] = None
+) -> Dict[str, Any]:
     """Run complete test suite for a plugin.
 
     Args:
@@ -371,13 +376,15 @@ def assert_plugin_valid(plugin: Plugin) -> None:
     assert metadata.plugin_type, "Plugin must have a type"
 
     # Check methods exist
-    assert hasattr(plugin, 'initialize'), "Plugin must have initialize method"
-    assert hasattr(plugin, 'shutdown'), "Plugin must have shutdown method"
+    assert hasattr(plugin, "initialize"), "Plugin must have initialize method"
+    assert hasattr(plugin, "shutdown"), "Plugin must have shutdown method"
     assert callable(plugin.initialize), "initialize must be callable"
     assert callable(plugin.shutdown), "shutdown must be callable"
 
 
-def mock_plugin_execution(plugin: Plugin, return_value: Any = None, side_effect: Optional[Exception] = None):
+def mock_plugin_execution(
+    plugin: Plugin, return_value: Any = None, side_effect: Optional[Exception] = None
+):
     """Mock plugin execution for testing.
 
     Args:
@@ -388,7 +395,7 @@ def mock_plugin_execution(plugin: Plugin, return_value: Any = None, side_effect:
     Returns:
         Mock object
     """
-    if hasattr(plugin, 'execute'):
+    if hasattr(plugin, "execute"):
         mock = AsyncMock(return_value=return_value, side_effect=side_effect)
         plugin.execute = mock
         return mock
@@ -440,7 +447,7 @@ class PluginPerformanceTester:
         """
         import time
 
-        if not hasattr(self.plugin, 'execute'):
+        if not hasattr(self.plugin, "execute"):
             return 0.0
 
         await self.plugin.initialize()

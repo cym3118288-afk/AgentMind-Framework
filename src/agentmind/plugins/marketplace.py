@@ -87,17 +87,15 @@ class PluginRegistry:
         """Load registry from file."""
         if self.registry_file.exists():
             try:
-                with open(self.registry_file, 'r') as f:
+                with open(self.registry_file, "r") as f:
                     data = json.load(f)
 
-                for plugin_data in data.get('plugins', []):
+                for plugin_data in data.get("plugins", []):
                     manifest = PluginManifest(**plugin_data)
                     self._plugins[manifest.name] = manifest
 
-                for plugin_name, ratings_data in data.get('ratings', {}).items():
-                    self._ratings[plugin_name] = [
-                        PluginRating(**rating) for rating in ratings_data
-                    ]
+                for plugin_name, ratings_data in data.get("ratings", {}).items():
+                    self._ratings[plugin_name] = [PluginRating(**rating) for rating in ratings_data]
 
                 logger.info(f"Loaded {len(self._plugins)} plugins from registry")
             except Exception as e:
@@ -107,16 +105,14 @@ class PluginRegistry:
         """Save registry to file."""
         try:
             data = {
-                'plugins': [
-                    plugin.model_dump(mode='json') for plugin in self._plugins.values()
-                ],
-                'ratings': {
-                    name: [rating.model_dump(mode='json') for rating in ratings]
+                "plugins": [plugin.model_dump(mode="json") for plugin in self._plugins.values()],
+                "ratings": {
+                    name: [rating.model_dump(mode="json") for rating in ratings]
                     for name, ratings in self._ratings.items()
-                }
+                },
             }
 
-            with open(self.registry_file, 'w') as f:
+            with open(self.registry_file, "w") as f:
                 json.dump(data, f, indent=2, default=str)
 
             logger.info(f"Saved registry with {len(self._plugins)} plugins")
@@ -185,7 +181,7 @@ class PluginRegistry:
         category: Optional[PluginCategory] = None,
         tags: Optional[List[str]] = None,
         min_rating: Optional[float] = None,
-        verified_only: bool = False
+        verified_only: bool = False,
     ) -> List[PluginManifest]:
         """Search for plugins.
 
@@ -205,7 +201,8 @@ class PluginRegistry:
         if query:
             query_lower = query.lower()
             results = [
-                p for p in results
+                p
+                for p in results
                 if query_lower in p.name.lower() or query_lower in p.description.lower()
             ]
 
@@ -215,10 +212,7 @@ class PluginRegistry:
 
         # Filter by tags
         if tags:
-            results = [
-                p for p in results
-                if any(tag in p.tags for tag in tags)
-            ]
+            results = [p for p in results if any(tag in p.tags for tag in tags)]
 
         # Filter by rating
         if min_rating is not None:
@@ -231,11 +225,7 @@ class PluginRegistry:
         return results
 
     def add_rating(
-        self,
-        plugin_name: str,
-        user_id: str,
-        rating: int,
-        review: Optional[str] = None
+        self, plugin_name: str, user_id: str, rating: int, review: Optional[str] = None
     ) -> bool:
         """Add a rating for a plugin.
 
@@ -253,11 +243,7 @@ class PluginRegistry:
             return False
 
         try:
-            plugin_rating = PluginRating(
-                user_id=user_id,
-                rating=rating,
-                review=review
-            )
+            plugin_rating = PluginRating(user_id=user_id, rating=rating, review=review)
 
             if plugin_name not in self._ratings:
                 self._ratings[plugin_name] = []
@@ -323,11 +309,7 @@ class PluginRegistry:
         Returns:
             List of plugin manifests
         """
-        sorted_plugins = sorted(
-            self._plugins.values(),
-            key=lambda p: p.downloads,
-            reverse=True
-        )
+        sorted_plugins = sorted(self._plugins.values(), key=lambda p: p.downloads, reverse=True)
         return sorted_plugins[:limit]
 
     def get_top_rated_plugins(self, limit: int = 10) -> List[PluginManifest]:
@@ -340,9 +322,7 @@ class PluginRegistry:
             List of plugin manifests
         """
         sorted_plugins = sorted(
-            self._plugins.values(),
-            key=lambda p: (p.average_rating, p.rating_count),
-            reverse=True
+            self._plugins.values(), key=lambda p: (p.average_rating, p.rating_count), reverse=True
         )
         return sorted_plugins[:limit]
 
@@ -355,11 +335,7 @@ class PluginRegistry:
         Returns:
             List of plugin manifests
         """
-        sorted_plugins = sorted(
-            self._plugins.values(),
-            key=lambda p: p.created_at,
-            reverse=True
-        )
+        sorted_plugins = sorted(self._plugins.values(), key=lambda p: p.created_at, reverse=True)
         return sorted_plugins[:limit]
 
     def verify_plugin(self, plugin_name: str, verified: bool = True) -> bool:
@@ -394,8 +370,8 @@ class PluginRegistry:
             return False
 
         try:
-            with open(output_file, 'w') as f:
-                json.dump(manifest.model_dump(mode='json'), f, indent=2, default=str)
+            with open(output_file, "w") as f:
+                json.dump(manifest.model_dump(mode="json"), f, indent=2, default=str)
             logger.info(f"Exported manifest for {plugin_name} to {output_file}")
             return True
         except Exception as e:
@@ -412,7 +388,7 @@ class PluginRegistry:
             True if successful
         """
         try:
-            with open(manifest_file, 'r') as f:
+            with open(manifest_file, "r") as f:
                 data = json.load(f)
             manifest = PluginManifest(**data)
             return self.register_plugin(manifest)

@@ -72,7 +72,7 @@ class PluginAuditLogger:
         details: Optional[Dict[str, Any]] = None,
         user_id: Optional[str] = None,
         severity: str = "info",
-        success: bool = True
+        success: bool = True,
     ) -> AuditEvent:
         """Log an audit event.
 
@@ -94,7 +94,7 @@ class PluginAuditLogger:
             details=details or {},
             user_id=user_id,
             severity=severity,
-            success=success
+            success=success,
         )
 
         self._events.append(event)
@@ -115,8 +115,8 @@ class PluginAuditLogger:
             # Daily log file
             log_file = self.log_dir / f"audit_{datetime.now().strftime('%Y%m%d')}.jsonl"
 
-            with open(log_file, 'a') as f:
-                f.write(json.dumps(event.model_dump(mode='json'), default=str) + "\n")
+            with open(log_file, "a") as f:
+                f.write(json.dumps(event.model_dump(mode="json"), default=str) + "\n")
 
         except Exception as e:
             logger.error(f"Error writing audit log: {e}")
@@ -128,7 +128,7 @@ class PluginAuditLogger:
         start_time: Optional[datetime] = None,
         end_time: Optional[datetime] = None,
         user_id: Optional[str] = None,
-        severity: Optional[str] = None
+        severity: Optional[str] = None,
     ) -> List[AuditEvent]:
         """Get audit events with filters.
 
@@ -176,10 +176,7 @@ class PluginAuditLogger:
         """
         return self.get_events(plugin_name=plugin_name)
 
-    def get_failed_operations(
-        self,
-        plugin_name: Optional[str] = None
-    ) -> List[AuditEvent]:
+    def get_failed_operations(self, plugin_name: Optional[str] = None) -> List[AuditEvent]:
         """Get failed operations.
 
         Args:
@@ -197,17 +194,14 @@ class PluginAuditLogger:
         Returns:
             List of security events
         """
-        security_types = [
-            AuditEventType.PERMISSION_DENIED,
-            AuditEventType.PLUGIN_ERROR
-        ]
+        security_types = [AuditEventType.PERMISSION_DENIED, AuditEventType.PLUGIN_ERROR]
         return [e for e in self._events if e.event_type in security_types]
 
     def export_logs(
         self,
         output_file: Path,
         start_time: Optional[datetime] = None,
-        end_time: Optional[datetime] = None
+        end_time: Optional[datetime] = None,
     ) -> bool:
         """Export audit logs to file.
 
@@ -222,9 +216,9 @@ class PluginAuditLogger:
         try:
             events = self.get_events(start_time=start_time, end_time=end_time)
 
-            with open(output_file, 'w') as f:
+            with open(output_file, "w") as f:
                 for event in events:
-                    f.write(json.dumps(event.model_dump(mode='json'), default=str) + "\n")
+                    f.write(json.dumps(event.model_dump(mode="json"), default=str) + "\n")
 
             logger.info(f"Exported {len(events)} audit events to {output_file}")
             return True
@@ -244,7 +238,7 @@ class PluginAuditLogger:
         """
         try:
             count = 0
-            with open(log_file, 'r') as f:
+            with open(log_file, "r") as f:
                 for line in f:
                     if line.strip():
                         data = json.loads(line)
@@ -270,7 +264,9 @@ class PluginAuditLogger:
 
         event_type_counts = {}
         for event in self._events:
-            event_type_counts[event.event_type.value] = event_type_counts.get(event.event_type.value, 0) + 1
+            event_type_counts[event.event_type.value] = (
+                event_type_counts.get(event.event_type.value, 0) + 1
+            )
 
         plugin_counts = {}
         for event in self._events:
@@ -283,10 +279,12 @@ class PluginAuditLogger:
         return {
             "total_events": total_events,
             "failed_events": failed_events,
-            "success_rate": (total_events - failed_events) / total_events if total_events > 0 else 0,
+            "success_rate": (
+                (total_events - failed_events) / total_events if total_events > 0 else 0
+            ),
             "event_types": event_type_counts,
             "plugins": plugin_counts,
-            "severity": severity_counts
+            "severity": severity_counts,
         }
 
     def clear_old_logs(self, days: int = 30) -> int:
@@ -310,11 +308,9 @@ class PluginAuditLogger:
 
 # Helper functions for common audit operations
 
+
 def log_plugin_loaded(
-    audit_logger: PluginAuditLogger,
-    plugin_name: str,
-    version: str,
-    user_id: Optional[str] = None
+    audit_logger: PluginAuditLogger, plugin_name: str, version: str, user_id: Optional[str] = None
 ) -> None:
     """Log plugin loaded event.
 
@@ -330,7 +326,7 @@ def log_plugin_loaded(
         details={"version": version},
         user_id=user_id,
         severity="info",
-        success=True
+        success=True,
     )
 
 
@@ -338,7 +334,7 @@ def log_plugin_error(
     audit_logger: PluginAuditLogger,
     plugin_name: str,
     error: Exception,
-    user_id: Optional[str] = None
+    user_id: Optional[str] = None,
 ) -> None:
     """Log plugin error event.
 
@@ -351,13 +347,10 @@ def log_plugin_error(
     audit_logger.log_event(
         event_type=AuditEventType.PLUGIN_ERROR,
         plugin_name=plugin_name,
-        details={
-            "error_type": type(error).__name__,
-            "error_message": str(error)
-        },
+        details={"error_type": type(error).__name__, "error_message": str(error)},
         user_id=user_id,
         severity="error",
-        success=False
+        success=False,
     )
 
 
@@ -366,7 +359,7 @@ def log_permission_denied(
     plugin_name: str,
     resource: str,
     action: str,
-    user_id: Optional[str] = None
+    user_id: Optional[str] = None,
 ) -> None:
     """Log permission denied event.
 
@@ -380,13 +373,10 @@ def log_permission_denied(
     audit_logger.log_event(
         event_type=AuditEventType.PERMISSION_DENIED,
         plugin_name=plugin_name,
-        details={
-            "resource": resource,
-            "action": action
-        },
+        details={"resource": resource, "action": action},
         user_id=user_id,
         severity="warning",
-        success=False
+        success=False,
     )
 
 
@@ -394,7 +384,7 @@ def log_config_changed(
     audit_logger: PluginAuditLogger,
     plugin_name: str,
     changes: Dict[str, Any],
-    user_id: Optional[str] = None
+    user_id: Optional[str] = None,
 ) -> None:
     """Log configuration change event.
 
@@ -410,7 +400,7 @@ def log_config_changed(
         details={"changes": changes},
         user_id=user_id,
         severity="info",
-        success=True
+        success=True,
     )
 
 

@@ -24,7 +24,9 @@ class PluginConfigSchema(BaseModel):
     """Base schema for plugin configuration."""
 
     enabled: bool = Field(default=True, description="Whether plugin is enabled")
-    environment: ConfigEnvironment = Field(default=ConfigEnvironment.DEVELOPMENT, description="Environment")
+    environment: ConfigEnvironment = Field(
+        default=ConfigEnvironment.DEVELOPMENT, description="Environment"
+    )
     settings: Dict[str, Any] = Field(default_factory=dict, description="Plugin-specific settings")
 
 
@@ -45,7 +47,9 @@ class ConfigValidator:
         self._schemas[plugin_name] = schema
         logger.info(f"Registered config schema for plugin: {plugin_name}")
 
-    def validate(self, plugin_name: str, config: Dict[str, Any]) -> tuple[bool, Optional[BaseModel], Optional[str]]:
+    def validate(
+        self, plugin_name: str, config: Dict[str, Any]
+    ) -> tuple[bool, Optional[BaseModel], Optional[str]]:
         """Validate plugin configuration.
 
         Args:
@@ -110,9 +114,7 @@ class ConfigManager:
         self._validator.register_schema(plugin_name, schema)
 
     def load_config(
-        self,
-        plugin_name: str,
-        environment: Optional[ConfigEnvironment] = None
+        self, plugin_name: str, environment: Optional[ConfigEnvironment] = None
     ) -> Optional[Dict[str, Any]]:
         """Load configuration for a plugin.
 
@@ -132,16 +134,16 @@ class ConfigManager:
 
         if config_file.exists():
             try:
-                with open(config_file, 'r') as f:
-                    if config_file.suffix == '.yaml' or config_file.suffix == '.yml':
+                with open(config_file, "r") as f:
+                    if config_file.suffix == ".yaml" or config_file.suffix == ".yml":
                         config = yaml.safe_load(f)
                     else:
                         config = json.load(f)
 
                 # Get environment-specific config
-                if isinstance(config, dict) and 'environments' in config:
-                    env_config = config.get('environments', {}).get(env.value, {})
-                    base_config = {k: v for k, v in config.items() if k != 'environments'}
+                if isinstance(config, dict) and "environments" in config:
+                    env_config = config.get("environments", {}).get(env.value, {})
+                    base_config = {k: v for k, v in config.items() if k != "environments"}
                     # Merge base and environment configs
                     final_config = {**base_config, **env_config}
                 else:
@@ -166,12 +168,7 @@ class ConfigManager:
         logger.warning(f"No config file found for {plugin_name}")
         return None
 
-    def save_config(
-        self,
-        plugin_name: str,
-        config: Dict[str, Any],
-        format: str = "yaml"
-    ) -> bool:
+    def save_config(self, plugin_name: str, config: Dict[str, Any], format: str = "yaml") -> bool:
         """Save configuration for a plugin.
 
         Args:
@@ -191,8 +188,8 @@ class ConfigManager:
         try:
             config_file = self.config_dir / f"{plugin_name}.{format}"
 
-            with open(config_file, 'w') as f:
-                if format == 'yaml' or format == 'yml':
+            with open(config_file, "w") as f:
+                if format == "yaml" or format == "yml":
                     yaml.dump(config, f, default_flow_style=False)
                 else:
                     json.dump(config, f, indent=2)
@@ -216,12 +213,7 @@ class ConfigManager:
         """
         return self._configs.get(plugin_name)
 
-    def update_config(
-        self,
-        plugin_name: str,
-        updates: Dict[str, Any],
-        save: bool = True
-    ) -> bool:
+    def update_config(self, plugin_name: str, updates: Dict[str, Any], save: bool = True) -> bool:
         """Update configuration for a plugin.
 
         Args:
@@ -252,9 +244,7 @@ class ConfigManager:
         return True
 
     def register_reload_callback(
-        self,
-        plugin_name: str,
-        callback: Callable[[Dict[str, Any]], None]
+        self, plugin_name: str, callback: Callable[[Dict[str, Any]], None]
     ) -> None:
         """Register callback for config reload.
 
@@ -268,11 +258,7 @@ class ConfigManager:
         self._reload_callbacks[plugin_name].append(callback)
         logger.debug(f"Registered reload callback for {plugin_name}")
 
-    def _trigger_reload_callbacks(
-        self,
-        plugin_name: str,
-        new_config: Dict[str, Any]
-    ) -> None:
+    def _trigger_reload_callbacks(self, plugin_name: str, new_config: Dict[str, Any]) -> None:
         """Trigger reload callbacks for a plugin.
 
         Args:
@@ -304,9 +290,9 @@ class ConfigManager:
                 return False
 
             # Call plugin's reload method if available
-            if hasattr(plugin, 'reload_config'):
+            if hasattr(plugin, "reload_config"):
                 await plugin.reload_config(new_config)
-            elif hasattr(plugin, 'config'):
+            elif hasattr(plugin, "config"):
                 plugin.config = new_config
 
             logger.info(f"Hot-reloaded config for {plugin_name}")
@@ -316,10 +302,7 @@ class ConfigManager:
             logger.error(f"Error hot-reloading config for {plugin_name}: {e}")
             return False
 
-    def get_environment_config(
-        self,
-        environment: ConfigEnvironment
-    ) -> Dict[str, Dict[str, Any]]:
+    def get_environment_config(self, environment: ConfigEnvironment) -> Dict[str, Dict[str, Any]]:
         """Get all configs for an environment.
 
         Args:
@@ -331,9 +314,7 @@ class ConfigManager:
         return self._env_configs.get(environment, {})
 
     def migrate_config(
-        self,
-        plugin_name: str,
-        migration_func: Callable[[Dict[str, Any]], Dict[str, Any]]
+        self, plugin_name: str, migration_func: Callable[[Dict[str, Any]], Dict[str, Any]]
     ) -> bool:
         """Migrate plugin configuration.
 
@@ -376,8 +357,8 @@ class ConfigManager:
             True if successful
         """
         try:
-            with open(output_file, 'w') as f:
-                if output_file.suffix == '.yaml' or output_file.suffix == '.yml':
+            with open(output_file, "w") as f:
+                if output_file.suffix == ".yaml" or output_file.suffix == ".yml":
                     yaml.dump(self._configs, f, default_flow_style=False)
                 else:
                     json.dump(self._configs, f, indent=2)
@@ -399,8 +380,8 @@ class ConfigManager:
             True if successful
         """
         try:
-            with open(input_file, 'r') as f:
-                if input_file.suffix == '.yaml' or input_file.suffix == '.yml':
+            with open(input_file, "r") as f:
+                if input_file.suffix == ".yaml" or input_file.suffix == ".yml":
                     configs = yaml.safe_load(f)
                 else:
                     configs = json.load(f)

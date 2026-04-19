@@ -144,9 +144,7 @@ class BaseOrchestrator(ABC):
         """
         try:
             if timeout:
-                response = await asyncio.wait_for(
-                    agent.process_message(message), timeout=timeout
-                )
+                response = await asyncio.wait_for(agent.process_message(message), timeout=timeout)
             else:
                 response = await agent.process_message(message)
 
@@ -178,9 +176,7 @@ class BaseOrchestrator(ABC):
             return False
 
         if len(agents) < min_agents:
-            self.metrics.record_error(
-                f"Insufficient agents: {len(agents)} < {min_agents}"
-            )
+            self.metrics.record_error(f"Insufficient agents: {len(agents)} < {min_agents}")
             return False
 
         active_agents = [a for a in agents if a.is_active]
@@ -272,9 +268,7 @@ class SequentialOrchestrator(BaseOrchestrator):
         max_retries = kwargs.get("max_retries", 0)
         pass_full_history = kwargs.get("pass_full_history", False)
 
-        self.logger.info(
-            f"Starting sequential orchestration with {len(agents)} agents"
-        )
+        self.logger.info(f"Starting sequential orchestration with {len(agents)} agents")
 
         messages: List[Message] = []
         current_context = context or {}
@@ -303,7 +297,9 @@ class SequentialOrchestrator(BaseOrchestrator):
                 message_content = f"{task}\n\nPrevious steps:\n"
                 for msg in messages[1:]:  # Skip initial system message
                     message_content += f"- {msg.sender}: {msg.content[:100]}...\n"
-                message_content += f"\nYour turn: Continue from where {messages[-1].sender} left off."
+                message_content += (
+                    f"\nYour turn: Continue from where {messages[-1].sender} left off."
+                )
             else:
                 # Only pass last message
                 message_content = current_message.content
@@ -411,18 +407,14 @@ class HierarchicalOrchestrator(BaseOrchestrator):
             Collaboration result
         """
         if not self._validate_agents(agents, min_agents=3):
-            return self._create_result(
-                False, [], "Hierarchical mode requires at least 3 agents"
-            )
+            return self._create_result(False, [], "Hierarchical mode requires at least 3 agents")
 
         quality_threshold = kwargs.get("quality_threshold", 0.7)
         max_escalations = kwargs.get("max_escalations", 2)
         worker_timeout = kwargs.get("worker_timeout", 30.0)
         enable_load_balancing = kwargs.get("enable_load_balancing", True)
 
-        self.logger.info(
-            f"Starting hierarchical orchestration with {len(agents)} agents"
-        )
+        self.logger.info(f"Starting hierarchical orchestration with {len(agents)} agents")
 
         manager = agents[0]
         workers = agents[1:-1]
@@ -453,9 +445,7 @@ DEPENDENCIES: [none or list]""",
             role=MessageRole.SYSTEM,
         )
 
-        manager_response = await self._safe_process_message(
-            manager, manager_msg, worker_timeout
-        )
+        manager_response = await self._safe_process_message(manager, manager_msg, worker_timeout)
 
         if not manager_response:
             return self._create_result(False, messages, "Manager failed to respond")
@@ -479,9 +469,7 @@ DEPENDENCIES: [none or list]""",
 
         # Phase 3: Reviewer evaluates and synthesizes
         while escalation_count <= max_escalations:
-            self.logger.info(
-                f"Phase 3: Reviewer evaluation (attempt {escalation_count + 1})"
-            )
+            self.logger.info(f"Phase 3: Reviewer evaluation (attempt {escalation_count + 1})")
             self.metrics.total_rounds += 1
 
             review_content = f"""Review and synthesize these worker results:
@@ -508,13 +496,9 @@ COMPLETENESS: [percentage]
 ISSUES: [list or none]
 SYNTHESIS: [final output]"""
 
-            review_msg = Message(
-                content=review_content, sender="system", role=MessageRole.SYSTEM
-            )
+            review_msg = Message(content=review_content, sender="system", role=MessageRole.SYSTEM)
 
-            review_response = await self._safe_process_message(
-                reviewer, review_msg, worker_timeout
-            )
+            review_response = await self._safe_process_message(reviewer, review_msg, worker_timeout)
 
             if not review_response:
                 return self._create_result(False, messages, "Reviewer failed to respond")
@@ -608,7 +592,9 @@ SYNTHESIS: [final output]"""
             sorted_subtasks = sorted(
                 enumerate(subtasks), key=lambda x: priority_order.get(x[1]["priority"], 1)
             )
-            assignments = [(workers[i % len(workers)], st) for i, (_, st) in enumerate(sorted_subtasks)]
+            assignments = [
+                (workers[i % len(workers)], st) for i, (_, st) in enumerate(sorted_subtasks)
+            ]
         else:
             # Simple assignment
             assignments = [(workers[i % len(workers)], st) for i, st in enumerate(subtasks)]
@@ -683,9 +669,7 @@ class DebateOrchestrator(BaseOrchestrator):
         enable_moderator = kwargs.get("enable_moderator", False)
         weights = kwargs.get("weights", {})
 
-        self.logger.info(
-            f"Starting debate with {len(agents)} agents for {debate_rounds} rounds"
-        )
+        self.logger.info(f"Starting debate with {len(agents)} agents for {debate_rounds} rounds")
 
         messages: List[Message] = []
         debate_history: List[Dict[str, Any]] = []
@@ -805,9 +789,7 @@ Provide a balanced summary of all perspectives.""",
 
         return self._create_result(True, messages)
 
-    def _parse_debate_positions(
-        self, responses: List[Message]
-    ) -> List[Dict[str, Any]]:
+    def _parse_debate_positions(self, responses: List[Message]) -> List[Dict[str, Any]]:
         """Parse debate positions from responses."""
         positions = []
 
@@ -858,9 +840,7 @@ Provide a balanced summary of all perspectives.""",
         """Summarize previous round arguments."""
         summary = []
         for pos in round_data["positions"]:
-            summary.append(
-                f"{pos['agent']} ({pos['stance']}): {', '.join(pos['arguments'][:2])}"
-            )
+            summary.append(f"{pos['agent']} ({pos['stance']}): {', '.join(pos['arguments'][:2])}")
         return "\n".join(summary)
 
     async def _conduct_voting(
@@ -923,9 +903,7 @@ Provide a balanced summary of all perspectives.""",
             stance_confidence[pos["stance"]] += pos["confidence"]
 
         winner = max(stance_confidence.items(), key=lambda x: x[1])
-        avg_confidence = winner[1] / len(
-            [p for p in positions if p["stance"] == winner[0]]
-        )
+        avg_confidence = winner[1] / len([p for p in positions if p["stance"] == winner[0]])
 
         return {
             "mechanism": "consensus",
@@ -1011,10 +989,7 @@ CONCERNS:
         )
 
         proposal_responses = await asyncio.gather(
-            *[
-                self._safe_process_message(agent, proposal_msg, proposal_timeout)
-                for agent in agents
-            ]
+            *[self._safe_process_message(agent, proposal_msg, proposal_timeout) for agent in agents]
         )
 
         for response in proposal_responses:
@@ -1038,9 +1013,7 @@ CONCERNS:
             # Phase 2: Peer review (if enabled)
             if enable_peer_review:
                 self.logger.info("Phase 2: Peer review")
-                reviews = await self._conduct_peer_review(
-                    agents, proposals, proposal_timeout
-                )
+                reviews = await self._conduct_peer_review(agents, proposals, proposal_timeout)
 
                 for review in reviews:
                     if review:
@@ -1051,9 +1024,7 @@ CONCERNS:
 
             # Phase 3: Consensus check
             self.logger.info("Phase 3: Checking consensus")
-            agreement_level = await self._check_consensus(
-                agents, proposals, proposal_timeout
-            )
+            agreement_level = await self._check_consensus(agents, proposals, proposal_timeout)
 
             for response in agreement_level["responses"]:
                 if response:
@@ -1202,9 +1173,7 @@ REASONING: [brief explanation]""",
                 agreement = self._parse_agreement(response.content)
                 agreements.append(agreement)
 
-        avg_agreement = (
-            sum(agreements) / len(agreements) if agreements else 0.0
-        )
+        avg_agreement = sum(agreements) / len(agreements) if agreements else 0.0
 
         return {
             "score": avg_agreement / 100.0,
@@ -1227,9 +1196,7 @@ REASONING: [brief explanation]""",
         """Format proposals for display."""
         formatted = []
         for i, prop in enumerate(proposals, 1):
-            formatted.append(
-                f"{i}. {prop['agent']}: {prop['solution'][:100]}..."
-            )
+            formatted.append(f"{i}. {prop['agent']}: {prop['solution'][:100]}...")
         return "\n".join(formatted)
 
     def _merge_proposals(self, proposals: List[Dict[str, Any]]) -> str:
@@ -1329,9 +1296,7 @@ class SwarmOrchestrator(BaseOrchestrator):
                 active_agents, work_queue, agent_timeout, agent_status
             )
         else:
-            completed_work = await self._execute_simple(
-                active_agents, subtasks, agent_timeout
-            )
+            completed_work = await self._execute_simple(active_agents, subtasks, agent_timeout)
 
         # Collect results
         for _, response in sorted(completed_work, key=lambda x: x[0]):
@@ -1445,37 +1410,90 @@ Provide a coherent synthesis.""",
 
 
 class GraphOrchestrator(BaseOrchestrator):
-    """Graph-based orchestration - LangGraph compatible."""
+    """Graph-based orchestration with DAG workflows.
+
+    Features:
+    - Node types: Agent, Tool, Decision, Merge
+    - Edge conditions and routing
+    - Parallel execution paths
+    - Cycle detection
+    - Mermaid visualization export
+    """
+
+    def __init__(self) -> None:
+        """Initialize graph orchestrator."""
+        super().__init__()
+        self.graph: Dict[str, List[str]] = {}
+        self.node_agents: Dict[str, Agent] = {}
+        self.node_types: Dict[str, str] = {}
+        self.edge_conditions: Dict[Tuple[str, str], Callable] = {}
 
     def get_mode(self) -> OrchestrationMode:
         return OrchestrationMode.GRAPH
 
-    def __init__(self):
-        """Initialize graph orchestrator."""
-        self.graph: Dict[str, List[str]] = {}
-        self.node_agents: Dict[str, Agent] = {}
-
-    def add_node(self, node_id: str, agent: Agent) -> None:
+    def add_node(self, node_id: str, agent: Agent, node_type: str = "agent") -> None:
         """Add a node to the graph.
 
         Args:
             node_id: Node identifier
             agent: Agent for this node
+            node_type: Type of node (agent, decision, merge)
         """
         self.node_agents[node_id] = agent
+        self.node_types[node_id] = node_type
         if node_id not in self.graph:
             self.graph[node_id] = []
 
-    def add_edge(self, from_node: str, to_node: str) -> None:
+    def add_edge(
+        self,
+        from_node: str,
+        to_node: str,
+        condition: Optional[Callable[[Message], bool]] = None,
+    ) -> None:
         """Add an edge between nodes.
 
         Args:
             from_node: Source node
             to_node: Target node
+            condition: Optional condition function for edge traversal
         """
         if from_node not in self.graph:
             self.graph[from_node] = []
         self.graph[from_node].append(to_node)
+
+        if condition:
+            self.edge_conditions[(from_node, to_node)] = condition
+
+    def detect_cycles(self) -> List[List[str]]:
+        """Detect cycles in the graph.
+
+        Returns:
+            List of cycles found (each cycle is a list of node IDs)
+        """
+        cycles = []
+        visited = set()
+        rec_stack = set()
+
+        def dfs(node: str, path: List[str]) -> None:
+            visited.add(node)
+            rec_stack.add(node)
+            path.append(node)
+
+            for neighbor in self.graph.get(node, []):
+                if neighbor not in visited:
+                    dfs(neighbor, path.copy())
+                elif neighbor in rec_stack:
+                    # Found a cycle
+                    cycle_start = path.index(neighbor)
+                    cycles.append(path[cycle_start:] + [neighbor])
+
+            rec_stack.remove(node)
+
+        for node in self.graph:
+            if node not in visited:
+                dfs(node, [])
+
+        return cycles
 
     async def orchestrate(
         self,
@@ -1490,127 +1508,599 @@ class GraphOrchestrator(BaseOrchestrator):
             agents: List of agents (used if graph not pre-configured)
             task: Task description
             context: Optional context
-            **kwargs: start_node
+            **kwargs: Additional parameters
+                - start_node: Starting node ID
+                - max_parallel: Maximum parallel executions
+                - node_timeout: Timeout per node
 
         Returns:
             Collaboration result
         """
         start_node = kwargs.get("start_node", "start")
+        max_parallel = kwargs.get("max_parallel", 5)
+        node_timeout = kwargs.get("node_timeout", 30.0)
 
-        # If graph not configured, create simple linear graph
+        # Auto-build graph if not configured
         if not self.graph:
-            for i, agent in enumerate(agents):
-                node_id = f"node_{i}"
-                self.add_node(node_id, agent)
-                if i > 0:
-                    self.add_edge(f"node_{i - 1}", node_id)
+            self._auto_build_graph(agents)
             start_node = "node_0"
 
-        print(f"[Graph] Executing graph with {len(self.node_agents)} nodes")
+        # Detect cycles
+        cycles = self.detect_cycles()
+        if cycles:
+            self.metrics.record_warning(f"Cycles detected: {cycles}")
 
-        messages = []
-        agent_contributions = {agent.name: 0 for agent in agents}
-        visited = set()
+        self.logger.info(f"Starting graph execution with {len(self.node_agents)} nodes")
+
+        messages: List[Message] = []
+        visited: Set[str] = set()
+        execution_order: List[str] = []
+
+        # Initial message
+        current_message = Message(content=task, sender="system", role=MessageRole.SYSTEM)
 
         # Execute graph traversal
-        current_message = Message(content=task, sender="system", role=MessageRole.SYSTEM)
         await self._traverse_graph(
             start_node,
             current_message,
             visited,
+            execution_order,
             messages,
-            agent_contributions,
+            node_timeout,
+            max_parallel,
         )
 
-        final_output = messages[-1].content if messages else "No output"
+        self.metrics.custom_metrics["nodes_visited"] = len(visited)
+        self.metrics.custom_metrics["execution_order"] = execution_order
+        self.metrics.custom_metrics["cycles_detected"] = len(cycles)
 
-        return CollaborationResult(
-            success=True,
-            total_rounds=len(visited),
-            total_messages=len(messages),
-            final_output=final_output,
-            agent_contributions=agent_contributions,
-            metadata={"mode": "graph", "nodes_visited": len(visited)},
-        )
+        return self._create_result(True, messages)
+
+    def _auto_build_graph(self, agents: List[Agent]) -> None:
+        """Auto-build a linear graph from agents."""
+        for i, agent in enumerate(agents):
+            node_id = f"node_{i}"
+            self.add_node(node_id, agent)
+            if i > 0:
+                self.add_edge(f"node_{i - 1}", node_id)
 
     async def _traverse_graph(
         self,
         node_id: str,
         message: Message,
-        visited: set,
+        visited: Set[str],
+        execution_order: List[str],
         messages: List[Message],
-        contributions: Dict[str, int],
+        timeout: float,
+        max_parallel: int,
     ) -> None:
-        """Traverse graph recursively.
+        """Traverse graph with parallel execution support.
 
         Args:
             node_id: Current node
             message: Current message
-            visited: Visited nodes
-            messages: Message list
-            contributions: Contribution tracking
+            visited: Set of visited nodes
+            execution_order: List tracking execution order
+            messages: List of all messages
+            timeout: Timeout per node
+            max_parallel: Maximum parallel executions
         """
         if node_id in visited or node_id not in self.node_agents:
             return
 
         visited.add(node_id)
+        execution_order.append(node_id)
         agent = self.node_agents[node_id]
+        node_type = self.node_types.get(node_id, "agent")
 
-        print(f"[Graph] Visiting node: {node_id} (agent: {agent.name})")
+        self.logger.info(f"Visiting node: {node_id} (type: {node_type}, agent: {agent.name})")
+        self.metrics.total_rounds += 1
 
-        response = await agent.process_message(message)
+        # Process based on node type
+        if node_type == "decision":
+            response = await self._process_decision_node(agent, message, timeout)
+        elif node_type == "merge":
+            response = await self._process_merge_node(agent, message, messages, timeout)
+        else:  # agent node
+            response = await self._safe_process_message(agent, message, timeout)
+
         if response:
             messages.append(response)
-            contributions[agent.name] = contributions.get(agent.name, 0) + 1
 
-            # Visit connected nodes
-            for next_node in self.graph.get(node_id, []):
-                await self._traverse_graph(
-                    next_node,
-                    response,
-                    visited,
-                    messages,
-                    contributions,
+            # Get next nodes
+            next_nodes = self._get_next_nodes(node_id, response)
+
+            # Execute next nodes in parallel if possible
+            if len(next_nodes) <= max_parallel:
+                await asyncio.gather(
+                    *[
+                        self._traverse_graph(
+                            next_node,
+                            response,
+                            visited,
+                            execution_order,
+                            messages,
+                            timeout,
+                            max_parallel,
+                        )
+                        for next_node in next_nodes
+                    ]
                 )
+            else:
+                # Sequential execution if too many parallel paths
+                for next_node in next_nodes:
+                    await self._traverse_graph(
+                        next_node,
+                        response,
+                        visited,
+                        execution_order,
+                        messages,
+                        timeout,
+                        max_parallel,
+                    )
 
-    def visualize_graph(self) -> str:
-        """Generate Mermaid diagram of the graph.
+    def _get_next_nodes(self, current_node: str, message: Message) -> List[str]:
+        """Get next nodes based on edge conditions.
+
+        Args:
+            current_node: Current node ID
+            message: Current message
 
         Returns:
-            Mermaid diagram string
+            List of next node IDs
         """
+        next_nodes = []
+        for next_node in self.graph.get(current_node, []):
+            condition = self.edge_conditions.get((current_node, next_node))
+            if condition is None or condition(message):
+                next_nodes.append(next_node)
+
+        return next_nodes
+
+    async def _process_decision_node(
+        self, agent: Agent, message: Message, timeout: float
+    ) -> Optional[Message]:
+        """Process a decision node."""
+        decision_msg = Message(
+            content=f"{message.content}\n\nMake a decision: YES or NO",
+            sender="graph",
+            role=MessageRole.SYSTEM,
+        )
+        return await self._safe_process_message(agent, decision_msg, timeout)
+
+    async def _process_merge_node(
+        self,
+        agent: Agent,
+        message: Message,
+        all_messages: List[Message],
+        timeout: float,
+    ) -> Optional[Message]:
+        """Process a merge node that combines multiple inputs."""
+        recent = all_messages[-3:] if len(all_messages) >= 3 else all_messages
+        merge_content = f"Merge these inputs:\n" + "\n".join(
+            f"- {m.sender}: {m.content[:100]}..." for m in recent
+        )
+
+        merge_msg = Message(content=merge_content, sender="graph", role=MessageRole.SYSTEM)
+        return await self._safe_process_message(agent, merge_msg, timeout)
+
+    def visualize_graph(self, format: str = "mermaid") -> str:
+        """Generate visualization of the graph.
+
+        Args:
+            format: Visualization format ('mermaid' or 'dot')
+
+        Returns:
+            Visualization string
+        """
+        if format == "mermaid":
+            return self._generate_mermaid()
+        elif format == "dot":
+            return self._generate_dot()
+        else:
+            raise ValueError(f"Unknown format: {format}")
+
+    def _generate_mermaid(self) -> str:
+        """Generate Mermaid diagram."""
         lines = ["graph TD"]
 
+        # Add nodes
         for node_id, agent in self.node_agents.items():
-            lines.append(f"    {node_id}[{agent.name}]")
+            node_type = self.node_types.get(node_id, "agent")
+            shape = {
+                "agent": f"{node_id}[{agent.name}]",
+                "decision": f"{node_id}{{{agent.name}}}",
+                "merge": f"{node_id}(({agent.name}))",
+            }.get(node_type, f"{node_id}[{agent.name}]")
+            lines.append(f"    {shape}")
 
+        # Add edges
         for from_node, to_nodes in self.graph.items():
             for to_node in to_nodes:
-                lines.append(f"    {from_node} --> {to_node}")
+                has_condition = (from_node, to_node) in self.edge_conditions
+                edge = "-->" if not has_condition else "-.->|condition|"
+                lines.append(f"    {from_node} {edge} {to_node}")
 
         return "\n".join(lines)
 
+    def _generate_dot(self) -> str:
+        """Generate Graphviz DOT format."""
+        lines = ["digraph G {"]
+
+        # Add nodes
+        for node_id, agent in self.node_agents.items():
+            node_type = self.node_types.get(node_id, "agent")
+            shape = {
+                "agent": "box",
+                "decision": "diamond",
+                "merge": "circle",
+            }.get(node_type, "box")
+            lines.append(f'    {node_id} [label="{agent.name}", shape={shape}];')
+
+        # Add edges
+        for from_node, to_nodes in self.graph.items():
+            for to_node in to_nodes:
+                has_condition = (from_node, to_node) in self.edge_conditions
+                style = "dashed" if has_condition else "solid"
+                lines.append(f"    {from_node} -> {to_node} [style={style}];")
+
+        lines.append("}")
+        return "\n".join(lines)
+
+    def get_graph_stats(self) -> Dict[str, Any]:
+        """Get statistics about the graph.
+
+        Returns:
+            Dictionary with graph statistics
+        """
+        return {
+            "total_nodes": len(self.node_agents),
+            "total_edges": sum(len(edges) for edges in self.graph.values()),
+            "node_types": dict(
+                (nt, sum(1 for t in self.node_types.values() if t == nt))
+                for nt in set(self.node_types.values())
+            ),
+            "cycles": len(self.detect_cycles()),
+            "max_depth": self._calculate_max_depth(),
+        }
+
+    def _calculate_max_depth(self) -> int:
+        """Calculate maximum depth of the graph."""
+        if not self.graph:
+            return 0
+
+        def dfs_depth(node: str, visited: Set[str]) -> int:
+            if node in visited:
+                return 0
+            visited.add(node)
+            max_child_depth = 0
+            for child in self.graph.get(node, []):
+                max_child_depth = max(max_child_depth, dfs_depth(child, visited.copy()))
+            return 1 + max_child_depth
+
+        # Find root nodes (nodes with no incoming edges)
+        all_targets = set()
+        for targets in self.graph.values():
+            all_targets.update(targets)
+        roots = [n for n in self.graph if n not in all_targets]
+
+        if not roots:
+            roots = [list(self.graph.keys())[0]]  # Use first node if no clear root
+
+        return max(dfs_depth(root, set()) for root in roots)
+
+
+class HybridOrchestrator(BaseOrchestrator):
+    """Hybrid orchestration combining multiple modes.
+
+    Supports combinations like:
+    - Hierarchical + Swarm: Manager coordinates swarms
+    - Debate + Consensus: Debate followed by consensus building
+    - Sequential + Graph: Sequential phases with graph workflows
+    """
+
+    def __init__(
+        self,
+        primary_mode: OrchestrationMode,
+        secondary_mode: OrchestrationMode,
+    ) -> None:
+        """Initialize hybrid orchestrator.
+
+        Args:
+            primary_mode: Primary orchestration mode
+            secondary_mode: Secondary orchestration mode
+        """
+        super().__init__()
+        self.primary_mode = primary_mode
+        self.secondary_mode = secondary_mode
+        self.primary_orchestrator = create_orchestrator(primary_mode)
+        self.secondary_orchestrator = create_orchestrator(secondary_mode)
+
+    def get_mode(self) -> OrchestrationMode:
+        return OrchestrationMode.HYBRID
+
+    async def orchestrate(
+        self,
+        agents: List[Agent],
+        task: str,
+        context: Optional[Dict[str, Any]] = None,
+        **kwargs: Any,
+    ) -> CollaborationResult:
+        """Execute hybrid orchestration.
+
+        Args:
+            agents: List of agents
+            task: Task description
+            context: Optional context
+            **kwargs: Additional parameters
+                - split_ratio: Agent split ratio for two modes (default: 0.5)
+                - phase_1_kwargs: Kwargs for primary mode
+                - phase_2_kwargs: Kwargs for secondary mode
+                - integration_strategy: 'sequential', 'parallel', 'nested'
+
+        Returns:
+            Collaboration result
+        """
+        if not self._validate_agents(agents, min_agents=2):
+            return self._create_result(False, [], "Hybrid requires at least 2 agents")
+
+        split_ratio = kwargs.get("split_ratio", 0.5)
+        phase_1_kwargs = kwargs.get("phase_1_kwargs", {})
+        phase_2_kwargs = kwargs.get("phase_2_kwargs", {})
+        integration_strategy = kwargs.get("integration_strategy", "sequential")
+
+        self.logger.info(
+            f"Starting hybrid orchestration: {self.primary_mode.value} + {self.secondary_mode.value}"
+        )
+
+        if integration_strategy == "sequential":
+            result = await self._sequential_integration(
+                agents, task, context, split_ratio, phase_1_kwargs, phase_2_kwargs
+            )
+        elif integration_strategy == "parallel":
+            result = await self._parallel_integration(
+                agents, task, context, split_ratio, phase_1_kwargs, phase_2_kwargs
+            )
+        elif integration_strategy == "nested":
+            result = await self._nested_integration(
+                agents, task, context, phase_1_kwargs, phase_2_kwargs
+            )
+        else:
+            return self._create_result(
+                False, [], f"Unknown integration strategy: {integration_strategy}"
+            )
+
+        # Add hybrid metadata
+        if result.metadata:
+            result.metadata["hybrid_modes"] = [
+                self.primary_mode.value,
+                self.secondary_mode.value,
+            ]
+            result.metadata["integration_strategy"] = integration_strategy
+
+        return result
+
+    async def _sequential_integration(
+        self,
+        agents: List[Agent],
+        task: str,
+        context: Optional[Dict[str, Any]],
+        split_ratio: float,
+        phase_1_kwargs: Dict[str, Any],
+        phase_2_kwargs: Dict[str, Any],
+    ) -> CollaborationResult:
+        """Sequential integration: Phase 1 then Phase 2."""
+        split_point = int(len(agents) * split_ratio)
+        phase_1_agents = agents[:split_point] if split_point > 0 else agents[:1]
+        phase_2_agents = agents[split_point:] if split_point < len(agents) else agents[1:]
+
+        self.logger.info(f"Phase 1: {self.primary_mode.value} with {len(phase_1_agents)} agents")
+        result_1 = await self.primary_orchestrator.orchestrate(
+            phase_1_agents, task, context, **phase_1_kwargs
+        )
+
+        # Use Phase 1 output as input for Phase 2
+        phase_2_task = result_1.final_output or task
+        self.logger.info(f"Phase 2: {self.secondary_mode.value} with {len(phase_2_agents)} agents")
+        result_2 = await self.secondary_orchestrator.orchestrate(
+            phase_2_agents, phase_2_task, context, **phase_2_kwargs
+        )
+
+        # Merge results
+        return self._merge_results(result_1, result_2)
+
+    async def _parallel_integration(
+        self,
+        agents: List[Agent],
+        task: str,
+        context: Optional[Dict[str, Any]],
+        split_ratio: float,
+        phase_1_kwargs: Dict[str, Any],
+        phase_2_kwargs: Dict[str, Any],
+    ) -> CollaborationResult:
+        """Parallel integration: Both modes run simultaneously."""
+        split_point = int(len(agents) * split_ratio)
+        phase_1_agents = agents[:split_point] if split_point > 0 else agents[:1]
+        phase_2_agents = agents[split_point:] if split_point < len(agents) else agents[1:]
+
+        self.logger.info("Running both modes in parallel")
+
+        results = await asyncio.gather(
+            self.primary_orchestrator.orchestrate(phase_1_agents, task, context, **phase_1_kwargs),
+            self.secondary_orchestrator.orchestrate(
+                phase_2_agents, task, context, **phase_2_kwargs
+            ),
+        )
+
+        return self._merge_results(results[0], results[1])
+
+    async def _nested_integration(
+        self,
+        agents: List[Agent],
+        task: str,
+        context: Optional[Dict[str, Any]],
+        phase_1_kwargs: Dict[str, Any],
+        phase_2_kwargs: Dict[str, Any],
+    ) -> CollaborationResult:
+        """Nested integration: Secondary mode runs within primary mode."""
+        self.logger.info(f"Nested: {self.secondary_mode.value} within {self.primary_mode.value}")
+
+        # For nested, we run primary with all agents
+        # The primary orchestrator can internally use secondary for subtasks
+        # This is a simplified version - full implementation would require
+        # orchestrators to support nested execution
+
+        result = await self.primary_orchestrator.orchestrate(
+            agents, task, context, **phase_1_kwargs
+        )
+
+        return result
+
+    def _merge_results(
+        self, result_1: CollaborationResult, result_2: CollaborationResult
+    ) -> CollaborationResult:
+        """Merge two collaboration results."""
+        # Combine agent contributions
+        combined_contributions = dict(result_1.agent_contributions)
+        for agent, count in result_2.agent_contributions.items():
+            combined_contributions[agent] = combined_contributions.get(agent, 0) + count
+
+        # Combine metadata
+        combined_metadata = {
+            "phase_1": result_1.metadata,
+            "phase_2": result_2.metadata,
+        }
+
+        return CollaborationResult(
+            success=result_1.success and result_2.success,
+            total_rounds=result_1.total_rounds + result_2.total_rounds,
+            total_messages=result_1.total_messages + result_2.total_messages,
+            final_output=result_2.final_output or result_1.final_output,
+            agent_contributions=combined_contributions,
+            error=result_2.error or result_1.error,
+            metadata=combined_metadata,
+        )
+
 
 # Factory function
-def create_orchestrator(mode: OrchestrationMode) -> BaseOrchestrator:
+def create_orchestrator(
+    mode: OrchestrationMode,
+    **kwargs: Any,
+) -> BaseOrchestrator:
     """Create an orchestrator by mode.
+
+    Args:
+        mode: Orchestration mode
+        **kwargs: Mode-specific initialization parameters
+            For HYBRID mode:
+                - secondary_mode: Required secondary mode
+
+    Returns:
+        Orchestrator instance
+
+    Raises:
+        ValueError: If mode is unknown or required parameters missing
+    """
+    if mode == OrchestrationMode.SEQUENTIAL:
+        return SequentialOrchestrator()
+    elif mode == OrchestrationMode.HIERARCHICAL:
+        return HierarchicalOrchestrator()
+    elif mode == OrchestrationMode.DEBATE:
+        return DebateOrchestrator()
+    elif mode == OrchestrationMode.CONSENSUS:
+        return ConsensusOrchestrator()
+    elif mode == OrchestrationMode.SWARM:
+        return SwarmOrchestrator()
+    elif mode == OrchestrationMode.GRAPH:
+        return GraphOrchestrator()
+    elif mode == OrchestrationMode.HYBRID:
+        secondary_mode = kwargs.get("secondary_mode")
+        if not secondary_mode:
+            raise ValueError("HYBRID mode requires 'secondary_mode' parameter")
+        return HybridOrchestrator(mode, secondary_mode)
+    else:
+        raise ValueError(f"Unknown orchestration mode: {mode}")
+
+
+# Utility functions
+def get_available_modes() -> List[str]:
+    """Get list of available orchestration modes.
+
+    Returns:
+        List of mode names
+    """
+    return [mode.value for mode in OrchestrationMode]
+
+
+def get_mode_description(mode: OrchestrationMode) -> str:
+    """Get description of an orchestration mode.
 
     Args:
         mode: Orchestration mode
 
     Returns:
-        Orchestrator instance
+        Mode description
     """
-    orchestrators = {
-        OrchestrationMode.SEQUENTIAL: SequentialOrchestrator,
-        OrchestrationMode.HIERARCHICAL: HierarchicalOrchestrator,
-        OrchestrationMode.DEBATE: DebateOrchestrator,
-        OrchestrationMode.SWARM: SwarmOrchestrator,
-        OrchestrationMode.GRAPH: GraphOrchestrator,
+    descriptions = {
+        OrchestrationMode.SEQUENTIAL: "Chain of responsibility with context passing",
+        OrchestrationMode.HIERARCHICAL: "3-tier architecture: manager, workers, reviewer",
+        OrchestrationMode.DEBATE: "Multi-round deliberation with voting",
+        OrchestrationMode.CONSENSUS: "Agreement-based decision making",
+        OrchestrationMode.SWARM: "Dynamic scaling with load balancing",
+        OrchestrationMode.GRAPH: "DAG-based workflows with parallel execution",
+        OrchestrationMode.HYBRID: "Combination of multiple modes",
     }
+    return descriptions.get(mode, "Unknown mode")
 
-    orchestrator_class = orchestrators.get(mode)
-    if not orchestrator_class:
-        raise ValueError(f"Unknown orchestration mode: {mode}")
 
-    return orchestrator_class()
+def recommend_mode(
+    num_agents: int,
+    task_complexity: str = "medium",
+    requires_consensus: bool = False,
+    has_hierarchy: bool = False,
+) -> OrchestrationMode:
+    """Recommend an orchestration mode based on requirements.
+
+    Args:
+        num_agents: Number of agents
+        task_complexity: Task complexity ('low', 'medium', 'high')
+        requires_consensus: Whether consensus is required
+        has_hierarchy: Whether hierarchical structure exists
+
+    Returns:
+        Recommended orchestration mode
+    """
+    if requires_consensus:
+        return OrchestrationMode.CONSENSUS
+
+    if has_hierarchy and num_agents >= 3:
+        return OrchestrationMode.HIERARCHICAL
+
+    if task_complexity == "high" and num_agents >= 5:
+        return OrchestrationMode.SWARM
+
+    if num_agents >= 4:
+        return OrchestrationMode.DEBATE
+
+    if num_agents >= 2:
+        return OrchestrationMode.SEQUENTIAL
+
+    return OrchestrationMode.SEQUENTIAL
+
+
+__all__ = [
+    "OrchestrationMode",
+    "OrchestrationMetrics",
+    "BaseOrchestrator",
+    "SequentialOrchestrator",
+    "HierarchicalOrchestrator",
+    "DebateOrchestrator",
+    "ConsensusOrchestrator",
+    "SwarmOrchestrator",
+    "GraphOrchestrator",
+    "HybridOrchestrator",
+    "create_orchestrator",
+    "get_available_modes",
+    "get_mode_description",
+    "recommend_mode",
+]

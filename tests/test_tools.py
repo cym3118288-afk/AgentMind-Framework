@@ -577,10 +577,7 @@ class TestFileIOAdvanced:
                     assert str(resolved).startswith(str(Path(tmpdir).resolve()))
                 else:
                     # Should fail with either "denied" or "not found" error
-                    assert (
-                        "denied" in result.error.lower()
-                        or "not found" in result.error.lower()
-                    )
+                    assert "denied" in result.error.lower() or "not found" in result.error.lower()
 
 
 class TestToolRegistryAdvanced:

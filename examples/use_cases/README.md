@@ -91,6 +91,62 @@ Comprehensive automated code review system:
 
 ---
 
+### 4. E-commerce Recommendations (`ecommerce_recommendations.py`)
+
+Personalized product recommendation system:
+
+**Features:**
+- User behavior analysis
+- Product matching and ranking
+- Inventory-aware recommendations
+- Context-based personalization
+- Multi-criteria filtering
+
+**Agents:**
+- User Analyst: Analyzes purchase and browsing history
+- Product Expert: Searches and matches products
+- Inventory Manager: Verifies stock availability
+- Recommender: Synthesizes final recommendations
+
+**Run:** `python ecommerce_recommendations.py`
+
+**Use Cases:**
+- Product recommendations
+- Personalized shopping
+- Cross-selling and upselling
+- Gift recommendations
+- Inventory optimization
+
+---
+
+### 5. Financial Analysis (`financial_analysis.py`)
+
+Comprehensive financial analysis and investment advisory system:
+
+**Features:**
+- Financial data analysis
+- Risk assessment
+- Market trend analysis
+- Portfolio analysis
+- Investment recommendations
+
+**Agents:**
+- Data Analyst: Analyzes financial metrics
+- Market Analyst: Monitors economic indicators
+- Risk Analyst: Evaluates investment risks
+- Investment Advisor: Provides recommendations
+
+**Run:** `python financial_analysis.py`
+
+**Use Cases:**
+- Investment analysis
+- Portfolio management
+- Risk assessment
+- Financial reporting
+- Market research
+
+---
+
 ## Quick Start
 
 1. Install AgentMind:

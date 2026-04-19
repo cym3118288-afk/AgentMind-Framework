@@ -181,12 +181,13 @@ See the [examples/](examples/) directory for more.
 ## Documentation
 
 - [Quick Start Guide](QUICKSTART.md) - Get up and running in 5 minutes
+- [FAQ](FAQ.md) - Frequently asked questions
+- [Tutorials](tutorials/) - Interactive Jupyter notebooks
 - [Architecture Overview](ARCHITECTURE.md) - Understand the design
 - [Performance Guide](PERFORMANCE.md) - Optimization tips and benchmarks
 - [API Documentation](API.md) - REST API reference
 - [Docker Guide](DOCKER.md) - Container deployment
 - [Contributing Guide](CONTRIBUTING.md) - Help improve AgentMind
-- [Roadmap](ROADMAP.md) - What's coming next
 
 ## Installation
 

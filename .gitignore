@@ -62,3 +62,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# AgentMind sessions
+.agentmind_sessions/

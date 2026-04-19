@@ -1,0 +1,25 @@
+# Core dependencies (minimal)
+pydantic>=2.0.0,<3.0.0
+typing-extensions>=4.5.0; python_version < "3.11"
+
+# LLM providers
+httpx>=0.24.0  # For Ollama provider
+litellm>=1.0.0  # For LiteLLM provider (optional)
+
+# Development and testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+
+# Code quality
+black>=23.0.0
+ruff>=0.1.0
+isort>=5.12.0
+mypy>=1.5.0
+pre-commit>=3.3.0
+
+# Optional: Web UI (for chat_server.py)
+flask>=3.0.0
+flask-socketio>=5.3.5
+python-socketio>=5.10.0
+eventlet>=0.33.3

@@ -129,6 +129,3 @@ python tests/test_basic.py
 
 MIT License
 
-## Author
-
-Created by Terry Carson

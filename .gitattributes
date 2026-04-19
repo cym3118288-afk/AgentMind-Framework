@@ -1,0 +1,17 @@
+# Ensure Python files always use LF line endings
+*.py text eol=lf
+*.pyi text eol=lf
+
+# YAML files
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Markdown and text files
+*.md text eol=lf
+*.txt text eol=lf
+
+# Configuration files
+*.ini text eol=lf
+*.cfg text eol=lf
+*.toml text eol=lf
+*.json text eol=lf

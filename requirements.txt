@@ -29,3 +29,15 @@ fastapi>=0.104.0
 uvicorn[standard]>=0.24.0
 click>=8.1.0
 rich>=13.0.0
+
+# Multi-modal support (optional)
+Pillow>=10.0.0
+SpeechRecognition>=3.10.0
+pydub>=0.25.0
+gTTS>=2.3.0
+PyPDF2>=3.0.0
+python-docx>=1.0.0
+
+# Plugin integrations (optional)
+slack-sdk>=3.23.0
+discord.py>=2.3.0

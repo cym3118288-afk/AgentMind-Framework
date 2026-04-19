@@ -49,6 +49,16 @@ class MemoryBackend(ABC):
         """Get total number of entries."""
         pass
 
+    async def add_batch(self, entries: List[MemoryEntry]) -> None:
+        """Add multiple memory entries at once (optional optimization).
+
+        Args:
+            entries: List of memory entries to add
+        """
+        # Default implementation: add one by one
+        for entry in entries:
+            await self.add(entry)
+
 
 class InMemoryBackend(MemoryBackend):
     """In-memory storage backend (default, fast but volatile)."""
@@ -82,6 +92,14 @@ class InMemoryBackend(MemoryBackend):
     async def count(self) -> int:
         """Get total number of entries."""
         return len(self._entries)
+
+    async def add_batch(self, entries: List[MemoryEntry]) -> None:
+        """Add multiple memory entries at once.
+
+        Args:
+            entries: List of memory entries to add
+        """
+        self._entries.extend(entries)
 
 
 class JsonFileBackend(MemoryBackend):
@@ -157,22 +175,33 @@ class JsonFileBackend(MemoryBackend):
         """Get total number of entries."""
         return len(self._entries)
 
+    async def add_batch(self, entries: List[MemoryEntry]) -> None:
+        """Add multiple memory entries at once.
+
+        Args:
+            entries: List of memory entries to add
+        """
+        self._entries.extend(entries)
+        self._save()
+
 
 class SQLiteBackend(MemoryBackend):
     """SQLite database storage backend (persistent, efficient for large datasets)."""
 
-    def __init__(self, db_path: str):
+    def __init__(self, db_path: str, batch_size: int = 100):
         """Initialize with a database path.
 
         Args:
             db_path: Path to the SQLite database file
+            batch_size: Number of entries to batch for bulk operations
         """
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        self.batch_size = batch_size
         self._init_db()
 
     def _init_db(self) -> None:
-        """Initialize database schema."""
+        """Initialize database schema with optimized indexes."""
         conn = sqlite3.connect(str(self.db_path))
         cursor = conn.cursor()
 
@@ -190,6 +219,7 @@ class SQLiteBackend(MemoryBackend):
             )
         ''')
 
+        # Optimized indexes for common queries
         cursor.execute('''
             CREATE INDEX IF NOT EXISTS idx_importance ON memory_entries(importance DESC)
         ''')
@@ -197,6 +227,22 @@ class SQLiteBackend(MemoryBackend):
         cursor.execute('''
             CREATE INDEX IF NOT EXISTS idx_timestamp ON memory_entries(timestamp DESC)
         ''')
+
+        cursor.execute('''
+            CREATE INDEX IF NOT EXISTS idx_id_desc ON memory_entries(id DESC)
+        ''')
+
+        cursor.execute('''
+            CREATE INDEX IF NOT EXISTS idx_sender ON memory_entries(sender)
+        ''')
+
+        # Enable WAL mode for better concurrent access
+        cursor.execute('PRAGMA journal_mode=WAL')
+
+        # Optimize for performance
+        cursor.execute('PRAGMA synchronous=NORMAL')
+        cursor.execute('PRAGMA cache_size=-64000')  # 64MB cache
+        cursor.execute('PRAGMA temp_store=MEMORY')
 
         conn.commit()
         conn.close()
@@ -312,3 +358,37 @@ class SQLiteBackend(MemoryBackend):
             importance=importance,
             embedding=json.loads(embedding) if embedding else None
         )
+
+    async def add_batch(self, entries: List[MemoryEntry]) -> None:
+        """Add multiple memory entries at once using batch insert.
+
+        Args:
+            entries: List of memory entries to add
+        """
+        if not entries:
+            return
+
+        conn = sqlite3.connect(str(self.db_path))
+        cursor = conn.cursor()
+
+        values = []
+        for entry in entries:
+            msg = entry.message
+            values.append((
+                msg.content,
+                msg.sender,
+                msg.role.value,
+                msg.timestamp.isoformat(),
+                json.dumps(msg.metadata),
+                entry.importance,
+                json.dumps(entry.embedding) if entry.embedding else None
+            ))
+
+        cursor.executemany('''
+            INSERT INTO memory_entries
+            (content, sender, role, timestamp, metadata, importance, embedding)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', values)
+
+        conn.commit()
+        conn.close()

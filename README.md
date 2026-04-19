@@ -317,29 +317,7 @@ agentmind/
 └── docs/               # Documentation
 ```
 
-## Roadmap
 
-- [x] Phase 0: Core architecture (Days 1-10)
-- [x] Phase 1: LLM integration (Days 11-20)
-- [x] Phase 2: Memory & Tools (Days 11-20)
-- [x] Phase 3: Production features (Days 21-40)
-  - [x] Error recovery & retry mechanisms
-  - [x] Observability (tracing, cost tracking)
-  - [x] FastAPI REST API
-  - [x] Docker image with Ollama
-  - [x] CLI tool
-  - [ ] Multi-modal support
-- [x] Phase 4: Advanced features (Days 41-60)
-  - [x] Self-improvement mechanisms (prompt optimization, debate, feedback loops)
-  - [x] Template marketplace (20+ built-in templates)
-  - [x] Evaluation suite (GAIA/AgentBench subsets, benchmarks)
-  - [x] Visualization dashboard (Gradio UI)
-  - [x] Advanced orchestration (consensus, dynamic spawning, parallel decomposition)
-  - [x] Integration examples (LangChain, LlamaIndex, Haystack, HuggingFace, OpenAI Assistants)
-  - [x] Real-world use cases (Customer Support, Content Generation, Code Review)
-  - [ ] Performance optimizations (caching, batching)
-
-See [ROADMAP.md](ROADMAP.md) for details.
 
 ## Contributing
 

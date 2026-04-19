@@ -234,7 +234,9 @@ class AgentMind:
         self.observers: List[Callable] = []
 
         print("[AgentMind] Initialized - Multi-agent collaboration framework started!")
-        print(f"[*] Coordination: {coordination_strategy.value}, Checkpointing: {enable_checkpointing}")
+        print(
+            f"[*] Coordination: {coordination_strategy.value}, Checkpointing: {enable_checkpointing}"
+        )
 
     def add_agent(self, agent: Agent) -> None:
         """Add an agent to the collaboration system.
@@ -485,9 +487,7 @@ class AgentMind:
             # Execute with timeout
             if task.timeout:
                 result = await asyncio.wait_for(
-                    self.start_collaboration(
-                        task.description, max_rounds=10, use_llm=True
-                    ),
+                    self.start_collaboration(task.description, max_rounds=10, use_llm=True),
                     timeout=task.timeout,
                 )
             else:
@@ -916,7 +916,9 @@ class AgentMind:
         return self.shared_context.get(key)
 
     def resolve_conflict(
-        self, conflicting_results: List[Tuple[str, Any]], strategy: Optional[ConflictResolutionStrategy] = None
+        self,
+        conflicting_results: List[Tuple[str, Any]],
+        strategy: Optional[ConflictResolutionStrategy] = None,
     ) -> Any:
         """Resolve conflicts between agent results.
 
@@ -960,7 +962,9 @@ class AgentMind:
 
         return conflicting_results[0][1]
 
-    async def build_consensus(self, question: str, threshold: Optional[float] = None) -> Optional[str]:
+    async def build_consensus(
+        self, question: str, threshold: Optional[float] = None
+    ) -> Optional[str]:
         """Build consensus among agents on a question.
 
         Args:

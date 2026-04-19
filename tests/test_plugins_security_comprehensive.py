@@ -41,17 +41,28 @@ class TestPluginBase:
 
         class TestPlugin(Plugin):
             def __init__(self):
-                metadata = PluginMetadata(name="test", version="1.0.0", description="Test")
-                super().__init__(metadata)
+                super().__init__()
+
+            def get_metadata(self) -> PluginMetadata:
+                return PluginMetadata(
+                    name="test",
+                    version="1.0.0",
+                    description="Test",
+                    author="Test",
+                    plugin_type="tool",
+                )
 
             async def initialize(self):
+                pass
+
+            async def shutdown(self):
                 pass
 
             async def execute(self, *args, **kwargs):
                 return "executed"
 
         plugin = TestPlugin()
-        assert plugin.metadata.name == "test"
+        assert plugin.get_metadata().name == "test"
 
     @pytest.mark.asyncio
     async def test_plugin_lifecycle(self):

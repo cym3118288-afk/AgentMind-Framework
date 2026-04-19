@@ -50,36 +50,19 @@ async def hierarchical_debate() -> None:
         provider = None
 
     # Create AgentMind with hierarchical strategy
-    mind = AgentMind(
-        strategy=CollaborationStrategy.HIERARCHICAL,
-        llm_provider=provider
-    )
+    mind = AgentMind(strategy=CollaborationStrategy.HIERARCHICAL, llm_provider=provider)
 
     # Create supervisor
-    supervisor = Agent(
-        name="CEO",
-        role=AgentRole.SUPERVISOR.value,
-        llm_provider=provider
-    )
+    supervisor = Agent(name="CEO", role=AgentRole.SUPERVISOR.value, llm_provider=provider)
 
     # Create specialized sub-agents
-    analyst = Agent(
-        name="DataAnalyst",
-        role=AgentRole.ANALYST.value,
-        llm_provider=provider
-    )
+    analyst = Agent(name="DataAnalyst", role=AgentRole.ANALYST.value, llm_provider=provider)
 
     researcher = Agent(
-        name="MarketResearcher",
-        role=AgentRole.RESEARCHER.value,
-        llm_provider=provider
+        name="MarketResearcher", role=AgentRole.RESEARCHER.value, llm_provider=provider
     )
 
-    critic = Agent(
-        name="RiskManager",
-        role=AgentRole.CRITIC.value,
-        llm_provider=provider
-    )
+    critic = Agent(name="RiskManager", role=AgentRole.CRITIC.value, llm_provider=provider)
 
     # Add agents (supervisor first)
     mind.add_agent(supervisor)
@@ -101,11 +84,7 @@ async def hierarchical_debate() -> None:
     topic = "Should we launch a new product line in Q3?"
     print(f"\nDecision: {topic}\n")
 
-    result = await mind.start_collaboration(
-        topic,
-        max_rounds=5,
-        use_llm=provider is not None
-    )
+    result = await mind.start_collaboration(topic, max_rounds=5, use_llm=provider is not None)
 
     # Display results
     print("\n" + "=" * 60)
@@ -131,7 +110,7 @@ async def hierarchical_debate() -> None:
     print("=" * 60)
 
     # Cleanup
-    if provider and hasattr(provider, 'close'):
+    if provider and hasattr(provider, "close"):
         await provider.close()
 
 

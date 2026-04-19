@@ -44,6 +44,7 @@ class ExperimentStatus(str, Enum):
 @dataclass
 class ResearchPaper:
     """Represents a scientific paper"""
+
     title: str
     authors: List[str]
     abstract: str
@@ -56,6 +57,7 @@ class ResearchPaper:
 @dataclass
 class Experiment:
     """Represents a scientific experiment"""
+
     experiment_id: str
     title: str
     hypothesis: str
@@ -68,6 +70,7 @@ class Experiment:
 @dataclass
 class ResearchData:
     """Represents experimental data"""
+
     experiment_id: str
     measurements: List[Dict[str, float]]
     observations: List[str]
@@ -77,6 +80,7 @@ class ResearchData:
 @dataclass
 class ResearchReport:
     """Complete research report"""
+
     title: str
     research_question: str
     literature_review: str
@@ -90,6 +94,7 @@ class ResearchReport:
 
 # Custom Tools for Research
 
+
 class LiteratureSearchTool(Tool):
     """Searches scientific literature"""
 
@@ -100,8 +105,8 @@ class LiteratureSearchTool(Tool):
             parameters={
                 "query": {"type": "string", "description": "Search query"},
                 "field": {"type": "string", "description": "Research field"},
-                "year_from": {"type": "integer", "description": "Start year"}
-            }
+                "year_from": {"type": "integer", "description": "Start year"},
+            },
         )
 
         # Simulated paper database
@@ -113,7 +118,7 @@ class LiteratureSearchTool(Tool):
                 year=2023,
                 journal="Nature",
                 citations=150,
-                key_findings=["90% accuracy", "Faster than traditional methods"]
+                key_findings=["90% accuracy", "Faster than traditional methods"],
             ),
             ResearchPaper(
                 title="CRISPR Gene Editing in Cancer Treatment",
@@ -122,7 +127,7 @@ class LiteratureSearchTool(Tool):
                 year=2024,
                 journal="Science",
                 citations=89,
-                key_findings=["Successful in vitro trials", "Minimal off-target effects"]
+                key_findings=["Successful in vitro trials", "Minimal off-target effects"],
             ),
             ResearchPaper(
                 title="Quantum Computing for Drug Discovery",
@@ -131,8 +136,8 @@ class LiteratureSearchTool(Tool):
                 year=2023,
                 journal="Nature Biotechnology",
                 citations=120,
-                key_findings=["10x speedup", "Novel compounds identified"]
-            )
+                key_findings=["10x speedup", "Novel compounds identified"],
+            ),
         ]
 
     async def execute(self, query: str, field: str = "biology", year_from: int = 2020) -> str:
@@ -143,16 +148,20 @@ class LiteratureSearchTool(Tool):
         for paper in self.papers:
             if paper.year >= year_from:
                 # Simple keyword matching
-                if any(term in paper.title.lower() or term in paper.abstract.lower()
-                       for term in query_lower.split()):
-                    results.append({
-                        "title": paper.title,
-                        "authors": paper.authors,
-                        "year": paper.year,
-                        "journal": paper.journal,
-                        "citations": paper.citations,
-                        "key_findings": paper.key_findings
-                    })
+                if any(
+                    term in paper.title.lower() or term in paper.abstract.lower()
+                    for term in query_lower.split()
+                ):
+                    results.append(
+                        {
+                            "title": paper.title,
+                            "authors": paper.authors,
+                            "year": paper.year,
+                            "journal": paper.journal,
+                            "citations": paper.citations,
+                            "key_findings": paper.key_findings,
+                        }
+                    )
 
         return f"Found {len(results)} papers: {results}"
 
@@ -167,8 +176,8 @@ class ExperimentDesignTool(Tool):
             parameters={
                 "hypothesis": {"type": "string", "description": "Research hypothesis"},
                 "field": {"type": "string", "description": "Research field"},
-                "constraints": {"type": "object", "description": "Experimental constraints"}
-            }
+                "constraints": {"type": "object", "description": "Experimental constraints"},
+            },
         )
 
     async def execute(self, hypothesis: str, field: str, constraints: Dict = None) -> str:
@@ -184,7 +193,7 @@ class ExperimentDesignTool(Tool):
             "sample_size": self._calculate_sample_size(constraints),
             "duration": self._estimate_duration(field),
             "equipment": self._list_equipment(field),
-            "safety_considerations": self._safety_checks(field)
+            "safety_considerations": self._safety_checks(field),
         }
 
         return f"Experiment Design: {design}"
@@ -194,7 +203,7 @@ class ExperimentDesignTool(Tool):
             "biology": "Randomized controlled trial with proper controls",
             "chemistry": "Systematic synthesis and characterization",
             "physics": "Controlled measurement with error analysis",
-            "computer_science": "Benchmarking with statistical validation"
+            "computer_science": "Benchmarking with statistical validation",
         }
         return methodologies.get(field, "Standard scientific methodology")
 
@@ -202,7 +211,7 @@ class ExperimentDesignTool(Tool):
         return {
             "independent": ["Variable to be manipulated"],
             "dependent": ["Variable to be measured"],
-            "controlled": ["Variables to keep constant"]
+            "controlled": ["Variables to keep constant"],
         }
 
     def _suggest_controls(self, field: str) -> List[str]:
@@ -217,7 +226,7 @@ class ExperimentDesignTool(Tool):
             "biology": "6-12 months",
             "chemistry": "3-6 months",
             "physics": "3-9 months",
-            "computer_science": "2-4 months"
+            "computer_science": "2-4 months",
         }
         return durations.get(field, "6 months")
 
@@ -225,12 +234,17 @@ class ExperimentDesignTool(Tool):
         equipment = {
             "biology": ["Microscope", "Centrifuge", "PCR machine", "Incubator"],
             "chemistry": ["Spectrometer", "Chromatograph", "pH meter", "Balance"],
-            "physics": ["Oscilloscope", "Laser", "Detector", "Data acquisition system"]
+            "physics": ["Oscilloscope", "Laser", "Detector", "Data acquisition system"],
         }
         return equipment.get(field, ["Standard lab equipment"])
 
     def _safety_checks(self, field: str) -> List[str]:
-        return ["PPE required", "Proper ventilation", "Waste disposal protocol", "Emergency procedures"]
+        return [
+            "PPE required",
+            "Proper ventilation",
+            "Waste disposal protocol",
+            "Emergency procedures",
+        ]
 
 
 class DataAnalysisTool(Tool):
@@ -242,8 +256,8 @@ class DataAnalysisTool(Tool):
             description="Perform statistical analysis on experimental data",
             parameters={
                 "data": {"type": "array", "description": "Experimental measurements"},
-                "analysis_type": {"type": "string", "description": "Type of analysis"}
-            }
+                "analysis_type": {"type": "string", "description": "Type of analysis"},
+            },
         )
 
     async def execute(self, data: List[Dict], analysis_type: str = "descriptive") -> str:
@@ -265,7 +279,7 @@ class DataAnalysisTool(Tool):
         n = len(values)
         mean = sum(values) / n
         variance = sum((x - mean) ** 2 for x in values) / n
-        std_dev = variance ** 0.5
+        std_dev = variance**0.5
         min_val = min(values)
         max_val = max(values)
 
@@ -276,13 +290,13 @@ class DataAnalysisTool(Tool):
             "min": min_val,
             "max": max_val,
             "range": max_val - min_val,
-            "coefficient_of_variation": round((std_dev / mean) * 100, 2) if mean != 0 else 0
+            "coefficient_of_variation": round((std_dev / mean) * 100, 2) if mean != 0 else 0,
         }
 
         # Hypothesis testing (simplified)
         if analysis_type == "hypothesis_test":
             # Simple t-test simulation
-            t_statistic = mean / (std_dev / (n ** 0.5)) if std_dev > 0 else 0
+            t_statistic = mean / (std_dev / (n**0.5)) if std_dev > 0 else 0
             analysis["t_statistic"] = round(t_statistic, 3)
             analysis["significant"] = abs(t_statistic) > 2.0  # Simplified
 
@@ -299,8 +313,8 @@ class HypothesisGeneratorTool(Tool):
             parameters={
                 "research_question": {"type": "string", "description": "Research question"},
                 "background": {"type": "string", "description": "Background information"},
-                "field": {"type": "string", "description": "Research field"}
-            }
+                "field": {"type": "string", "description": "Research field"},
+            },
         )
 
     async def execute(self, research_question: str, background: str, field: str) -> str:
@@ -311,20 +325,21 @@ class HypothesisGeneratorTool(Tool):
             "testable_predictions": [
                 "Prediction 1: Measurable outcome A will differ from baseline",
                 "Prediction 2: Variable X will correlate with Variable Y",
-                "Prediction 3: Treatment group will show significant difference from control"
+                "Prediction 3: Treatment group will show significant difference from control",
             ],
             "assumptions": [
                 "Normal distribution of data",
                 "Independent observations",
-                "Homogeneity of variance"
+                "Homogeneity of variance",
             ],
-            "falsifiability": "Hypothesis can be tested and potentially disproven through experimentation"
+            "falsifiability": "Hypothesis can be tested and potentially disproven through experimentation",
         }
 
         return f"Generated Hypotheses: {hypotheses}"
 
 
 # Agent System Setup
+
 
 async def create_research_system(llm_provider) -> AgentMind:
     """Create the scientific research agent system"""
@@ -343,7 +358,7 @@ async def create_research_system(llm_provider) -> AgentMind:
         5. Summarize the current state of knowledge
 
         Be thorough and critical. Cite sources properly.""",
-        tools=[LiteratureSearchTool()]
+        tools=[LiteratureSearchTool()],
     )
 
     # Hypothesis Generator Agent
@@ -358,7 +373,7 @@ async def create_research_system(llm_provider) -> AgentMind:
         5. Predict expected outcomes
 
         Make hypotheses clear, testable, and scientifically sound.""",
-        tools=[HypothesisGeneratorTool()]
+        tools=[HypothesisGeneratorTool()],
     )
 
     # Experiment Designer Agent
@@ -373,7 +388,7 @@ async def create_research_system(llm_provider) -> AgentMind:
         5. Consider ethical and safety issues
 
         Design experiments that are feasible, ethical, and scientifically valid.""",
-        tools=[ExperimentDesignTool()]
+        tools=[ExperimentDesignTool()],
     )
 
     # Data Analyst Agent
@@ -388,7 +403,7 @@ async def create_research_system(llm_provider) -> AgentMind:
         5. Visualize results effectively
 
         Use rigorous statistical methods. Report confidence intervals and p-values.""",
-        tools=[DataAnalysisTool()]
+        tools=[DataAnalysisTool()],
     )
 
     # Research Writer Agent
@@ -402,7 +417,7 @@ async def create_research_system(llm_provider) -> AgentMind:
         4. Discuss implications and limitations
         5. Suggest future research directions
 
-        Write for a scientific audience. Be precise and objective."""
+        Write for a scientific audience. Be precise and objective.""",
     )
 
     # Add all agents
@@ -416,9 +431,7 @@ async def create_research_system(llm_provider) -> AgentMind:
 
 
 async def conduct_research_project(
-    research_question: str,
-    field: ResearchField,
-    llm_provider
+    research_question: str, field: ResearchField, llm_provider
 ) -> ResearchReport:
     """Conduct a complete research project"""
 
@@ -468,10 +481,7 @@ Provide a complete, publication-ready research plan.
 """
 
     # Collaborate to conduct research
-    result = await mind.collaborate(
-        task=research_request,
-        max_rounds=5
-    )
+    result = await mind.collaborate(task=research_request, max_rounds=5)
 
     print(f"\n{'='*60}")
     print("Research Project Complete")
@@ -488,13 +498,14 @@ Provide a complete, publication-ready research plan.
         discussion="See detailed analysis",
         conclusions=["See detailed analysis"],
         future_work=["See detailed analysis"],
-        references=[]
+        references=[],
     )
 
     return report
 
 
 # Example Research Projects
+
 
 async def example_protein_folding():
     """Example: Protein folding research"""
@@ -510,7 +521,9 @@ async def example_protein_folding():
 async def example_drug_discovery():
     """Example: Drug discovery research"""
 
-    research_question = "What novel compounds show promise for treating antibiotic-resistant bacteria?"
+    research_question = (
+        "What novel compounds show promise for treating antibiotic-resistant bacteria?"
+    )
     field = ResearchField.CHEMISTRY
 
     llm = OllamaProvider(model="llama3.2")

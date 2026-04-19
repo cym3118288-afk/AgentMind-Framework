@@ -53,7 +53,7 @@ async def example_audio_transcription_agent():
     transcriber = Agent(
         name="Transcriber",
         role="transcription",
-        system_prompt="You analyze transcribed audio and provide insights."
+        system_prompt="You analyze transcribed audio and provide insights.",
     )
     mind.add_agent(transcriber)
 
@@ -66,7 +66,7 @@ async def example_audio_transcription_agent():
         # Analyze with agent
         result = await mind.collaborate(
             f"Analyze this meeting transcription and provide key points:\n\n{transcription}",
-            max_rounds=1
+            max_rounds=1,
         )
         print(f"Analysis:\n{result.final_output}\n")
     else:
@@ -117,7 +117,7 @@ async def example_voice_assistant():
     assistant = Agent(
         name="VoiceAssistant",
         role="assistant",
-        system_prompt="You are a helpful voice assistant. Provide concise, clear responses."
+        system_prompt="You are a helpful voice assistant. Provide concise, clear responses.",
     )
     mind.add_agent(assistant)
 
@@ -179,13 +179,13 @@ async def example_meeting_summarizer():
     transcriber = Agent(
         name="Transcriber",
         role="transcription",
-        system_prompt="You format and clean up transcriptions."
+        system_prompt="You format and clean up transcriptions.",
     )
 
     summarizer = Agent(
         name="Summarizer",
         role="summarization",
-        system_prompt="You create concise meeting summaries with action items."
+        system_prompt="You create concise meeting summaries with action items.",
     )
 
     mind.add_agent(transcriber)
@@ -200,7 +200,7 @@ async def example_meeting_summarizer():
         result = await mind.collaborate(
             f"Clean up and summarize this meeting transcription, "
             f"including key points and action items:\n\n{raw_transcription}",
-            max_rounds=2
+            max_rounds=2,
         )
 
         print(f"Meeting Summary:\n{result.final_output}\n")

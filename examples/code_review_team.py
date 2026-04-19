@@ -70,7 +70,7 @@ async def main():
         backstory="Expert code reviewer who identifies bugs, security issues, and style problems.",
         temperature=0.5,
         max_tokens=400,
-        tools=[]
+        tools=[],
     )
 
     tester_config = AgentConfig(
@@ -79,7 +79,7 @@ async def main():
         backstory="QA engineer who writes and executes comprehensive test cases.",
         temperature=0.6,
         max_tokens=500,
-        tools=["code_executor", "calculator"]
+        tools=["code_executor", "calculator"],
     )
 
     fixer_config = AgentConfig(
@@ -88,7 +88,7 @@ async def main():
         backstory="Developer who implements fixes and improvements based on feedback.",
         temperature=0.7,
         max_tokens=500,
-        tools=[]
+        tools=[],
     )
 
     # Create agents
@@ -121,7 +121,7 @@ async def main():
     review_msg = Message(
         content=f"Review this code for bugs and issues:\n{BUGGY_CODE}",
         sender="system",
-        role=MessageRole.SYSTEM
+        role=MessageRole.SYSTEM,
     )
     review_response = await reviewer.process_message(review_msg)
     print(f"{review_response.sender}: {review_response.content}")
@@ -133,7 +133,7 @@ async def main():
     test_msg = Message(
         content=f"Execute this code and report any errors:\n{BUGGY_CODE}",
         sender="system",
-        role=MessageRole.SYSTEM
+        role=MessageRole.SYSTEM,
     )
     test_response = await tester.process_message(test_msg)
     print(f"{test_response.sender}: {test_response.content}")
@@ -155,7 +155,7 @@ async def main():
     fix_msg = Message(
         content=f"Fix the identified issues in the code. Original code:\n{BUGGY_CODE}",
         sender="system",
-        role=MessageRole.SYSTEM
+        role=MessageRole.SYSTEM,
     )
     fix_response = await fixer.process_message(fix_msg)
     print(f"{fix_response.sender}: {fix_response.content}")
@@ -197,7 +197,7 @@ async def main():
     result = await mind.start_collaboration(
         initial_message="Review, test, and fix the calculate_average function that has a division by zero bug.",
         max_rounds=3,
-        use_llm=False
+        use_llm=False,
     )
 
     print()
@@ -235,12 +235,14 @@ async def main():
 
     # Test 2: List operations
     print("[Test 2] List operations:")
-    test2 = await code_executor.execute(code="""
+    test2 = await code_executor.execute(
+        code="""
 numbers = [1, 2, 3, 4, 5]
 squared = [n**2 for n in numbers]
 print(f"Original: {numbers}")
 print(f"Squared: {squared}")
-""")
+"""
+    )
     print(f"Result:\n{test2.output if test2.success else test2.error}")
     print()
 

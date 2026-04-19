@@ -36,9 +36,9 @@ def state_hook(old_state, new_state, metadata):
 
 async def demo_state_management():
     """Demonstrate advanced state management."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("DEMO 1: Advanced State Management")
-    print("="*60)
+    print("=" * 60)
 
     agent = Agent(
         name="state_agent",
@@ -67,9 +67,9 @@ async def demo_state_management():
 
 async def demo_multimodal():
     """Demonstrate multi-modal support."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("DEMO 2: Multi-Modal Support")
-    print("="*60)
+    print("=" * 60)
 
     agent = Agent(name="multimodal_agent", role="analyst")
 
@@ -100,9 +100,9 @@ async def demo_multimodal():
 
 async def demo_human_in_loop():
     """Demonstrate human-in-the-loop workflows."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("DEMO 3: Human-in-the-Loop")
-    print("="*60)
+    print("=" * 60)
 
     agent = Agent(
         name="hitl_agent",
@@ -121,20 +121,22 @@ async def demo_human_in_loop():
     print(f"\nApproval result: {approved}")
 
     # Collect feedback
-    await agent.collect_feedback({
-        "rating": 5,
-        "comments": "Excellent work!",
-        "helpful": True,
-    })
+    await agent.collect_feedback(
+        {
+            "rating": 5,
+            "comments": "Excellent work!",
+            "helpful": True,
+        }
+    )
 
     print(f"\nFeedback collected: {len(agent.feedback_history)} entries")
 
 
 async def demo_sub_agents():
     """Demonstrate sub-agent management."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("DEMO 4: Sub-Agent Management")
-    print("="*60)
+    print("=" * 60)
 
     # Create parent agent
     parent = Agent(name="supervisor", role="supervisor")
@@ -182,9 +184,9 @@ async def demo_sub_agents():
 
 async def demo_learning():
     """Demonstrate learning and adaptation."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("DEMO 5: Learning & Adaptation")
-    print("="*60)
+    print("=" * 60)
 
     agent = Agent(
         name="learning_agent",
@@ -233,9 +235,9 @@ async def demo_learning():
 
 async def demo_persistence():
     """Demonstrate state persistence and recovery."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("DEMO 6: State Persistence & Recovery")
-    print("="*60)
+    print("=" * 60)
 
     # Create agent and process some messages
     agent = Agent(name="persistent_agent", role="analyst")
@@ -275,9 +277,9 @@ async def demo_persistence():
 
 async def main():
     """Run all demos."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("ADVANCED AGENT FEATURES DEMONSTRATION")
-    print("="*60)
+    print("=" * 60)
 
     await demo_state_management()
     await demo_multimodal()
@@ -286,9 +288,9 @@ async def main():
     await demo_learning()
     await demo_persistence()
 
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("ALL DEMOS COMPLETED")
-    print("="*60)
+    print("=" * 60)
 
 
 if __name__ == "__main__":

@@ -45,6 +45,7 @@ class ContentStatus(str, Enum):
 @dataclass
 class ContentBrief:
     """Content creation brief"""
+
     topic: str
     content_type: ContentType
     target_audience: str
@@ -57,6 +58,7 @@ class ContentBrief:
 @dataclass
 class ContentPiece:
     """Generated content piece"""
+
     brief: ContentBrief
     title: str
     outline: List[str]
@@ -81,9 +83,7 @@ class ResearchTool(Tool):
         super().__init__(
             name="research",
             description="Research topics and gather factual information",
-            parameters={
-                "topic": {"type": "string", "description": "Topic to research"}
-            }
+            parameters={"topic": {"type": "string", "description": "Topic to research"}},
         )
 
     async def execute(self, topic: str) -> str:
@@ -110,8 +110,8 @@ class SEOAnalysisTool(Tool):
             description="Analyze content for SEO optimization",
             parameters={
                 "content": {"type": "string", "description": "Content to analyze"},
-                "keywords": {"type": "string", "description": "Target keywords (comma-separated)"}
-            }
+                "keywords": {"type": "string", "description": "Target keywords (comma-separated)"},
+            },
         )
 
     async def execute(self, content: str, keywords: str) -> str:
@@ -154,9 +154,7 @@ class ReadabilityTool(Tool):
         super().__init__(
             name="readability_check",
             description="Check content readability and clarity",
-            parameters={
-                "content": {"type": "string", "description": "Content to analyze"}
-            }
+            parameters={"content": {"type": "string", "description": "Content to analyze"}},
         )
 
     async def execute(self, content: str) -> str:
@@ -209,7 +207,7 @@ async def create_content_pipeline() -> AgentMind:
         4. Provide source material for writers
 
         Focus on accuracy and relevance.""",
-        tools=[research_tool]
+        tools=[research_tool],
     )
 
     # 2. Outline Creator
@@ -222,7 +220,7 @@ async def create_content_pipeline() -> AgentMind:
         3. Ensure comprehensive coverage
         4. Plan engaging flow
 
-        Create outlines that guide writers to produce excellent content."""
+        Create outlines that guide writers to produce excellent content.""",
     )
 
     # 3. Content Writer
@@ -236,7 +234,7 @@ async def create_content_pipeline() -> AgentMind:
         4. Include target keywords naturally
         5. Write for the target audience
 
-        Create content that informs, engages, and converts."""
+        Create content that informs, engages, and converts.""",
     )
 
     # 4. Editor
@@ -251,7 +249,7 @@ async def create_content_pipeline() -> AgentMind:
         5. Refine messaging
 
         Polish content to professional standards.""",
-        tools=[readability_tool]
+        tools=[readability_tool],
     )
 
     # 5. SEO Specialist
@@ -266,7 +264,7 @@ async def create_content_pipeline() -> AgentMind:
         5. Provide SEO recommendations
 
         Make content rank well while maintaining quality.""",
-        tools=[seo_tool]
+        tools=[seo_tool],
     )
 
     mind.add_agent(researcher)
@@ -328,7 +326,7 @@ async def generate_content(mind: AgentMind, brief: ContentBrief) -> ContentPiece
         content=result,
         seo_score=85,
         readability_score=90,
-        status=ContentStatus.APPROVED
+        status=ContentStatus.APPROVED,
     )
 
     return content_piece
@@ -346,7 +344,7 @@ async def example_blog_post():
         target_audience="Beginner programmers",
         tone="Educational and friendly",
         keywords=["python", "data science", "beginners", "tutorial"],
-        word_count=800
+        word_count=800,
     )
 
     await generate_content(mind, brief)
@@ -365,7 +363,7 @@ async def example_product_description():
         tone="Persuasive and exciting",
         keywords=["fitness tracker", "AI coaching", "health monitoring"],
         word_count=300,
-        additional_requirements="Highlight unique AI features and benefits"
+        additional_requirements="Highlight unique AI features and benefits",
     )
 
     await generate_content(mind, brief)
@@ -384,7 +382,7 @@ async def example_social_media():
         tone="Exciting and concise",
         keywords=["AI marketing", "automation", "productivity"],
         word_count=150,
-        additional_requirements="Include call-to-action"
+        additional_requirements="Include call-to-action",
     )
 
     await generate_content(mind, brief)
@@ -403,7 +401,7 @@ async def example_email_campaign():
         tone="Friendly and persuasive",
         keywords=["exclusive offer", "premium", "limited time"],
         word_count=400,
-        additional_requirements="Include urgency and clear CTA"
+        additional_requirements="Include urgency and clear CTA",
     )
 
     await generate_content(mind, brief)

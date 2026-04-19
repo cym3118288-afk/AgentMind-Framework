@@ -68,7 +68,7 @@ async def demo_consensus():
     print(f"Decision: {result['result'].get('decision')}")
 
     print("\nVotes:")
-    for agent_name, vote_data in result['votes'].items():
+    for agent_name, vote_data in result["votes"].items():
         print(f"  {agent_name}: {vote_data['vote']} (confidence: {vote_data['confidence']})")
         print(f"    Reasoning: {vote_data['reasoning'][:80]}...")
 
@@ -96,10 +96,7 @@ async def demo_parallel_decomposition():
         print(f"   Dependencies: {subtask['dependencies'] or 'None'}")
 
     # Execute in parallel
-    agents = [
-        Agent(name=f"worker_{i}", role="worker", llm_provider=llm)
-        for i in range(3)
-    ]
+    agents = [Agent(name=f"worker_{i}", role="worker", llm_provider=llm) for i in range(3)]
 
     print("\nExecuting subtasks in parallel...")
     results = await decomposer.execute_parallel(subtasks, agents, timeout=30.0)
@@ -173,7 +170,7 @@ async def demo_skill_matching():
         print(f"\n{summary['agent']}:")
         print(f"  Primary: {summary['specialization']} ({summary['primary_proficiency']:.2f})")
         print(f"  Skills:")
-        for skill in summary['skills']:
+        for skill in summary["skills"]:
             print(f"    - {skill['name']}: {skill['proficiency']:.2f}")
 
     # Match agents to tasks
@@ -198,7 +195,7 @@ async def demo_skill_matching():
     coverage = matcher.get_skill_coverage(agents, required_skills)
 
     for skill, info in coverage.items():
-        status = "✓" if info['covered'] else "✗"
+        status = "✓" if info["covered"] else "✗"
         print(f"  {status} {skill}: {info['max_proficiency']:.2f}")
 
 

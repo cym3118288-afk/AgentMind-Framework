@@ -24,21 +24,27 @@ async def main():
     mind = AgentMind(llm_provider=llm)
 
     # Add agents
-    mind.add_agent(Agent(
-        name="analyst",
-        role="analyst",
-        llm_provider=llm,
-    ))
-    mind.add_agent(Agent(
-        name="creative",
-        role="creative",
-        llm_provider=llm,
-    ))
-    mind.add_agent(Agent(
-        name="synthesizer",
-        role="synthesizer",
-        llm_provider=llm,
-    ))
+    mind.add_agent(
+        Agent(
+            name="analyst",
+            role="analyst",
+            llm_provider=llm,
+        )
+    )
+    mind.add_agent(
+        Agent(
+            name="creative",
+            role="creative",
+            llm_provider=llm,
+        )
+    )
+    mind.add_agent(
+        Agent(
+            name="synthesizer",
+            role="synthesizer",
+            llm_provider=llm,
+        )
+    )
 
     # Create evaluator
     evaluator = Evaluator()

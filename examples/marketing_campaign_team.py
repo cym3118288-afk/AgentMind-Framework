@@ -61,7 +61,7 @@ async def run_marketing_campaign(product: str, target_audience: str, budget: str
 
         You develop comprehensive marketing strategies that drive customer acquisition and retention.
         Focus on data-driven decisions and measurable outcomes.""",
-        llm_provider=llm
+        llm_provider=llm,
     )
 
     creative_director = Agent(
@@ -78,7 +78,7 @@ async def run_marketing_campaign(product: str, target_audience: str, budget: str
 
         You bring bold, original ideas that capture attention and resonate with audiences.
         Focus on emotional connection and brand differentiation.""",
-        llm_provider=llm
+        llm_provider=llm,
     )
 
     content_strategist = Agent(
@@ -95,7 +95,7 @@ async def run_marketing_campaign(product: str, target_audience: str, budget: str
 
         You create content strategies that attract, engage, and convert audiences.
         Focus on search visibility and user engagement.""",
-        llm_provider=llm
+        llm_provider=llm,
     )
 
     social_media_manager = Agent(
@@ -112,7 +112,7 @@ async def run_marketing_campaign(product: str, target_audience: str, budget: str
 
         You build authentic connections and drive conversations around brands.
         Focus on engagement, reach, and community growth.""",
-        llm_provider=llm
+        llm_provider=llm,
     )
 
     # Add agents to team
@@ -146,22 +146,22 @@ async def run_marketing_campaign(product: str, target_audience: str, budget: str
     """
 
     # Run collaboration
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("Starting campaign planning collaboration...")
-    print("="*80 + "\n")
+    print("=" * 80 + "\n")
 
     result = await mind.collaborate(task=task, max_rounds=5)
 
     # Display results
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("CAMPAIGN PLAN")
-    print("="*80 + "\n")
+    print("=" * 80 + "\n")
     print(result)
 
     # Display statistics
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("COLLABORATION STATISTICS")
-    print("="*80 + "\n")
+    print("=" * 80 + "\n")
     print(f"Total Messages: {len(mind.conversation_history)}")
     print(f"Rounds Completed: {len(mind.conversation_history) // 4}")
     print(f"Agents Participated: 4")
@@ -173,25 +173,25 @@ async def main():
     """Main entry point."""
 
     # Example 1: SaaS Product Launch
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("EXAMPLE 1: SaaS Product Launch")
-    print("="*80)
+    print("=" * 80)
 
     await run_marketing_campaign(
         product="AI-powered project management tool for remote teams",
         target_audience="Tech-savvy project managers and team leads at SMBs (25-500 employees)",
-        budget="$50,000 for 3-month campaign"
+        budget="$50,000 for 3-month campaign",
     )
 
     # Example 2: E-commerce Product
-    print("\n\n" + "="*80)
+    print("\n\n" + "=" * 80)
     print("EXAMPLE 2: E-commerce Product Launch")
-    print("="*80)
+    print("=" * 80)
 
     await run_marketing_campaign(
         product="Sustainable, eco-friendly yoga mats made from recycled materials",
         target_audience="Health-conscious millennials and Gen Z (25-40 years old) interested in sustainability",
-        budget="$25,000 for 2-month campaign"
+        budget="$25,000 for 2-month campaign",
     )
 
 

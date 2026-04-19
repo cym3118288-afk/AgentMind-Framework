@@ -52,6 +52,7 @@ class AIBehaviorType(str, Enum):
 @dataclass
 class GameState:
     """Represents the current game state"""
+
     player_position: Tuple[float, float]
     player_health: float
     player_resources: Dict[str, int]
@@ -63,6 +64,7 @@ class GameState:
 @dataclass
 class AIAgent:
     """Represents a game AI agent"""
+
     agent_id: str
     name: str
     behavior_type: AIBehaviorType
@@ -75,6 +77,7 @@ class AIAgent:
 @dataclass
 class GameAIDesign:
     """Complete game AI design"""
+
     game_genre: GameGenre
     ai_agents: List[AIAgent]
     behavior_trees: Dict[str, any]
@@ -84,6 +87,7 @@ class GameAIDesign:
 
 
 # Custom Tools for Game AI
+
 
 class BehaviorTreeGeneratorTool(Tool):
     """Generates behavior trees for game AI"""
@@ -95,18 +99,15 @@ class BehaviorTreeGeneratorTool(Tool):
             parameters={
                 "agent_type": {"type": "string", "description": "Type of AI agent"},
                 "behavior": {"type": "string", "description": "Desired behavior pattern"},
-                "difficulty": {"type": "string", "description": "Difficulty level"}
-            }
+                "difficulty": {"type": "string", "description": "Difficulty level"},
+            },
         )
 
     async def execute(self, agent_type: str, behavior: str, difficulty: str) -> str:
         """Generate behavior tree"""
 
         # Base behavior tree structure
-        behavior_tree = {
-            "root": "selector",
-            "children": []
-        }
+        behavior_tree = {"root": "selector", "children": []}
 
         # Add behaviors based on type
         if behavior == "aggressive":
@@ -116,15 +117,14 @@ class BehaviorTreeGeneratorTool(Tool):
                     "name": "attack_sequence",
                     "children": [
                         {"action": "detect_player", "range": 50},
-                        {"action": "move_towards_player", "speed": 1.5 if difficulty == "hard" else 1.0},
-                        {"action": "attack", "damage": 20 if difficulty == "hard" else 10}
-                    ]
+                        {
+                            "action": "move_towards_player",
+                            "speed": 1.5 if difficulty == "hard" else 1.0,
+                        },
+                        {"action": "attack", "damage": 20 if difficulty == "hard" else 10},
+                    ],
                 },
-                {
-                    "type": "action",
-                    "name": "patrol",
-                    "waypoints": ["A", "B", "C"]
-                }
+                {"type": "action", "name": "patrol", "waypoints": ["A", "B", "C"]},
             ]
         elif behavior == "defensive":
             behavior_tree["children"] = [
@@ -134,13 +134,10 @@ class BehaviorTreeGeneratorTool(Tool):
                     "children": [
                         {"condition": "health_below", "threshold": 0.5},
                         {"action": "retreat", "distance": 20},
-                        {"action": "heal", "amount": 30}
-                    ]
+                        {"action": "heal", "amount": 30},
+                    ],
                 },
-                {
-                    "type": "action",
-                    "name": "guard_position"
-                }
+                {"type": "action", "name": "guard_position"},
             ]
         elif behavior == "strategic":
             behavior_tree["children"] = [
@@ -150,8 +147,8 @@ class BehaviorTreeGeneratorTool(Tool):
                     "children": [
                         {"condition": "has_advantage", "action": "aggressive_push"},
                         {"condition": "outnumbered", "action": "tactical_retreat"},
-                        {"action": "flank_maneuver"}
-                    ]
+                        {"action": "flank_maneuver"},
+                    ],
                 }
             ]
 
@@ -167,8 +164,8 @@ class DifficultyBalancerTool(Tool):
             description="Adjust game difficulty based on player performance",
             parameters={
                 "player_stats": {"type": "object", "description": "Player performance statistics"},
-                "current_difficulty": {"type": "string", "description": "Current difficulty level"}
-            }
+                "current_difficulty": {"type": "string", "description": "Current difficulty level"},
+            },
         )
 
     async def execute(self, player_stats: Dict, current_difficulty: str) -> str:
@@ -180,10 +177,7 @@ class DifficultyBalancerTool(Tool):
         deaths = player_stats.get("deaths", 5)
 
         # Calculate difficulty adjustment
-        adjustment = {
-            "current_difficulty": current_difficulty,
-            "recommended_adjustment": "none"
-        }
+        adjustment = {"current_difficulty": current_difficulty, "recommended_adjustment": "none"}
 
         # Too easy - player winning too much
         if win_rate > 0.75 and deaths < 2:
@@ -192,7 +186,7 @@ class DifficultyBalancerTool(Tool):
                 "enemy_health": "+20%",
                 "enemy_damage": "+15%",
                 "enemy_count": "+1",
-                "player_resources": "-10%"
+                "player_resources": "-10%",
             }
         # Too hard - player struggling
         elif win_rate < 0.3 or deaths > 10:
@@ -201,7 +195,7 @@ class DifficultyBalancerTool(Tool):
                 "enemy_health": "-20%",
                 "enemy_damage": "-15%",
                 "player_health_regen": "+25%",
-                "hint_frequency": "+50%"
+                "hint_frequency": "+50%",
             }
         else:
             adjustment["recommended_adjustment"] = "maintain"
@@ -219,8 +213,8 @@ class PlayerBehaviorAnalyzerTool(Tool):
             description="Analyze player behavior and play style",
             parameters={
                 "gameplay_data": {"type": "object", "description": "Player gameplay data"},
-                "session_count": {"type": "integer", "description": "Number of sessions"}
-            }
+                "session_count": {"type": "integer", "description": "Number of sessions"},
+            },
         )
 
     async def execute(self, gameplay_data: Dict, session_count: int = 1) -> str:
@@ -231,7 +225,7 @@ class PlayerBehaviorAnalyzerTool(Tool):
             "skill_level": "intermediate",
             "preferences": [],
             "weaknesses": [],
-            "recommendations": []
+            "recommendations": [],
         }
 
         # Determine play style
@@ -275,8 +269,8 @@ class StrategyOptimizerTool(Tool):
             parameters={
                 "game_state": {"type": "object", "description": "Current game state"},
                 "ai_resources": {"type": "object", "description": "AI available resources"},
-                "objective": {"type": "string", "description": "AI objective"}
-            }
+                "objective": {"type": "string", "description": "AI objective"},
+            },
         )
 
     async def execute(self, game_state: Dict, ai_resources: Dict, objective: str) -> str:
@@ -286,7 +280,7 @@ class StrategyOptimizerTool(Tool):
             "objective": objective,
             "priority_actions": [],
             "resource_allocation": {},
-            "tactical_decisions": []
+            "tactical_decisions": [],
         }
 
         # Analyze game state
@@ -298,21 +292,21 @@ class StrategyOptimizerTool(Tool):
             strategy["priority_actions"] = [
                 "Direct assault",
                 "Overwhelm with numbers",
-                "Cut off escape routes"
+                "Cut off escape routes",
             ]
             strategy["tactical_decisions"].append("Aggressive push")
         elif ai_strength < player_strength * 0.7:
             strategy["priority_actions"] = [
                 "Defensive positioning",
                 "Call reinforcements",
-                "Set traps"
+                "Set traps",
             ]
             strategy["tactical_decisions"].append("Defensive stance")
         else:
             strategy["priority_actions"] = [
                 "Tactical positioning",
                 "Exploit weaknesses",
-                "Coordinate attacks"
+                "Coordinate attacks",
             ]
             strategy["tactical_decisions"].append("Balanced approach")
 
@@ -322,13 +316,14 @@ class StrategyOptimizerTool(Tool):
             "offense": 0.4 * total_resources,
             "defense": 0.3 * total_resources,
             "support": 0.2 * total_resources,
-            "reserve": 0.1 * total_resources
+            "reserve": 0.1 * total_resources,
         }
 
         return f"Optimized Strategy: {strategy}"
 
 
 # Agent System Setup
+
 
 async def create_game_ai_system(llm_provider) -> AgentMind:
     """Create the game AI development agent system"""
@@ -347,7 +342,7 @@ async def create_game_ai_system(llm_provider) -> AgentMind:
         5. Balance challenge with fun
 
         Make AI that is challenging but not frustrating.""",
-        tools=[BehaviorTreeGeneratorTool()]
+        tools=[BehaviorTreeGeneratorTool()],
     )
 
     # Difficulty Balancer Agent
@@ -362,7 +357,7 @@ async def create_game_ai_system(llm_provider) -> AgentMind:
         5. Create smooth difficulty curves
 
         Keep players in the flow state - challenged but not overwhelmed.""",
-        tools=[DifficultyBalancerTool()]
+        tools=[DifficultyBalancerTool()],
     )
 
     # Player Analyst Agent
@@ -377,7 +372,7 @@ async def create_game_ai_system(llm_provider) -> AgentMind:
         5. Recommend personalized experiences
 
         Understand what makes each player tick.""",
-        tools=[PlayerBehaviorAnalyzerTool()]
+        tools=[PlayerBehaviorAnalyzerTool()],
     )
 
     # Strategy Optimizer Agent
@@ -392,7 +387,7 @@ async def create_game_ai_system(llm_provider) -> AgentMind:
         5. Learn from player actions
 
         Create AI that thinks strategically and adapts.""",
-        tools=[StrategyOptimizerTool()]
+        tools=[StrategyOptimizerTool()],
     )
 
     # AI Architect Agent
@@ -406,7 +401,7 @@ async def create_game_ai_system(llm_provider) -> AgentMind:
         4. Implement learning and adaptation
         5. Create cohesive AI experience
 
-        Build AI systems that are robust, efficient, and engaging."""
+        Build AI systems that are robust, efficient, and engaging.""",
     )
 
     # Add all agents
@@ -420,9 +415,7 @@ async def create_game_ai_system(llm_provider) -> AgentMind:
 
 
 async def design_game_ai(
-    game_genre: GameGenre,
-    game_description: str,
-    llm_provider
+    game_genre: GameGenre, game_description: str, llm_provider
 ) -> GameAIDesign:
     """Design complete game AI system"""
 
@@ -472,10 +465,7 @@ Provide a complete, implementable game AI design.
 """
 
     # Collaborate to design AI
-    result = await mind.collaborate(
-        task=design_request,
-        max_rounds=5
-    )
+    result = await mind.collaborate(task=design_request, max_rounds=5)
 
     print(f"\n{'='*60}")
     print("Game AI Design Complete")
@@ -489,13 +479,14 @@ Provide a complete, implementable game AI design.
         behavior_trees={},
         difficulty_scaling={},
         balancing_parameters={},
-        adaptive_features=[]
+        adaptive_features=[],
     )
 
     return design
 
 
 # Example Game AI Projects
+
 
 async def example_rpg_boss_ai():
     """Example: RPG boss AI"""

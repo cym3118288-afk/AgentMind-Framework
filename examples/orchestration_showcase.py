@@ -135,8 +135,12 @@ Reviewer: Evaluate quality and integration"""
     print(f"\nResult: {'SUCCESS' if result.success else 'FAILED'}")
     print(f"Rounds: {result.total_rounds}")
     print(f"Messages: {result.total_messages}")
-    print(f"Escalations: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('escalations', 0)}")
-    print(f"Final Quality: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('final_quality', 0):.2f}")
+    print(
+        f"Escalations: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('escalations', 0)}"
+    )
+    print(
+        f"Final Quality: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('final_quality', 0):.2f}"
+    )
 
 
 async def demo_debate():
@@ -182,9 +186,15 @@ Consider:
     )
 
     print(f"\nResult: {'SUCCESS' if result.success else 'FAILED'}")
-    print(f"Debate Rounds: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('debate_rounds', 0)}")
-    print(f"Final Convergence: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('final_convergence', 0):.2f}")
-    print(f"Vote Result: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('vote_result', {})}")
+    print(
+        f"Debate Rounds: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('debate_rounds', 0)}"
+    )
+    print(
+        f"Final Convergence: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('final_convergence', 0):.2f}"
+    )
+    print(
+        f"Vote Result: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('vote_result', {})}"
+    )
 
 
 async def demo_consensus():
@@ -219,9 +229,15 @@ Reach consensus through iterative refinement."""
     )
 
     print(f"\nResult: {'SUCCESS' if result.success else 'FAILED'}")
-    print(f"Iterations: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('iterations', 0)}")
-    print(f"Consensus Reached: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('consensus_reached', False)}")
-    print(f"Final Score: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('final_consensus_score', 0):.2f}")
+    print(
+        f"Iterations: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('iterations', 0)}"
+    )
+    print(
+        f"Consensus Reached: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('consensus_reached', False)}"
+    )
+    print(
+        f"Final Score: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('final_consensus_score', 0):.2f}"
+    )
 
 
 async def demo_swarm():
@@ -258,9 +274,15 @@ Swarm should dynamically scale based on workload."""
     )
 
     print(f"\nResult: {'SUCCESS' if result.success else 'FAILED'}")
-    print(f"Swarm Size: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('swarm_size', 0)}")
-    print(f"Task Complexity: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('task_complexity', 0)}")
-    print(f"Subtasks: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('subtasks', 0)}")
+    print(
+        f"Swarm Size: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('swarm_size', 0)}"
+    )
+    print(
+        f"Task Complexity: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('task_complexity', 0)}"
+    )
+    print(
+        f"Subtasks: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('subtasks', 0)}"
+    )
 
 
 async def demo_graph():
@@ -315,8 +337,12 @@ async def demo_graph():
     )
 
     print(f"\nResult: {'SUCCESS' if result.success else 'FAILED'}")
-    print(f"Nodes Visited: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('nodes_visited', 0)}")
-    print(f"Execution Order: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('execution_order', [])}")
+    print(
+        f"Nodes Visited: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('nodes_visited', 0)}"
+    )
+    print(
+        f"Execution Order: {result.metadata.get('metrics', {}).get('custom_metrics', {}).get('execution_order', [])}"
+    )
 
     # Show graph visualization
     print("\nGraph Visualization (Mermaid):")
@@ -449,6 +475,7 @@ async def main():
         except Exception as e:
             print(f"\n❌ {name} demo failed: {e}")
             import traceback
+
             traceback.print_exc()
 
     print("\n" + "=" * 80)

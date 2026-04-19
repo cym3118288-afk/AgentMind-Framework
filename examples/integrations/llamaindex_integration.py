@@ -28,9 +28,9 @@ class LlamaIndexRetriever(Tool):
             parameters={
                 "query": {
                     "type": "string",
-                    "description": "The search query to find relevant information"
+                    "description": "The search query to find relevant information",
                 }
-            }
+            },
         )
 
     async def execute(self, query: str) -> str:
@@ -54,10 +54,18 @@ async def example_basic_rag():
 
         # Create sample documents
         documents = [
-            Document(text="AgentMind is a lightweight multi-agent framework for Python. It supports multiple LLM providers including Ollama, OpenAI, and Anthropic."),
-            Document(text="The framework features built-in memory management, tool systems, and async-first architecture for concurrent agent collaboration."),
-            Document(text="AgentMind is designed to be production-ready with comprehensive error handling, type hints, and extensive testing."),
-            Document(text="Key features include multi-agent orchestration, flexible LLM support, memory backends, and extensible tool system."),
+            Document(
+                text="AgentMind is a lightweight multi-agent framework for Python. It supports multiple LLM providers including Ollama, OpenAI, and Anthropic."
+            ),
+            Document(
+                text="The framework features built-in memory management, tool systems, and async-first architecture for concurrent agent collaboration."
+            ),
+            Document(
+                text="AgentMind is designed to be production-ready with comprehensive error handling, type hints, and extensive testing."
+            ),
+            Document(
+                text="Key features include multi-agent orchestration, flexible LLM support, memory backends, and extensible tool system."
+            ),
         ]
 
         # Create LlamaIndex
@@ -76,7 +84,7 @@ async def example_basic_rag():
             name="RAG_Expert",
             role="rag_specialist",
             system_prompt="You are an expert at answering questions using retrieved documents. Always base your answers on the retrieved information and cite sources when possible.",
-            tools=[retriever]
+            tools=[retriever],
         )
 
         mind.add_agent(rag_agent)
@@ -85,7 +93,7 @@ async def example_basic_rag():
         questions = [
             "What is AgentMind?",
             "What LLM providers does it support?",
-            "What are the key features?"
+            "What are the key features?",
         ]
 
         for question in questions:
@@ -107,10 +115,18 @@ async def example_multi_agent_rag():
 
         # Create knowledge base
         tech_docs = [
-            Document(text="Python is a high-level programming language known for its simplicity and readability. It supports multiple programming paradigms."),
-            Document(text="JavaScript is the language of the web, running in browsers and on servers via Node.js. It's essential for modern web development."),
-            Document(text="Rust is a systems programming language focused on safety, speed, and concurrency. It prevents memory errors at compile time."),
-            Document(text="Go is designed for building scalable network services and cloud applications. It features built-in concurrency support."),
+            Document(
+                text="Python is a high-level programming language known for its simplicity and readability. It supports multiple programming paradigms."
+            ),
+            Document(
+                text="JavaScript is the language of the web, running in browsers and on servers via Node.js. It's essential for modern web development."
+            ),
+            Document(
+                text="Rust is a systems programming language focused on safety, speed, and concurrency. It prevents memory errors at compile time."
+            ),
+            Document(
+                text="Go is designed for building scalable network services and cloud applications. It features built-in concurrency support."
+            ),
         ]
 
         # Create index
@@ -129,21 +145,21 @@ async def example_multi_agent_rag():
             name="Retriever",
             role="retriever",
             system_prompt="You retrieve relevant information from the knowledge base. Focus on finding accurate, relevant documents.",
-            tools=[retriever]
+            tools=[retriever],
         )
 
         # Analyzer agent
         analyzer = Agent(
             name="Analyzer",
             role="analyst",
-            system_prompt="You analyze retrieved information and extract key insights. Identify patterns and important details."
+            system_prompt="You analyze retrieved information and extract key insights. Identify patterns and important details.",
         )
 
         # Synthesizer agent
         synthesizer = Agent(
             name="Synthesizer",
             role="synthesizer",
-            system_prompt="You synthesize information from multiple sources into clear, comprehensive answers."
+            system_prompt="You synthesize information from multiple sources into clear, comprehensive answers.",
         )
 
         mind.add_agent(retriever_agent)
@@ -153,7 +169,7 @@ async def example_multi_agent_rag():
         # Collaborate on complex query
         result = await mind.collaborate(
             "Compare Python and Rust for systems programming. What are the trade-offs?",
-            max_rounds=3
+            max_rounds=3,
         )
 
         print(f"Result: {result}")
@@ -172,10 +188,18 @@ async def example_document_analysis():
 
         # Simulate a collection of research papers
         papers = [
-            Document(text="Study 1: Machine learning models show 85% accuracy in predicting customer churn. Key factors include usage frequency and support tickets."),
-            Document(text="Study 2: Deep learning approaches achieve 92% accuracy but require 10x more training data and computational resources."),
-            Document(text="Study 3: Ensemble methods combining multiple models reach 89% accuracy with better interpretability than deep learning."),
-            Document(text="Study 4: Feature engineering is critical - domain-specific features improve accuracy by 15% across all model types."),
+            Document(
+                text="Study 1: Machine learning models show 85% accuracy in predicting customer churn. Key factors include usage frequency and support tickets."
+            ),
+            Document(
+                text="Study 2: Deep learning approaches achieve 92% accuracy but require 10x more training data and computational resources."
+            ),
+            Document(
+                text="Study 3: Ensemble methods combining multiple models reach 89% accuracy with better interpretability than deep learning."
+            ),
+            Document(
+                text="Study 4: Feature engineering is critical - domain-specific features improve accuracy by 15% across all model types."
+            ),
         ]
 
         # Index the papers
@@ -194,21 +218,21 @@ async def example_document_analysis():
             name="Reviewer",
             role="literature_reviewer",
             system_prompt="You review academic papers and extract key findings, methodologies, and results.",
-            tools=[paper_retriever]
+            tools=[paper_retriever],
         )
 
         # Statistician
         statistician = Agent(
             name="Statistician",
             role="statistician",
-            system_prompt="You analyze numerical results, compare metrics, and identify statistical patterns."
+            system_prompt="You analyze numerical results, compare metrics, and identify statistical patterns.",
         )
 
         # Synthesizer
         synthesizer = Agent(
             name="Synthesizer",
             role="research_synthesizer",
-            system_prompt="You synthesize findings from multiple studies into coherent insights and recommendations."
+            system_prompt="You synthesize findings from multiple studies into coherent insights and recommendations.",
         )
 
         mind.add_agent(reviewer)
@@ -218,7 +242,7 @@ async def example_document_analysis():
         # Analyze the literature
         result = await mind.collaborate(
             "What are the most effective approaches for predicting customer churn based on these studies?",
-            max_rounds=3
+            max_rounds=3,
         )
 
         print(f"Analysis: {result}")
@@ -239,19 +263,19 @@ async def example_hybrid_search():
         documents = [
             Document(
                 text="Q1 2024 revenue increased 25% year-over-year to $50M.",
-                metadata={"type": "financial", "quarter": "Q1", "year": 2024}
+                metadata={"type": "financial", "quarter": "Q1", "year": 2024},
             ),
             Document(
                 text="Q2 2024 revenue reached $55M, showing continued growth momentum.",
-                metadata={"type": "financial", "quarter": "Q2", "year": 2024}
+                metadata={"type": "financial", "quarter": "Q2", "year": 2024},
             ),
             Document(
                 text="Customer satisfaction scores improved from 4.2 to 4.5 in Q1 2024.",
-                metadata={"type": "customer", "quarter": "Q1", "year": 2024}
+                metadata={"type": "customer", "quarter": "Q1", "year": 2024},
             ),
             Document(
                 text="New product launch in Q2 2024 exceeded expectations with 10K users in first month.",
-                metadata={"type": "product", "quarter": "Q2", "year": 2024}
+                metadata={"type": "product", "quarter": "Q2", "year": 2024},
             ),
         ]
 
@@ -271,14 +295,14 @@ async def example_hybrid_search():
             name="Financial_Analyst",
             role="financial_analyst",
             system_prompt="You analyze financial data and identify trends, growth patterns, and key metrics.",
-            tools=[financial_retriever]
+            tools=[financial_retriever],
         )
 
         # Business strategist
         strategist = Agent(
             name="Strategist",
             role="business_strategist",
-            system_prompt="You provide strategic insights based on financial and operational data."
+            system_prompt="You provide strategic insights based on financial and operational data.",
         )
 
         mind.add_agent(financial_analyst)
@@ -286,8 +310,7 @@ async def example_hybrid_search():
 
         # Query the system
         result = await mind.collaborate(
-            "Analyze our 2024 performance and provide strategic recommendations.",
-            max_rounds=3
+            "Analyze our 2024 performance and provide strategic recommendations.", max_rounds=3
         )
 
         print(f"Strategic Analysis: {result}")
@@ -305,9 +328,7 @@ async def example_realtime_ingestion():
         from llama_index.core import VectorStoreIndex, Document
 
         # Start with empty index
-        initial_docs = [
-            Document(text="AgentMind version 1.0 released with core features.")
-        ]
+        initial_docs = [Document(text="AgentMind version 1.0 released with core features.")]
 
         index = VectorStoreIndex.from_documents(initial_docs)
 
@@ -323,7 +344,7 @@ async def example_realtime_ingestion():
             name="Knowledge_Agent",
             role="knowledge_specialist",
             system_prompt="You answer questions based on the latest information in the knowledge base.",
-            tools=[retriever]
+            tools=[retriever],
         )
 
         mind.add_agent(agent)
@@ -335,7 +356,9 @@ async def example_realtime_ingestion():
 
         # Add new document
         print("Adding new document about version 2.0...")
-        new_doc = Document(text="AgentMind version 2.0 released with advanced features including self-improvement and template marketplace.")
+        new_doc = Document(
+            text="AgentMind version 2.0 released with advanced features including self-improvement and template marketplace."
+        )
         index.insert(new_doc)
 
         # Update query engine

@@ -26,15 +26,14 @@ async def example_image_analysis():
     agent = VisionAgent(
         vision_provider=vision_llm,
         name="ImageAnalyzer",
-        system_prompt="You are an expert at analyzing images and providing detailed descriptions."
+        system_prompt="You are an expert at analyzing images and providing detailed descriptions.",
     )
 
     # Analyze an image
     image_path = "path/to/your/image.jpg"
     if Path(image_path).exists():
         response = await agent.process_with_image(
-            "What do you see in this image? Provide a detailed description.",
-            images=[image_path]
+            "What do you see in this image? Provide a detailed description.", images=[image_path]
         )
         print(f"Analysis: {response}\n")
     else:
@@ -68,8 +67,7 @@ async def example_image_comparison():
     images = ["path/to/image1.jpg", "path/to/image2.jpg"]
     if all(Path(img).exists() for img in images):
         comparison = await vision_llm.compare_images(
-            images,
-            prompt="Compare these two images. What are the main differences?"
+            images, prompt="Compare these two images. What are the main differences?"
         )
         print(f"Comparison:\n{comparison}\n")
     else:
@@ -92,7 +90,7 @@ async def example_image_qa():
         questions = [
             "What type of chart is this?",
             "What are the main trends shown?",
-            "What is the highest value in the chart?"
+            "What is the highest value in the chart?",
         ]
 
         for question in questions:
@@ -147,28 +145,26 @@ async def example_multi_agent_vision():
     describer = VisionAgent(
         vision_provider=vision_llm,
         name="Describer",
-        system_prompt="You describe images in detail, focusing on visual elements."
+        system_prompt="You describe images in detail, focusing on visual elements.",
     )
 
     analyzer = VisionAgent(
         vision_provider=vision_llm,
         name="Analyzer",
-        system_prompt="You analyze images for patterns, trends, and insights."
+        system_prompt="You analyze images for patterns, trends, and insights.",
     )
 
     image_path = "path/to/data_visualization.jpg"
     if Path(image_path).exists():
         # First agent describes
         description = await describer.process_with_image(
-            "Describe what you see in this image.",
-            images=[image_path]
+            "Describe what you see in this image.", images=[image_path]
         )
         print(f"Describer: {description}\n")
 
         # Second agent analyzes based on description
         analysis = await analyzer.process_text(
-            f"Based on this description: '{description}', "
-            "what insights can you provide?"
+            f"Based on this description: '{description}', " "what insights can you provide?"
         )
         print(f"Analyzer: {analysis}\n")
     else:

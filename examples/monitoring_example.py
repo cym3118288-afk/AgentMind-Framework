@@ -15,8 +15,9 @@ try:
         PrometheusMetrics,
         OpenTelemetryTracer,
         StructuredLogger,
-        PerformanceProfiler
+        PerformanceProfiler,
     )
+
     MONITORING_AVAILABLE = True
 except ImportError:
     MONITORING_AVAILABLE = False
@@ -82,11 +83,7 @@ async def example_opentelemetry_tracing():
         mind.add_agent(agent)
 
         # Trace collaboration
-        with tracer.trace_operation(
-            "collaboration",
-            task="analyze_data",
-            agent_count=1
-        ):
+        with tracer.trace_operation("collaboration", task="analyze_data", agent_count=1):
             result = await mind.start_collaboration("Analyze this data", max_rounds=2)
 
         print("Tracing completed - check console output for spans")
@@ -106,11 +103,7 @@ async def example_structured_logging():
     logger = StructuredLogger(name="agentmind")
 
     # Add context
-    logger.add_context(
-        session_id="session_123",
-        user_id="user_456",
-        environment="development"
-    )
+    logger.add_context(session_id="session_123", user_id="user_456", environment="development")
 
     # Log events
     logger.info("Starting agent collaboration", task="data_analysis")
@@ -175,10 +168,7 @@ async def example_complete_monitoring():
 
     # Profile collaboration
     with profiler.profile("full_collaboration"):
-        result = await mind.start_collaboration(
-            "Write a report on renewable energy",
-            max_rounds=2
-        )
+        result = await mind.start_collaboration("Write a report on renewable energy", max_rounds=2)
 
     # Log completion
     logger.info("Collaboration completed", result_length=len(result))
@@ -209,6 +199,7 @@ async def main():
     except Exception as e:
         print(f"\nError running examples: {e}")
         import traceback
+
         traceback.print_exc()
 
 

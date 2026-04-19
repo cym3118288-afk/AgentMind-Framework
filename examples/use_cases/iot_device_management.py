@@ -54,6 +54,7 @@ class AlertLevel(str, Enum):
 @dataclass
 class IoTDevice:
     """Represents an IoT device"""
+
     device_id: str
     name: str
     device_type: DeviceType
@@ -68,6 +69,7 @@ class IoTDevice:
 @dataclass
 class DeviceAlert:
     """Alert from IoT device"""
+
     alert_id: str
     device_id: str
     level: AlertLevel
@@ -79,6 +81,7 @@ class DeviceAlert:
 @dataclass
 class MaintenanceSchedule:
     """Maintenance schedule for devices"""
+
     device_id: str
     next_maintenance: datetime
     maintenance_type: str
@@ -89,6 +92,7 @@ class MaintenanceSchedule:
 @dataclass
 class IoTManagementReport:
     """Complete IoT management report"""
+
     total_devices: int
     online_devices: int
     alerts: List[DeviceAlert]
@@ -100,6 +104,7 @@ class IoTManagementReport:
 
 # Custom Tools for IoT Management
 
+
 class DeviceMonitorTool(Tool):
     """Monitors IoT device health and status"""
 
@@ -109,8 +114,8 @@ class DeviceMonitorTool(Tool):
             description="Monitor IoT device health, status, and metrics",
             parameters={
                 "device_ids": {"type": "array", "description": "List of device IDs to monitor"},
-                "metrics": {"type": "array", "description": "Metrics to check"}
-            }
+                "metrics": {"type": "array", "description": "Metrics to check"},
+            },
         )
 
     async def execute(self, device_ids: List[str], metrics: List[str] = None) -> str:
@@ -128,7 +133,7 @@ class DeviceMonitorTool(Tool):
                 "battery_level": random.uniform(20, 100) if random.random() > 0.3 else None,
                 "signal_strength": random.uniform(50, 100),
                 "last_update": "2 minutes ago",
-                "metrics": {}
+                "metrics": {},
             }
 
             # Add specific metrics
@@ -153,8 +158,8 @@ class AnomalyDetectorTool(Tool):
             description="Detect anomalous behavior in IoT devices",
             parameters={
                 "device_data": {"type": "object", "description": "Device telemetry data"},
-                "baseline": {"type": "object", "description": "Normal behavior baseline"}
-            }
+                "baseline": {"type": "object", "description": "Normal behavior baseline"},
+            },
         )
 
     async def execute(self, device_data: Dict, baseline: Dict = None) -> str:
@@ -162,7 +167,7 @@ class AnomalyDetectorTool(Tool):
         baseline = baseline or {
             "temperature": {"min": 18, "max": 26},
             "power_consumption": {"min": 10, "max": 200},
-            "response_time": {"max": 1000}
+            "response_time": {"max": 1000},
         }
 
         anomalies = []
@@ -173,19 +178,23 @@ class AnomalyDetectorTool(Tool):
 
                 # Check if value is outside normal range
                 if "min" in limits and value < limits["min"]:
-                    anomalies.append({
-                        "metric": metric,
-                        "value": value,
-                        "expected_min": limits["min"],
-                        "severity": "warning"
-                    })
+                    anomalies.append(
+                        {
+                            "metric": metric,
+                            "value": value,
+                            "expected_min": limits["min"],
+                            "severity": "warning",
+                        }
+                    )
                 elif "max" in limits and value > limits["max"]:
-                    anomalies.append({
-                        "metric": metric,
-                        "value": value,
-                        "expected_max": limits["max"],
-                        "severity": "critical" if value > limits["max"] * 1.5 else "warning"
-                    })
+                    anomalies.append(
+                        {
+                            "metric": metric,
+                            "value": value,
+                            "expected_max": limits["max"],
+                            "severity": "critical" if value > limits["max"] * 1.5 else "warning",
+                        }
+                    )
 
         return f"Anomaly Detection: {anomalies if anomalies else 'No anomalies detected'}"
 
@@ -200,8 +209,8 @@ class PredictiveMaintenanceTool(Tool):
             parameters={
                 "device_id": {"type": "string", "description": "Device ID"},
                 "usage_data": {"type": "object", "description": "Device usage history"},
-                "device_type": {"type": "string", "description": "Type of device"}
-            }
+                "device_type": {"type": "string", "description": "Type of device"},
+            },
         )
 
     async def execute(self, device_id: str, usage_data: Dict, device_type: str) -> str:
@@ -213,18 +222,19 @@ class PredictiveMaintenanceTool(Tool):
         last_maintenance = usage_data.get("days_since_maintenance", 90)
 
         # Calculate maintenance score (0-100, higher = more urgent)
-        maintenance_score = min(100, (
-            (uptime_hours / 100) * 0.3 +
-            (error_count * 5) * 0.4 +
-            (last_maintenance / 3) * 0.3
-        ))
+        maintenance_score = min(
+            100,
+            ((uptime_hours / 100) * 0.3 + (error_count * 5) * 0.4 + (last_maintenance / 3) * 0.3),
+        )
 
         prediction = {
             "device_id": device_id,
             "maintenance_score": round(maintenance_score, 2),
-            "urgency": "high" if maintenance_score > 70 else "medium" if maintenance_score > 40 else "low",
+            "urgency": (
+                "high" if maintenance_score > 70 else "medium" if maintenance_score > 40 else "low"
+            ),
             "predicted_failure_date": None,
-            "recommended_actions": []
+            "recommended_actions": [],
         }
 
         if maintenance_score > 70:
@@ -232,14 +242,11 @@ class PredictiveMaintenanceTool(Tool):
             prediction["recommended_actions"] = [
                 "Schedule immediate inspection",
                 "Prepare replacement parts",
-                "Plan downtime window"
+                "Plan downtime window",
             ]
         elif maintenance_score > 40:
             prediction["predicted_failure_date"] = "Within 30 days"
-            prediction["recommended_actions"] = [
-                "Schedule routine maintenance",
-                "Monitor closely"
-            ]
+            prediction["recommended_actions"] = ["Schedule routine maintenance", "Monitor closely"]
         else:
             prediction["recommended_actions"] = ["Continue normal operation"]
 
@@ -255,8 +262,8 @@ class EnergyOptimizerTool(Tool):
             description="Optimize energy consumption across IoT devices",
             parameters={
                 "devices": {"type": "array", "description": "List of devices"},
-                "constraints": {"type": "object", "description": "Optimization constraints"}
-            }
+                "constraints": {"type": "object", "description": "Optimization constraints"},
+            },
         )
 
     async def execute(self, devices: List[Dict], constraints: Dict = None) -> str:
@@ -264,14 +271,14 @@ class EnergyOptimizerTool(Tool):
         constraints = constraints or {
             "max_total_power": 5000,  # watts
             "priority_devices": [],
-            "time_of_use_rates": {"peak": 0.25, "off_peak": 0.10}
+            "time_of_use_rates": {"peak": 0.25, "off_peak": 0.10},
         }
 
         optimization = {
             "current_consumption": 0,
             "optimized_consumption": 0,
             "savings": 0,
-            "recommendations": []
+            "recommendations": [],
         }
 
         total_power = sum(d.get("power_consumption", 0) for d in devices)
@@ -285,29 +292,37 @@ class EnergyOptimizerTool(Tool):
 
             # Suggest optimizations
             if device_type == "thermostat" and power > 100:
-                optimization["recommendations"].append({
-                    "device_id": device_id,
-                    "action": "Adjust temperature by 2°C",
-                    "estimated_savings": power * 0.15
-                })
+                optimization["recommendations"].append(
+                    {
+                        "device_id": device_id,
+                        "action": "Adjust temperature by 2°C",
+                        "estimated_savings": power * 0.15,
+                    }
+                )
             elif device_type == "light" and power > 50:
-                optimization["recommendations"].append({
-                    "device_id": device_id,
-                    "action": "Switch to LED or dim lights",
-                    "estimated_savings": power * 0.30
-                })
+                optimization["recommendations"].append(
+                    {
+                        "device_id": device_id,
+                        "action": "Switch to LED or dim lights",
+                        "estimated_savings": power * 0.30,
+                    }
+                )
             elif device_type == "appliance":
-                optimization["recommendations"].append({
-                    "device_id": device_id,
-                    "action": "Schedule for off-peak hours",
-                    "estimated_savings": power * 0.40
-                })
+                optimization["recommendations"].append(
+                    {
+                        "device_id": device_id,
+                        "action": "Schedule for off-peak hours",
+                        "estimated_savings": power * 0.40,
+                    }
+                )
 
         # Calculate total savings
         total_savings = sum(r["estimated_savings"] for r in optimization["recommendations"])
         optimization["optimized_consumption"] = total_power - total_savings
         optimization["savings"] = total_savings
-        optimization["savings_percentage"] = round((total_savings / total_power) * 100, 2) if total_power > 0 else 0
+        optimization["savings_percentage"] = (
+            round((total_savings / total_power) * 100, 2) if total_power > 0 else 0
+        )
 
         return f"Energy Optimization: {optimization}"
 
@@ -321,8 +336,8 @@ class SecurityMonitorTool(Tool):
             description="Monitor IoT device security and detect threats",
             parameters={
                 "devices": {"type": "array", "description": "Devices to monitor"},
-                "network_traffic": {"type": "object", "description": "Network traffic data"}
-            }
+                "network_traffic": {"type": "object", "description": "Network traffic data"},
+            },
         )
 
     async def execute(self, devices: List[Dict], network_traffic: Dict = None) -> str:
@@ -332,7 +347,7 @@ class SecurityMonitorTool(Tool):
             "overall_status": "secure",
             "vulnerabilities": [],
             "threats_detected": [],
-            "recommendations": []
+            "recommendations": [],
         }
 
         for device in devices:
@@ -341,30 +356,36 @@ class SecurityMonitorTool(Tool):
 
             # Check for outdated firmware
             if firmware == "unknown" or firmware < "2.0":
-                security_status["vulnerabilities"].append({
-                    "device_id": device_id,
-                    "issue": "Outdated firmware",
-                    "severity": "high",
-                    "recommendation": "Update firmware immediately"
-                })
+                security_status["vulnerabilities"].append(
+                    {
+                        "device_id": device_id,
+                        "issue": "Outdated firmware",
+                        "severity": "high",
+                        "recommendation": "Update firmware immediately",
+                    }
+                )
 
             # Check for weak authentication
             if device.get("auth_type") == "none":
-                security_status["vulnerabilities"].append({
-                    "device_id": device_id,
-                    "issue": "No authentication",
-                    "severity": "critical",
-                    "recommendation": "Enable authentication"
-                })
+                security_status["vulnerabilities"].append(
+                    {
+                        "device_id": device_id,
+                        "issue": "No authentication",
+                        "severity": "critical",
+                        "recommendation": "Enable authentication",
+                    }
+                )
 
             # Check for unusual activity
             if device.get("failed_login_attempts", 0) > 5:
-                security_status["threats_detected"].append({
-                    "device_id": device_id,
-                    "threat": "Brute force attack",
-                    "severity": "critical",
-                    "action": "Block IP and reset credentials"
-                })
+                security_status["threats_detected"].append(
+                    {
+                        "device_id": device_id,
+                        "threat": "Brute force attack",
+                        "severity": "critical",
+                        "action": "Block IP and reset credentials",
+                    }
+                )
 
         # Update overall status
         if security_status["threats_detected"]:
@@ -376,6 +397,7 @@ class SecurityMonitorTool(Tool):
 
 
 # Agent System Setup
+
 
 async def create_iot_management_system(llm_provider) -> AgentMind:
     """Create the IoT device management agent system"""
@@ -394,7 +416,7 @@ async def create_iot_management_system(llm_provider) -> AgentMind:
         5. Alert on device failures
 
         Keep all devices running smoothly.""",
-        tools=[DeviceMonitorTool()]
+        tools=[DeviceMonitorTool()],
     )
 
     # Anomaly Detector Agent
@@ -409,7 +431,7 @@ async def create_iot_management_system(llm_provider) -> AgentMind:
         5. Learn normal behavior patterns
 
         Catch problems before they become failures.""",
-        tools=[AnomalyDetectorTool()]
+        tools=[AnomalyDetectorTool()],
     )
 
     # Maintenance Predictor Agent
@@ -424,7 +446,7 @@ async def create_iot_management_system(llm_provider) -> AgentMind:
         5. Reduce downtime
 
         Maintain devices before they fail.""",
-        tools=[PredictiveMaintenanceTool()]
+        tools=[PredictiveMaintenanceTool()],
     )
 
     # Energy Optimizer Agent
@@ -439,7 +461,7 @@ async def create_iot_management_system(llm_provider) -> AgentMind:
         5. Support sustainability goals
 
         Save energy without compromising functionality.""",
-        tools=[EnergyOptimizerTool()]
+        tools=[EnergyOptimizerTool()],
     )
 
     # Security Monitor Agent
@@ -454,7 +476,7 @@ async def create_iot_management_system(llm_provider) -> AgentMind:
         5. Protect against attacks
 
         Security is paramount. Be vigilant.""",
-        tools=[SecurityMonitorTool()]
+        tools=[SecurityMonitorTool()],
     )
 
     # Add all agents
@@ -467,10 +489,7 @@ async def create_iot_management_system(llm_provider) -> AgentMind:
     return mind
 
 
-async def manage_iot_infrastructure(
-    devices: List[IoTDevice],
-    llm_provider
-) -> IoTManagementReport:
+async def manage_iot_infrastructure(devices: List[IoTDevice], llm_provider) -> IoTManagementReport:
     """Manage IoT device infrastructure"""
 
     print(f"\n{'='*60}")
@@ -482,10 +501,9 @@ async def manage_iot_infrastructure(
     mind = await create_iot_management_system(llm_provider)
 
     # Format device data
-    device_summary = "\n".join([
-        f"- {d.name} ({d.device_type.value}): {d.status.value} at {d.location}"
-        for d in devices
-    ])
+    device_summary = "\n".join(
+        [f"- {d.name} ({d.device_type.value}): {d.status.value} at {d.location}" for d in devices]
+    )
 
     # Format the management request
     management_request = f"""
@@ -525,10 +543,7 @@ Provide actionable recommendations for optimal IoT operations.
 """
 
     # Collaborate to manage infrastructure
-    result = await mind.collaborate(
-        task=management_request,
-        max_rounds=5
-    )
+    result = await mind.collaborate(task=management_request, max_rounds=5)
 
     print(f"\n{'='*60}")
     print("IoT Management Complete")
@@ -545,7 +560,7 @@ Provide actionable recommendations for optimal IoT operations.
         maintenance_needed=[],
         energy_optimization={},
         security_status={},
-        recommendations=[]
+        recommendations=[],
     )
 
     return report
@@ -553,15 +568,60 @@ Provide actionable recommendations for optimal IoT operations.
 
 # Example IoT Scenarios
 
+
 async def example_smart_home():
     """Example: Smart home management"""
 
     devices = [
-        IoTDevice("SH001", "Living Room Thermostat", DeviceType.THERMOSTAT, "Living Room", DeviceStatus.ONLINE, datetime.now(), "2.1.0", metrics={"temperature": 22.5, "humidity": 45}),
-        IoTDevice("SH002", "Front Door Lock", DeviceType.LOCK, "Front Door", DeviceStatus.ONLINE, datetime.now(), "1.8.0", battery_level=85),
-        IoTDevice("SH003", "Kitchen Light", DeviceType.LIGHT, "Kitchen", DeviceStatus.ONLINE, datetime.now(), "2.0.0"),
-        IoTDevice("SH004", "Security Camera", DeviceType.CAMERA, "Driveway", DeviceStatus.WARNING, datetime.now(), "1.5.0", metrics={"motion_detected": 5}),
-        IoTDevice("SH005", "Bedroom Sensor", DeviceType.SENSOR, "Bedroom", DeviceStatus.ONLINE, datetime.now(), "2.2.0", battery_level=45),
+        IoTDevice(
+            "SH001",
+            "Living Room Thermostat",
+            DeviceType.THERMOSTAT,
+            "Living Room",
+            DeviceStatus.ONLINE,
+            datetime.now(),
+            "2.1.0",
+            metrics={"temperature": 22.5, "humidity": 45},
+        ),
+        IoTDevice(
+            "SH002",
+            "Front Door Lock",
+            DeviceType.LOCK,
+            "Front Door",
+            DeviceStatus.ONLINE,
+            datetime.now(),
+            "1.8.0",
+            battery_level=85,
+        ),
+        IoTDevice(
+            "SH003",
+            "Kitchen Light",
+            DeviceType.LIGHT,
+            "Kitchen",
+            DeviceStatus.ONLINE,
+            datetime.now(),
+            "2.0.0",
+        ),
+        IoTDevice(
+            "SH004",
+            "Security Camera",
+            DeviceType.CAMERA,
+            "Driveway",
+            DeviceStatus.WARNING,
+            datetime.now(),
+            "1.5.0",
+            metrics={"motion_detected": 5},
+        ),
+        IoTDevice(
+            "SH005",
+            "Bedroom Sensor",
+            DeviceType.SENSOR,
+            "Bedroom",
+            DeviceStatus.ONLINE,
+            datetime.now(),
+            "2.2.0",
+            battery_level=45,
+        ),
     ]
 
     llm = OllamaProvider(model="llama3.2")
@@ -573,11 +633,54 @@ async def example_industrial_iot():
     """Example: Industrial IoT management"""
 
     devices = [
-        IoTDevice("IND001", "Temperature Sensor A1", DeviceType.SENSOR, "Production Line 1", DeviceStatus.ONLINE, datetime.now(), "3.0.0", metrics={"temperature": 85.2}),
-        IoTDevice("IND002", "Pressure Sensor B2", DeviceType.SENSOR, "Tank 2", DeviceStatus.ONLINE, datetime.now(), "3.0.0", metrics={"pressure": 120.5}),
-        IoTDevice("IND003", "Motor Controller", DeviceType.ACTUATOR, "Assembly Line", DeviceStatus.WARNING, datetime.now(), "2.5.0", metrics={"rpm": 1500, "vibration": 8.5}),
-        IoTDevice("IND004", "Quality Camera", DeviceType.CAMERA, "Inspection Station", DeviceStatus.ONLINE, datetime.now(), "2.8.0"),
-        IoTDevice("IND005", "Valve Actuator", DeviceType.ACTUATOR, "Cooling System", DeviceStatus.ONLINE, datetime.now(), "3.1.0"),
+        IoTDevice(
+            "IND001",
+            "Temperature Sensor A1",
+            DeviceType.SENSOR,
+            "Production Line 1",
+            DeviceStatus.ONLINE,
+            datetime.now(),
+            "3.0.0",
+            metrics={"temperature": 85.2},
+        ),
+        IoTDevice(
+            "IND002",
+            "Pressure Sensor B2",
+            DeviceType.SENSOR,
+            "Tank 2",
+            DeviceStatus.ONLINE,
+            datetime.now(),
+            "3.0.0",
+            metrics={"pressure": 120.5},
+        ),
+        IoTDevice(
+            "IND003",
+            "Motor Controller",
+            DeviceType.ACTUATOR,
+            "Assembly Line",
+            DeviceStatus.WARNING,
+            datetime.now(),
+            "2.5.0",
+            metrics={"rpm": 1500, "vibration": 8.5},
+        ),
+        IoTDevice(
+            "IND004",
+            "Quality Camera",
+            DeviceType.CAMERA,
+            "Inspection Station",
+            DeviceStatus.ONLINE,
+            datetime.now(),
+            "2.8.0",
+        ),
+        IoTDevice(
+            "IND005",
+            "Valve Actuator",
+            DeviceType.ACTUATOR,
+            "Cooling System",
+            DeviceStatus.ONLINE,
+            datetime.now(),
+            "3.1.0",
+        ),
     ]
 
     llm = OllamaProvider(model="llama3.2")

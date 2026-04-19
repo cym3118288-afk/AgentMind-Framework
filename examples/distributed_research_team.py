@@ -265,9 +265,7 @@ def example_fault_tolerance():
 
         # Execute with automatic retry
         print("\nExecuting task with fault tolerance (max 3 retries)...")
-        result = executor.execute_with_retry(
-            agent, "What is machine learning?", llm_config
-        )
+        result = executor.execute_with_retry(agent, "What is machine learning?", llm_config)
 
         if result.get("success"):
             print(f"\n✓ Success: {result['result'][:200]}...")

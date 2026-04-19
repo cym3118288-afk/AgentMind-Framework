@@ -23,10 +23,7 @@ async def example_basic_slack():
     manager.discover_and_load()
 
     # Load Slack plugin
-    slack_config = {
-        "token": os.getenv("SLACK_BOT_TOKEN"),
-        "channel": os.getenv("SLACK_CHANNEL_ID")
-    }
+    slack_config = {"token": os.getenv("SLACK_BOT_TOKEN"), "channel": os.getenv("SLACK_CHANNEL_ID")}
 
     success = await manager.load_plugin("slack", slack_config)
     if not success:
@@ -59,7 +56,7 @@ async def example_agent_with_slack():
     assistant = Agent(
         name="SlackAssistant",
         role="assistant",
-        system_prompt="You are a helpful assistant that responds via Slack."
+        system_prompt="You are a helpful assistant that responds via Slack.",
     )
     mind.add_agent(assistant)
 
@@ -67,10 +64,7 @@ async def example_agent_with_slack():
     manager = PluginManager()
     manager.discover_and_load()
 
-    slack_config = {
-        "token": os.getenv("SLACK_BOT_TOKEN"),
-        "channel": os.getenv("SLACK_CHANNEL_ID")
-    }
+    slack_config = {"token": os.getenv("SLACK_BOT_TOKEN"), "channel": os.getenv("SLACK_CHANNEL_ID")}
 
     await manager.load_plugin("slack", slack_config)
     slack = manager.get_plugin("slack")
@@ -97,11 +91,7 @@ async def example_agent_with_slack():
             await slack.send_message(response)
 
             # Add reaction to original message
-            await slack.add_reaction(
-                slack_config["channel"],
-                latest["ts"],
-                "white_check_mark"
-            )
+            await slack.add_reaction(slack_config["channel"], latest["ts"], "white_check_mark")
 
     await manager.unload_plugin("slack")
 
@@ -116,15 +106,13 @@ async def example_slack_bot():
 
     # Create specialized agents
     greeter = Agent(
-        name="Greeter",
-        role="greeting",
-        system_prompt="You greet users warmly and professionally."
+        name="Greeter", role="greeting", system_prompt="You greet users warmly and professionally."
     )
 
     helper = Agent(
         name="Helper",
         role="assistance",
-        system_prompt="You provide helpful information and assistance."
+        system_prompt="You provide helpful information and assistance.",
     )
 
     mind.add_agent(greeter)
@@ -134,10 +122,7 @@ async def example_slack_bot():
     manager = PluginManager()
     manager.discover_and_load()
 
-    slack_config = {
-        "token": os.getenv("SLACK_BOT_TOKEN"),
-        "channel": os.getenv("SLACK_CHANNEL_ID")
-    }
+    slack_config = {"token": os.getenv("SLACK_BOT_TOKEN"), "channel": os.getenv("SLACK_CHANNEL_ID")}
 
     await manager.load_plugin("slack", slack_config)
     slack = manager.get_plugin("slack")
@@ -145,8 +130,7 @@ async def example_slack_bot():
 
     # Send greeting
     greeting_result = await mind.collaborate(
-        "Generate a friendly greeting for the team",
-        max_rounds=1
+        "Generate a friendly greeting for the team", max_rounds=1
     )
     await slack.send_message(greeting_result.final_output)
 
@@ -169,10 +153,7 @@ async def example_slack_rich_messages():
     manager = PluginManager()
     manager.discover_and_load()
 
-    slack_config = {
-        "token": os.getenv("SLACK_BOT_TOKEN"),
-        "channel": os.getenv("SLACK_CHANNEL_ID")
-    }
+    slack_config = {"token": os.getenv("SLACK_BOT_TOKEN"), "channel": os.getenv("SLACK_CHANNEL_ID")}
 
     await manager.load_plugin("slack", slack_config)
     slack = manager.get_plugin("slack")
@@ -180,50 +161,26 @@ async def example_slack_rich_messages():
 
     # Create rich message with blocks
     blocks = [
-        {
-            "type": "header",
-            "text": {
-                "type": "plain_text",
-                "text": "AgentMind Status Report"
-            }
-        },
+        {"type": "header", "text": {"type": "plain_text", "text": "AgentMind Status Report"}},
         {
             "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "*Status:* All systems operational"
-            }
+            "text": {"type": "mrkdwn", "text": "*Status:* All systems operational"},
         },
         {
             "type": "section",
             "fields": [
-                {
-                    "type": "mrkdwn",
-                    "text": "*Active Agents:* 3"
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": "*Tasks Completed:* 42"
-                }
-            ]
+                {"type": "mrkdwn", "text": "*Active Agents:* 3"},
+                {"type": "mrkdwn", "text": "*Tasks Completed:* 42"},
+            ],
         },
-        {
-            "type": "divider"
-        },
+        {"type": "divider"},
         {
             "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "Need help? Type `@agentmind help`"
-            }
-        }
+            "text": {"type": "mrkdwn", "text": "Need help? Type `@agentmind help`"},
+        },
     ]
 
-    await slack.send_rich_message(
-        slack_config["channel"],
-        blocks,
-        text="AgentMind Status Report"
-    )
+    await slack.send_rich_message(slack_config["channel"], blocks, text="AgentMind Status Report")
 
     await manager.unload_plugin("slack")
 
@@ -235,10 +192,7 @@ async def example_slack_file_upload():
     manager = PluginManager()
     manager.discover_and_load()
 
-    slack_config = {
-        "token": os.getenv("SLACK_BOT_TOKEN"),
-        "channel": os.getenv("SLACK_CHANNEL_ID")
-    }
+    slack_config = {"token": os.getenv("SLACK_BOT_TOKEN"), "channel": os.getenv("SLACK_CHANNEL_ID")}
 
     await manager.load_plugin("slack", slack_config)
     slack = manager.get_plugin("slack")
@@ -251,7 +205,7 @@ async def example_slack_file_upload():
             file_path,
             slack_config["channel"],
             title="Agent Report",
-            comment="Here's the latest report from AgentMind"
+            comment="Here's the latest report from AgentMind",
         )
         print(f"Uploaded {file_path} to Slack")
     else:
@@ -267,9 +221,7 @@ async def example_list_channels():
     manager = PluginManager()
     manager.discover_and_load()
 
-    slack_config = {
-        "token": os.getenv("SLACK_BOT_TOKEN")
-    }
+    slack_config = {"token": os.getenv("SLACK_BOT_TOKEN")}
 
     await manager.load_plugin("slack", slack_config)
     slack = manager.get_plugin("slack")

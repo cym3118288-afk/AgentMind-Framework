@@ -26,6 +26,7 @@ from agentmind.tools import Tool
 
 class RunStatus(str, Enum):
     """Status of an assistant run"""
+
     QUEUED = "queued"
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
@@ -38,6 +39,7 @@ class RunStatus(str, Enum):
 @dataclass
 class Message:
     """Represents a message in a thread"""
+
     id: str
     role: str
     content: str
@@ -49,6 +51,7 @@ class Message:
 @dataclass
 class Thread:
     """Represents a conversation thread"""
+
     id: str
     created_at: int = field(default_factory=lambda: int(time.time()))
     messages: List[Message] = field(default_factory=list)
@@ -58,6 +61,7 @@ class Thread:
 @dataclass
 class Run:
     """Represents an assistant run"""
+
     id: str
     thread_id: str
     assistant_id: str
@@ -98,7 +102,7 @@ class Assistant:
         model: str = "llama3.2",
         tools: Optional[List[Tool]] = None,
         metadata: Optional[Dict[str, Any]] = None,
-        provider: str = "ollama"
+        provider: str = "ollama",
     ):
         self.id = f"asst_{int(time.time())}"
         self.name = name
@@ -116,10 +120,7 @@ class Assistant:
 
         # Create AgentMind agent
         self.agent = Agent(
-            name=name,
-            role="assistant",
-            system_prompt=instructions,
-            tools=self.tools
+            name=name, role="assistant", system_prompt=instructions, tools=self.tools
         )
 
         # Initialize AgentMind
@@ -145,8 +146,7 @@ class ThreadManager:
     def create(self, metadata: Optional[Dict[str, Any]] = None) -> Thread:
         """Create a new thread"""
         thread = Thread(
-            id=f"thread_{int(time.time())}_{len(self.assistant._threads)}",
-            metadata=metadata or {}
+            id=f"thread_{int(time.time())}_{len(self.assistant._threads)}", metadata=metadata or {}
         )
         self.assistant._threads[thread.id] = thread
         return thread
@@ -170,11 +170,7 @@ class MessageManager:
         self.assistant = assistant
 
     def create(
-        self,
-        thread_id: str,
-        role: str,
-        content: str,
-        metadata: Optional[Dict[str, Any]] = None
+        self, thread_id: str, role: str, content: str, metadata: Optional[Dict[str, Any]] = None
     ) -> Message:
         """Add a message to a thread"""
         thread = self.assistant._threads.get(thread_id)
@@ -186,7 +182,7 @@ class MessageManager:
             role=role,
             content=content,
             thread_id=thread_id,
-            metadata=metadata or {}
+            metadata=metadata or {},
         )
 
         thread.messages.append(message)
@@ -221,7 +217,7 @@ class RunManager:
         self,
         thread_id: str,
         instructions: Optional[str] = None,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
     ) -> Run:
         """Create and execute a run"""
         thread = self.assistant._threads.get(thread_id)
@@ -233,7 +229,7 @@ class RunManager:
             thread_id=thread_id,
             assistant_id=self.assistant.id,
             status=RunStatus.QUEUED,
-            metadata=metadata or {}
+            metadata=metadata or {},
         )
 
         self.assistant._runs[run.id] = run
@@ -243,12 +239,7 @@ class RunManager:
 
         return run
 
-    async def _execute_run(
-        self,
-        run: Run,
-        thread: Thread,
-        custom_instructions: Optional[str]
-    ):
+    async def _execute_run(self, run: Run, thread: Thread, custom_instructions: Optional[str]):
         """Execute the assistant run"""
         try:
             run.status = RunStatus.IN_PROGRESS
@@ -266,10 +257,7 @@ class RunManager:
                 self.assistant.agent.system_prompt = custom_instructions
 
             # Run collaboration
-            result = await self.assistant.mind.collaborate(
-                last_message,
-                max_rounds=3
-            )
+            result = await self.assistant.mind.collaborate(last_message, max_rounds=3)
 
             # Restore original instructions
             if custom_instructions:
@@ -280,7 +268,7 @@ class RunManager:
                 id=f"msg_{int(time.time())}_{len(thread.messages)}",
                 role="assistant",
                 content=result,
-                thread_id=thread.id
+                thread_id=thread.id,
             )
             thread.messages.append(response_message)
 
@@ -299,10 +287,7 @@ class RunManager:
 
     def list(self, thread_id: str) -> List[Run]:
         """List all runs for a thread"""
-        return [
-            run for run in self.assistant._runs.values()
-            if run.thread_id == thread_id
-        ]
+        return [run for run in self.assistant._runs.values() if run.thread_id == thread_id]
 
     def cancel(self, thread_id: str, run_id: str) -> Optional[Run]:
         """Cancel a run"""
@@ -321,7 +306,7 @@ async def example_basic_assistant():
     assistant = Assistant(
         name="Math Tutor",
         instructions="You are a helpful math tutor. Explain concepts clearly and provide step-by-step solutions.",
-        model="llama3.2"
+        model="llama3.2",
     )
 
     # Create thread
@@ -332,7 +317,7 @@ async def example_basic_assistant():
     assistant.threads.messages.create(
         thread_id=thread.id,
         role="user",
-        content="What is the quadratic formula and how do I use it?"
+        content="What is the quadratic formula and how do I use it?",
     )
 
     # Create run
@@ -359,16 +344,14 @@ async def example_multi_turn_conversation():
     assistant = Assistant(
         name="Code Helper",
         instructions="You are a helpful coding assistant. Provide clear, practical code examples.",
-        model="llama3.2"
+        model="llama3.2",
     )
 
     thread = assistant.threads.create()
 
     # Turn 1
     assistant.threads.messages.create(
-        thread_id=thread.id,
-        role="user",
-        content="How do I read a file in Python?"
+        thread_id=thread.id, role="user", content="How do I read a file in Python?"
     )
 
     run1 = assistant.threads.runs.create(thread_id=thread.id)
@@ -377,9 +360,7 @@ async def example_multi_turn_conversation():
 
     # Turn 2
     assistant.threads.messages.create(
-        thread_id=thread.id,
-        role="user",
-        content="What about reading CSV files specifically?"
+        thread_id=thread.id, role="user", content="What about reading CSV files specifically?"
     )
 
     run2 = assistant.threads.runs.create(thread_id=thread.id)
@@ -405,9 +386,9 @@ async def example_assistant_with_tools():
                 parameters={
                     "expression": {
                         "type": "string",
-                        "description": "Mathematical expression to evaluate"
+                        "description": "Mathematical expression to evaluate",
                     }
-                }
+                },
             )
 
         async def execute(self, expression: str) -> str:
@@ -422,15 +403,13 @@ async def example_assistant_with_tools():
         name="Calculator Assistant",
         instructions="You help with calculations. Use the calculator tool for complex math.",
         model="llama3.2",
-        tools=[CalculatorTool()]
+        tools=[CalculatorTool()],
     )
 
     thread = assistant.threads.create()
 
     assistant.threads.messages.create(
-        thread_id=thread.id,
-        role="user",
-        content="What is 15% of 250?"
+        thread_id=thread.id, role="user", content="What is 15% of 250?"
     )
 
     run = assistant.threads.runs.create(thread_id=thread.id)
@@ -447,18 +426,14 @@ async def example_custom_instructions():
     print("\n=== Example 4: Custom Instructions per Run ===\n")
 
     assistant = Assistant(
-        name="Writer",
-        instructions="You are a professional writer.",
-        model="llama3.2"
+        name="Writer", instructions="You are a professional writer.", model="llama3.2"
     )
 
     thread = assistant.threads.create()
 
     # Run 1: Default instructions
     assistant.threads.messages.create(
-        thread_id=thread.id,
-        role="user",
-        content="Write a short paragraph about AI."
+        thread_id=thread.id, role="user", content="Write a short paragraph about AI."
     )
 
     run1 = assistant.threads.runs.create(thread_id=thread.id)
@@ -471,14 +446,11 @@ async def example_custom_instructions():
 
     # Run 2: Custom instructions
     assistant.threads.messages.create(
-        thread_id=thread.id,
-        role="user",
-        content="Write a short paragraph about AI."
+        thread_id=thread.id, role="user", content="Write a short paragraph about AI."
     )
 
     run2 = assistant.threads.runs.create(
-        thread_id=thread.id,
-        instructions="You are a poet. Write in verse with rhymes."
+        thread_id=thread.id, instructions="You are a poet. Write in verse with rhymes."
     )
     while assistant.threads.runs.retrieve(thread.id, run2.id).status != RunStatus.COMPLETED:
         await asyncio.sleep(0.5)

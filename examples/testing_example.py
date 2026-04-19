@@ -119,14 +119,9 @@ class TestCollaboration(AgentTestCase):
 
     async def test_broadcast_strategy(self):
         """Test broadcast collaboration strategy."""
-        provider = MockLLMProvider(
-            responses=["Response A", "Response B", "Response C"]
-        )
+        provider = MockLLMProvider(responses=["Response A", "Response B", "Response C"])
 
-        mind = AgentMind(
-            strategy=CollaborationStrategy.BROADCAST,
-            llm_provider=provider
-        )
+        mind = AgentMind(strategy=CollaborationStrategy.BROADCAST, llm_provider=provider)
 
         # Add multiple agents
         for i in range(3):
@@ -154,11 +149,7 @@ async def test_response_quality():
     response = await agent.process_message(message)
 
     # Check quality
-    assert_response_quality(
-        response.content,
-        min_length=20,
-        required_words=["analysis", "problem"]
-    )
+    assert_response_quality(response.content, min_length=20, required_words=["analysis", "problem"])
 
 
 # Example 4: Performance testing
@@ -166,8 +157,7 @@ async def test_response_quality():
 async def test_collaboration_performance():
     """Test collaboration performance."""
     provider = MockLLMProvider(
-        responses=["Quick response"] * 10,
-        delay=0.01  # 10ms simulated delay
+        responses=["Quick response"] * 10, delay=0.01  # 10ms simulated delay
     )
 
     mind = AgentMind(llm_provider=provider)
@@ -260,10 +250,7 @@ async def test_full_workflow():
         ]
     )
 
-    mind = AgentMind(
-        strategy=CollaborationStrategy.ROUND_ROBIN,
-        llm_provider=provider
-    )
+    mind = AgentMind(strategy=CollaborationStrategy.ROUND_ROBIN, llm_provider=provider)
 
     # Create team
     researcher = Agent(name="researcher", role="analyst", llm_provider=provider)
@@ -273,10 +260,7 @@ async def test_full_workflow():
     mind.add_agent(writer)
 
     # Execute workflow
-    result = await mind.collaborate(
-        "Create content about AI",
-        max_rounds=2
-    )
+    result = await mind.collaborate("Create content about AI", max_rounds=2)
 
     # Verify results
     assert_collaboration_success(result)

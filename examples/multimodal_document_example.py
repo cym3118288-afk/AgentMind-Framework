@@ -99,7 +99,7 @@ async def example_document_analysis_agent():
     analyzer = Agent(
         name="DocumentAnalyzer",
         role="analysis",
-        system_prompt="You analyze documents and extract key information."
+        system_prompt="You analyze documents and extract key information.",
     )
     mind.add_agent(analyzer)
 
@@ -111,7 +111,7 @@ async def example_document_analysis_agent():
         # Analyze with agent
         result = await mind.collaborate(
             f"Analyze this document and provide a summary with key points:\n\n{text[:2000]}",
-            max_rounds=1
+            max_rounds=1,
         )
         print(f"Analysis:\n{result.final_output}\n")
     else:
@@ -129,7 +129,7 @@ async def example_multi_document_comparison():
     comparer = Agent(
         name="DocumentComparer",
         role="comparison",
-        system_prompt="You compare documents and identify similarities and differences."
+        system_prompt="You compare documents and identify similarities and differences.",
     )
     mind.add_agent(comparer)
 
@@ -163,19 +163,19 @@ async def example_research_paper_analyzer():
     summarizer = Agent(
         name="Summarizer",
         role="summarization",
-        system_prompt="You create concise summaries of research papers."
+        system_prompt="You create concise summaries of research papers.",
     )
 
     methodology_expert = Agent(
         name="MethodologyExpert",
         role="methodology",
-        system_prompt="You analyze research methodologies and experimental design."
+        system_prompt="You analyze research methodologies and experimental design.",
     )
 
     results_analyst = Agent(
         name="ResultsAnalyst",
         role="results",
-        system_prompt="You analyze research results and their implications."
+        system_prompt="You analyze research results and their implications.",
     )
 
     mind.add_agent(summarizer)
@@ -189,8 +189,7 @@ async def example_research_paper_analyzer():
 
         # Analyze with multiple agents
         result = await mind.collaborate(
-            f"Analyze this research paper comprehensively:\n\n{text[:3000]}",
-            max_rounds=3
+            f"Analyze this research paper comprehensively:\n\n{text[:3000]}", max_rounds=3
         )
 
         print(f"Comprehensive Analysis:\n{result.final_output}\n")
@@ -212,7 +211,7 @@ async def example_contract_reviewer():
         system_prompt=(
             "You review contracts and identify key terms, obligations, "
             "and potential issues. You are thorough and detail-oriented."
-        )
+        ),
     )
     mind.add_agent(reviewer)
 
@@ -228,7 +227,7 @@ async def example_contract_reviewer():
             f"2. Obligations for each party\n"
             f"3. Potential risks or concerns\n\n"
             f"Contract:\n{text}",
-            max_rounds=1
+            max_rounds=1,
         )
 
         print(f"Contract Review:\n{result.final_output}\n")
@@ -247,7 +246,7 @@ async def example_document_qa():
     qa_agent = Agent(
         name="QAAgent",
         role="qa",
-        system_prompt="You answer questions based on document content accurately."
+        system_prompt="You answer questions based on document content accurately.",
     )
     mind.add_agent(qa_agent)
 
@@ -260,13 +259,13 @@ async def example_document_qa():
         questions = [
             "What is the main purpose of this document?",
             "What are the key requirements mentioned?",
-            "Are there any warnings or cautions?"
+            "Are there any warnings or cautions?",
         ]
 
         for question in questions:
             result = await mind.collaborate(
                 f"Based on this document, answer: {question}\n\nDocument:\n{text[:2000]}",
-                max_rounds=1
+                max_rounds=1,
             )
             print(f"Q: {question}")
             print(f"A: {result.final_output}\n")
@@ -285,7 +284,7 @@ async def example_batch_document_processing():
     processor = Agent(
         name="BatchProcessor",
         role="processing",
-        system_prompt="You extract key information from documents efficiently."
+        system_prompt="You extract key information from documents efficiently.",
     )
     mind.add_agent(processor)
 
@@ -297,8 +296,7 @@ async def example_batch_document_processing():
         for pdf_file in pdf_files[:5]:  # Process first 5
             text = doc_processor.extract_text(pdf_file)
             result = await mind.collaborate(
-                f"Extract key information from: {pdf_file.name}\n\n{text[:1000]}",
-                max_rounds=1
+                f"Extract key information from: {pdf_file.name}\n\n{text[:1000]}", max_rounds=1
             )
             print(f"File: {pdf_file.name}")
             print(f"Summary: {result.final_output}\n")

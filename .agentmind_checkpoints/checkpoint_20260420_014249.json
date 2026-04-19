@@ -1,0 +1,137 @@
+{
+  "checkpoint_name": "checkpoint_20260420_014249",
+  "timestamp": "2026-04-20T01:42:49.446894",
+  "strategy": "broadcast",
+  "coordination_strategy": "centralized",
+  "agents": [
+    {
+      "name": "agent1",
+      "role": "analyst",
+      "config": {
+        "name": "agent1",
+        "role": "analyst",
+        "backstory": null,
+        "temperature": 0.7,
+        "max_tokens": 1000,
+        "tools": [],
+        "system_prompt": null,
+        "memory_limit": 50
+      },
+      "memory": [
+        {
+          "content": "Test task",
+          "sender": "system",
+          "role": "system",
+          "timestamp": "2026-04-20T01:42:49.446688",
+          "metadata": {}
+        },
+        {
+          "content": "Mock response to: Test task",
+          "sender": "agent1",
+          "role": "agent",
+          "timestamp": "2026-04-20T01:42:49.446781",
+          "metadata": {
+            "agent_role": "analyst",
+            "model": "mock-model",
+            "usage": {
+              "total_tokens": 15
+            },
+            "mode": "simple"
+          }
+        }
+      ],
+      "is_active": true,
+      "state": "idle"
+    },
+    {
+      "name": "agent2",
+      "role": "creative",
+      "config": {
+        "name": "agent2",
+        "role": "creative",
+        "backstory": null,
+        "temperature": 0.7,
+        "max_tokens": 1000,
+        "tools": [],
+        "system_prompt": null,
+        "memory_limit": 50
+      },
+      "memory": [
+        {
+          "content": "Test task",
+          "sender": "system",
+          "role": "system",
+          "timestamp": "2026-04-20T01:42:49.446688",
+          "metadata": {}
+        },
+        {
+          "content": "Mock response to: Test task",
+          "sender": "agent2",
+          "role": "agent",
+          "timestamp": "2026-04-20T01:42:49.446799",
+          "metadata": {
+            "agent_role": "creative",
+            "model": "mock-model",
+            "usage": {
+              "total_tokens": 15
+            },
+            "mode": "simple"
+          }
+        }
+      ],
+      "is_active": true,
+      "state": "idle"
+    }
+  ],
+  "tasks": {},
+  "conversation_history": [
+    {
+      "content": "Test task",
+      "sender": "system",
+      "role": "system",
+      "timestamp": "2026-04-20T01:42:49.446688",
+      "metadata": {}
+    },
+    {
+      "content": "Mock response to: Test task",
+      "sender": "agent1",
+      "role": "agent",
+      "timestamp": "2026-04-20T01:42:49.446781",
+      "metadata": {
+        "agent_role": "analyst",
+        "model": "mock-model",
+        "usage": {
+          "total_tokens": 15
+        },
+        "mode": "simple"
+      }
+    },
+    {
+      "content": "Mock response to: Test task",
+      "sender": "agent2",
+      "role": "agent",
+      "timestamp": "2026-04-20T01:42:49.446799",
+      "metadata": {
+        "agent_role": "creative",
+        "model": "mock-model",
+        "usage": {
+          "total_tokens": 15
+        },
+        "mode": "simple"
+      }
+    }
+  ],
+  "metrics": {
+    "total_collaborations": 1,
+    "successful_collaborations": 1,
+    "failed_collaborations": 0,
+    "total_tasks": 0,
+    "completed_tasks": 0,
+    "failed_tasks": 0,
+    "total_messages": 0,
+    "average_collaboration_time": 0.000211,
+    "deadlocks_detected": 0,
+    "deadlocks_resolved": 0
+  },
+  "shared_context": {}
+}

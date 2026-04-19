@@ -26,27 +26,20 @@ class HaystackRetrieverTool(Tool):
             name=name,
             description="Retrieve relevant documents from the document store using Haystack",
             parameters={
-                "query": {
-                    "type": "string",
-                    "description": "The search query"
-                },
+                "query": {"type": "string", "description": "The search query"},
                 "top_k": {
                     "type": "integer",
                     "description": "Number of documents to retrieve",
-                    "default": 3
-                }
-            }
+                    "default": 3,
+                },
+            },
         )
 
     async def execute(self, query: str, top_k: int = 3) -> str:
         """Execute retrieval using Haystack"""
         try:
             # Run Haystack retriever
-            results = await asyncio.to_thread(
-                self.retriever.run,
-                query=query,
-                top_k=top_k
-            )
+            results = await asyncio.to_thread(self.retriever.run, query=query, top_k=top_k)
 
             # Format results
             documents = results.get("documents", [])
@@ -55,8 +48,8 @@ class HaystackRetrieverTool(Tool):
 
             formatted = []
             for i, doc in enumerate(documents, 1):
-                content = doc.content if hasattr(doc, 'content') else str(doc)
-                score = doc.score if hasattr(doc, 'score') else "N/A"
+                content = doc.content if hasattr(doc, "content") else str(doc)
+                score = doc.score if hasattr(doc, "score") else "N/A"
                 formatted.append(f"[{i}] (Score: {score})\n{content}")
 
             return "\n\n".join(formatted)
@@ -80,10 +73,18 @@ async def example_basic_retrieval():
 
         # Add documents
         documents = [
-            Document(content="AgentMind is a lightweight multi-agent framework for Python with minimal dependencies."),
-            Document(content="The framework supports Ollama, OpenAI, Anthropic, and other LLM providers via LiteLLM."),
-            Document(content="AgentMind features async-first architecture for true concurrent agent collaboration."),
-            Document(content="Built-in memory management supports conversation history and context across sessions."),
+            Document(
+                content="AgentMind is a lightweight multi-agent framework for Python with minimal dependencies."
+            ),
+            Document(
+                content="The framework supports Ollama, OpenAI, Anthropic, and other LLM providers via LiteLLM."
+            ),
+            Document(
+                content="AgentMind features async-first architecture for true concurrent agent collaboration."
+            ),
+            Document(
+                content="Built-in memory management supports conversation history and context across sessions."
+            ),
         ]
 
         document_store.write_documents(documents)
@@ -103,7 +104,7 @@ async def example_basic_retrieval():
             name="QA_Agent",
             role="qa_specialist",
             system_prompt="You answer questions using retrieved documents. Provide accurate, well-sourced answers.",
-            tools=[retriever_tool]
+            tools=[retriever_tool],
         )
 
         mind.add_agent(qa_agent)
@@ -112,7 +113,7 @@ async def example_basic_retrieval():
         questions = [
             "What is AgentMind?",
             "What LLM providers are supported?",
-            "Tell me about the architecture."
+            "Tell me about the architecture.",
         ]
 
         for question in questions:
@@ -138,11 +139,21 @@ async def example_multi_agent_pipeline():
         document_store = InMemoryDocumentStore()
 
         tech_docs = [
-            Document(content="Python 3.12 introduces improved error messages and performance optimizations."),
-            Document(content="FastAPI is a modern web framework for building APIs with Python 3.7+ based on type hints."),
-            Document(content="Docker containers provide lightweight, portable application packaging and deployment."),
-            Document(content="Kubernetes orchestrates containerized applications across clusters of machines."),
-            Document(content="PostgreSQL is a powerful open-source relational database with advanced features."),
+            Document(
+                content="Python 3.12 introduces improved error messages and performance optimizations."
+            ),
+            Document(
+                content="FastAPI is a modern web framework for building APIs with Python 3.7+ based on type hints."
+            ),
+            Document(
+                content="Docker containers provide lightweight, portable application packaging and deployment."
+            ),
+            Document(
+                content="Kubernetes orchestrates containerized applications across clusters of machines."
+            ),
+            Document(
+                content="PostgreSQL is a powerful open-source relational database with advanced features."
+            ),
         ]
 
         document_store.write_documents(tech_docs)
@@ -160,21 +171,21 @@ async def example_multi_agent_pipeline():
             name="Retriever",
             role="information_retriever",
             system_prompt="You retrieve relevant technical documentation. Focus on finding accurate information.",
-            tools=[retriever_tool]
+            tools=[retriever_tool],
         )
 
         # Technical expert
         tech_expert = Agent(
             name="Tech_Expert",
             role="technical_expert",
-            system_prompt="You explain technical concepts clearly and provide practical insights."
+            system_prompt="You explain technical concepts clearly and provide practical insights.",
         )
 
         # Architect
         architect = Agent(
             name="Architect",
             role="solution_architect",
-            system_prompt="You design solutions and recommend best practices based on technical requirements."
+            system_prompt="You design solutions and recommend best practices based on technical requirements.",
         )
 
         mind.add_agent(retriever_agent)
@@ -184,7 +195,7 @@ async def example_multi_agent_pipeline():
         # Complex query requiring multiple agents
         result = await mind.collaborate(
             "I need to build a scalable API service. What technologies should I use and how should I architect it?",
-            max_rounds=3
+            max_rounds=3,
         )
 
         print(f"Recommendation: {result}")
@@ -207,11 +218,21 @@ async def example_qa_pipeline():
         document_store = InMemoryDocumentStore()
 
         faqs = [
-            Document(content="Q: How do I install AgentMind? A: Use pip install agentmind or clone from GitHub."),
-            Document(content="Q: What Python version is required? A: Python 3.8 or higher is required."),
-            Document(content="Q: Can I use local models? A: Yes, AgentMind supports Ollama for local LLM execution."),
-            Document(content="Q: How do I add custom tools? A: Extend the Tool base class and implement the execute method."),
-            Document(content="Q: Is AgentMind production-ready? A: Yes, it includes error handling, testing, and observability features."),
+            Document(
+                content="Q: How do I install AgentMind? A: Use pip install agentmind or clone from GitHub."
+            ),
+            Document(
+                content="Q: What Python version is required? A: Python 3.8 or higher is required."
+            ),
+            Document(
+                content="Q: Can I use local models? A: Yes, AgentMind supports Ollama for local LLM execution."
+            ),
+            Document(
+                content="Q: How do I add custom tools? A: Extend the Tool base class and implement the execute method."
+            ),
+            Document(
+                content="Q: Is AgentMind production-ready? A: Yes, it includes error handling, testing, and observability features."
+            ),
         ]
 
         document_store.write_documents(faqs)
@@ -229,7 +250,7 @@ async def example_qa_pipeline():
             name="FAQ_Agent",
             role="support_specialist",
             system_prompt="You answer user questions using the FAQ database. Provide clear, helpful answers.",
-            tools=[retriever_tool]
+            tools=[retriever_tool],
         )
 
         mind.add_agent(faq_agent)
@@ -238,7 +259,7 @@ async def example_qa_pipeline():
         user_questions = [
             "How can I get started with AgentMind?",
             "Can I run models locally?",
-            "What if I want to add my own tools?"
+            "What if I want to add my own tools?",
         ]
 
         for question in user_questions:
@@ -264,11 +285,26 @@ async def example_document_processing():
         document_store = InMemoryDocumentStore()
 
         feedback = [
-            Document(content="Customer feedback: The product is great but the UI could be more intuitive.", meta={"sentiment": "mixed", "category": "ui"}),
-            Document(content="Customer feedback: Excellent customer support, resolved my issue quickly.", meta={"sentiment": "positive", "category": "support"}),
-            Document(content="Customer feedback: Performance is slow when handling large datasets.", meta={"sentiment": "negative", "category": "performance"}),
-            Document(content="Customer feedback: Love the new features in the latest release!", meta={"sentiment": "positive", "category": "features"}),
-            Document(content="Customer feedback: Documentation needs improvement, hard to find examples.", meta={"sentiment": "negative", "category": "docs"}),
+            Document(
+                content="Customer feedback: The product is great but the UI could be more intuitive.",
+                meta={"sentiment": "mixed", "category": "ui"},
+            ),
+            Document(
+                content="Customer feedback: Excellent customer support, resolved my issue quickly.",
+                meta={"sentiment": "positive", "category": "support"},
+            ),
+            Document(
+                content="Customer feedback: Performance is slow when handling large datasets.",
+                meta={"sentiment": "negative", "category": "performance"},
+            ),
+            Document(
+                content="Customer feedback: Love the new features in the latest release!",
+                meta={"sentiment": "positive", "category": "features"},
+            ),
+            Document(
+                content="Customer feedback: Documentation needs improvement, hard to find examples.",
+                meta={"sentiment": "negative", "category": "docs"},
+            ),
         ]
 
         document_store.write_documents(feedback)
@@ -286,14 +322,14 @@ async def example_document_processing():
             name="Analyzer",
             role="feedback_analyzer",
             system_prompt="You analyze customer feedback and identify patterns, issues, and opportunities.",
-            tools=[retriever_tool]
+            tools=[retriever_tool],
         )
 
         # Product manager
         pm = Agent(
             name="Product_Manager",
             role="product_manager",
-            system_prompt="You prioritize issues and create actionable product improvement plans."
+            system_prompt="You prioritize issues and create actionable product improvement plans.",
         )
 
         mind.add_agent(analyzer)
@@ -301,8 +337,7 @@ async def example_document_processing():
 
         # Analyze feedback
         result = await mind.collaborate(
-            "Analyze customer feedback and create a prioritized list of improvements.",
-            max_rounds=3
+            "Analyze customer feedback and create a prioritized list of improvements.", max_rounds=3
         )
 
         print(f"Analysis & Recommendations:\n{result}")

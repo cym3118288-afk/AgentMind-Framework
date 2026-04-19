@@ -19,6 +19,7 @@ from agentmind.llm import OllamaProvider
 # Request/Response models
 class ContentRequest(BaseModel):
     """Request model for content generation."""
+
     topic: str
     style: str = "professional"
     max_rounds: int = 3
@@ -27,6 +28,7 @@ class ContentRequest(BaseModel):
 
 class ContentResponse(BaseModel):
     """Response model for generated content."""
+
     content: str
     rounds: int
     participants: list[str]
@@ -35,9 +37,7 @@ class ContentResponse(BaseModel):
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="AgentMind Content API",
-    description="Multi-agent content generation API",
-    version="1.0.0"
+    title="AgentMind Content API", description="Multi-agent content generation API", version="1.0.0"
 )
 
 
@@ -63,10 +63,7 @@ def get_content_team(model: str = "llama3.2") -> AgentMind:
     llm = OllamaProvider(model=model)
 
     # Create team with round-robin strategy
-    mind = AgentMind(
-        strategy=CollaborationStrategy.ROUND_ROBIN,
-        llm_provider=llm
-    )
+    mind = AgentMind(strategy=CollaborationStrategy.ROUND_ROBIN, llm_provider=llm)
 
     # Researcher agent
     researcher = Agent(name="Researcher", role="analyst", llm_provider=llm)
@@ -100,10 +97,7 @@ async def root():
     return {
         "name": "AgentMind Content API",
         "version": "1.0.0",
-        "endpoints": {
-            "generate": "/generate",
-            "health": "/health"
-        }
+        "endpoints": {"generate": "/generate", "health": "/health"},
     }
 
 
@@ -140,28 +134,18 @@ Requirements:
 3. Edit for clarity and quality"""
 
         # Run collaboration
-        result = await mind.collaborate(
-            task=task,
-            max_rounds=request.max_rounds
-        )
+        result = await mind.collaborate(task=task, max_rounds=request.max_rounds)
 
         # Return response
         return ContentResponse(
             content=result.final_output,
             rounds=result.rounds,
             participants=result.participants,
-            metadata={
-                "topic": request.topic,
-                "style": request.style,
-                "model": request.model
-            }
+            metadata={"topic": request.topic, "style": request.style, "model": request.model},
         )
 
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Content generation failed: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Content generation failed: {str(e)}")
 
 
 @app.post("/analyze")
@@ -177,10 +161,7 @@ async def analyze_text(text: str, model: str = "llama3.2"):
     """
     try:
         llm = OllamaProvider(model=model)
-        mind = AgentMind(
-            strategy=CollaborationStrategy.BROADCAST,
-            llm_provider=llm
-        )
+        mind = AgentMind(strategy=CollaborationStrategy.BROADCAST, llm_provider=llm)
 
         # Create analysis agents
         sentiment = Agent(name="Sentiment", role="analyst", llm_provider=llm)
@@ -196,21 +177,12 @@ async def analyze_text(text: str, model: str = "llama3.2"):
         mind.add_agent(structure)
         mind.add_agent(quality)
 
-        result = await mind.collaborate(
-            task=f"Analyze this text:\n\n{text}",
-            max_rounds=1
-        )
+        result = await mind.collaborate(task=f"Analyze this text:\n\n{text}", max_rounds=1)
 
-        return {
-            "analysis": result.final_output,
-            "perspectives": result.participants
-        }
+        return {"analysis": result.final_output, "perspectives": result.participants}
 
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Analysis failed: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
 
 
 if __name__ == "__main__":

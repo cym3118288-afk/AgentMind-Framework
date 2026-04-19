@@ -63,7 +63,7 @@ async def run_software_dev_swarm(project_description: str, requirements: list):
 
         You design robust, scalable systems that meet business requirements.
         Focus on maintainability, extensibility, and best practices.""",
-        llm_provider=llm
+        llm_provider=llm,
     )
 
     senior_engineer = Agent(
@@ -80,7 +80,7 @@ async def run_software_dev_swarm(project_description: str, requirements: list):
 
         You write high-quality, maintainable code that follows best practices.
         Focus on code quality, testing, and documentation.""",
-        llm_provider=llm
+        llm_provider=llm,
     )
 
     security_engineer = Agent(
@@ -97,7 +97,7 @@ async def run_software_dev_swarm(project_description: str, requirements: list):
 
         You identify security risks and implement robust defenses.
         Focus on secure coding practices and threat mitigation.""",
-        llm_provider=llm
+        llm_provider=llm,
     )
 
     devops_engineer = Agent(
@@ -114,7 +114,7 @@ async def run_software_dev_swarm(project_description: str, requirements: list):
 
         You ensure reliable, automated deployment and operations.
         Focus on automation, reliability, and scalability.""",
-        llm_provider=llm
+        llm_provider=llm,
     )
 
     qa_engineer = Agent(
@@ -131,7 +131,7 @@ async def run_software_dev_swarm(project_description: str, requirements: list):
 
         You ensure software meets quality standards before release.
         Focus on comprehensive testing and quality assurance.""",
-        llm_provider=llm
+        llm_provider=llm,
     )
 
     # Add agents to team
@@ -168,22 +168,22 @@ async def run_software_dev_swarm(project_description: str, requirements: list):
     """
 
     # Run collaboration
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("Starting development planning collaboration...")
-    print("="*80 + "\n")
+    print("=" * 80 + "\n")
 
     result = await mind.collaborate(task=task, max_rounds=6)
 
     # Display results
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("DEVELOPMENT PLAN")
-    print("="*80 + "\n")
+    print("=" * 80 + "\n")
     print(result)
 
     # Display statistics
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("COLLABORATION STATISTICS")
-    print("="*80 + "\n")
+    print("=" * 80 + "\n")
     print(f"Total Messages: {len(mind.conversation_history)}")
     print(f"Rounds Completed: {len(mind.conversation_history) // 5}")
     print(f"Agents Participated: 5")
@@ -195,9 +195,9 @@ async def main():
     """Main entry point."""
 
     # Example 1: E-commerce Platform
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("EXAMPLE 1: E-commerce Platform")
-    print("="*80)
+    print("=" * 80)
 
     await run_software_dev_swarm(
         project_description="Modern e-commerce platform with real-time inventory",
@@ -211,14 +211,14 @@ async def main():
             "Admin dashboard for management",
             "Mobile-responsive design",
             "Support for 10,000+ concurrent users",
-            "PCI DSS compliance"
-        ]
+            "PCI DSS compliance",
+        ],
     )
 
     # Example 2: Healthcare API
-    print("\n\n" + "="*80)
+    print("\n\n" + "=" * 80)
     print("EXAMPLE 2: Healthcare Data API")
-    print("="*80)
+    print("=" * 80)
 
     await run_software_dev_swarm(
         project_description="HIPAA-compliant healthcare data API",
@@ -232,8 +232,8 @@ async def main():
             "HIPAA compliance requirements",
             "Integration with EHR systems",
             "Rate limiting and throttling",
-            "Comprehensive API documentation"
-        ]
+            "Comprehensive API documentation",
+        ],
     )
 
 

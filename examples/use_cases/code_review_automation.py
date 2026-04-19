@@ -37,6 +37,7 @@ class IssueSeverity(str, Enum):
 @dataclass
 class CodeIssue:
     """Represents a code review issue"""
+
     severity: IssueSeverity
     category: str
     line_number: Optional[int]
@@ -47,6 +48,7 @@ class CodeIssue:
 @dataclass
 class CodeReview:
     """Represents a complete code review"""
+
     file_path: str
     language: str
     issues: List[CodeIssue]
@@ -62,9 +64,7 @@ class StaticAnalysisTool(Tool):
         super().__init__(
             name="static_analysis",
             description="Run static analysis to detect code issues",
-            parameters={
-                "code": {"type": "string", "description": "Code to analyze"}
-            }
+            parameters={"code": {"type": "string", "description": "Code to analyze"}},
         )
 
     async def execute(self, code: str) -> str:
@@ -95,9 +95,7 @@ class SecurityScanTool(Tool):
         super().__init__(
             name="security_scan",
             description="Scan code for security vulnerabilities",
-            parameters={
-                "code": {"type": "string", "description": "Code to scan"}
-            }
+            parameters={"code": {"type": "string", "description": "Code to scan"}},
         )
 
     async def execute(self, code: str) -> str:
@@ -117,7 +115,9 @@ class SecurityScanTool(Tool):
             vulnerabilities.append("MEDIUM: Weak random number generator for security")
 
         if vulnerabilities:
-            return "Security vulnerabilities:\n" + "\n".join(f"- {vuln}" for vuln in vulnerabilities)
+            return "Security vulnerabilities:\n" + "\n".join(
+                f"- {vuln}" for vuln in vulnerabilities
+            )
         return "No security vulnerabilities detected."
 
 
@@ -128,9 +128,7 @@ class ComplexityAnalysisTool(Tool):
         super().__init__(
             name="complexity_analysis",
             description="Analyze code complexity and maintainability",
-            parameters={
-                "code": {"type": "string", "description": "Code to analyze"}
-            }
+            parameters={"code": {"type": "string", "description": "Code to analyze"}},
         )
 
     async def execute(self, code: str) -> str:
@@ -179,7 +177,7 @@ async def create_code_review_system() -> AgentMind:
         4. Report findings clearly
 
         Focus on code quality, maintainability, and adherence to standards.""",
-        tools=[static_tool]
+        tools=[static_tool],
     )
 
     # 2. Security Reviewer
@@ -193,7 +191,7 @@ async def create_code_review_system() -> AgentMind:
         4. Prioritize security issues
 
         Focus on preventing security breaches and protecting user data.""",
-        tools=[security_tool]
+        tools=[security_tool],
     )
 
     # 3. Performance Analyst
@@ -207,7 +205,7 @@ async def create_code_review_system() -> AgentMind:
         4. Review resource usage
 
         Focus on efficiency, scalability, and resource optimization.""",
-        tools=[complexity_tool]
+        tools=[complexity_tool],
     )
 
     # 4. Documentation Reviewer
@@ -220,7 +218,7 @@ async def create_code_review_system() -> AgentMind:
         3. Assess code readability
         4. Suggest documentation improvements
 
-        Focus on making code understandable and maintainable."""
+        Focus on making code understandable and maintainable.""",
     )
 
     # 5. Review Synthesizer
@@ -233,7 +231,7 @@ async def create_code_review_system() -> AgentMind:
         3. Create actionable recommendations
         4. Generate comprehensive review summary
 
-        Provide clear, constructive feedback that helps developers improve."""
+        Provide clear, constructive feedback that helps developers improve.""",
     )
 
     mind.add_agent(static_agent)
@@ -288,7 +286,7 @@ async def review_code(mind: AgentMind, file_path: str, code: str, language: str)
         issues=[],
         overall_score=75,  # Would be calculated from actual analysis
         summary=result,
-        recommendations=[]
+        recommendations=[],
     )
 
     return review

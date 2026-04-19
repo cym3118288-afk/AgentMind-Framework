@@ -23,7 +23,7 @@ async def example_basic_discord():
     # Load Discord plugin
     discord_config = {
         "token": os.getenv("DISCORD_BOT_TOKEN"),
-        "guild_id": os.getenv("DISCORD_GUILD_ID")
+        "guild_id": os.getenv("DISCORD_GUILD_ID"),
     }
 
     success = await manager.load_plugin("discord", discord_config)
@@ -59,7 +59,7 @@ async def example_agent_with_discord():
     assistant = Agent(
         name="DiscordAssistant",
         role="assistant",
-        system_prompt="You are a helpful Discord bot assistant."
+        system_prompt="You are a helpful Discord bot assistant.",
     )
     mind.add_agent(assistant)
 
@@ -69,7 +69,7 @@ async def example_agent_with_discord():
 
     discord_config = {
         "token": os.getenv("DISCORD_BOT_TOKEN"),
-        "guild_id": os.getenv("DISCORD_GUILD_ID")
+        "guild_id": os.getenv("DISCORD_GUILD_ID"),
     }
 
     await manager.load_plugin("discord", discord_config)
@@ -115,19 +115,19 @@ async def example_discord_bot():
     moderator = Agent(
         name="Moderator",
         role="moderation",
-        system_prompt="You help moderate Discord servers and enforce rules."
+        system_prompt="You help moderate Discord servers and enforce rules.",
     )
 
     helper = Agent(
         name="Helper",
         role="assistance",
-        system_prompt="You provide helpful information to Discord users."
+        system_prompt="You provide helpful information to Discord users.",
     )
 
     entertainer = Agent(
         name="Entertainer",
         role="entertainment",
-        system_prompt="You engage users with fun facts and jokes."
+        system_prompt="You engage users with fun facts and jokes.",
     )
 
     mind.add_agent(moderator)
@@ -140,7 +140,7 @@ async def example_discord_bot():
 
     discord_config = {
         "token": os.getenv("DISCORD_BOT_TOKEN"),
-        "guild_id": os.getenv("DISCORD_GUILD_ID")
+        "guild_id": os.getenv("DISCORD_GUILD_ID"),
     }
 
     await manager.load_plugin("discord", discord_config)
@@ -151,8 +151,7 @@ async def example_discord_bot():
     if channel_id:
         # Send welcome message
         welcome_result = await mind.collaborate(
-            "Generate a friendly welcome message for a Discord server",
-            max_rounds=1
+            "Generate a friendly welcome message for a Discord server", max_rounds=1
         )
         await discord.send_message(welcome_result.final_output, channel_id=channel_id)
 
@@ -168,7 +167,7 @@ async def example_discord_embeds():
 
     discord_config = {
         "token": os.getenv("DISCORD_BOT_TOKEN"),
-        "guild_id": os.getenv("DISCORD_GUILD_ID")
+        "guild_id": os.getenv("DISCORD_GUILD_ID"),
     }
 
     await manager.load_plugin("discord", discord_config)
@@ -181,15 +180,15 @@ async def example_discord_embeds():
         fields = [
             {"name": "Active Agents", "value": "3", "inline": True},
             {"name": "Tasks Completed", "value": "42", "inline": True},
-            {"name": "Status", "value": "All systems operational", "inline": False}
+            {"name": "Status", "value": "All systems operational", "inline": False},
         ]
 
         await discord.send_embed(
             channel_id,
             title="AgentMind Status Report",
             description="Current system status and metrics",
-            color=0x00ff00,
-            fields=fields
+            color=0x00FF00,
+            fields=fields,
         )
         print("Embed sent to Discord")
 
@@ -203,9 +202,7 @@ async def example_list_guilds_and_channels():
     manager = PluginManager()
     manager.discover_and_load()
 
-    discord_config = {
-        "token": os.getenv("DISCORD_BOT_TOKEN")
-    }
+    discord_config = {"token": os.getenv("DISCORD_BOT_TOKEN")}
 
     await manager.load_plugin("discord", discord_config)
     discord = manager.get_plugin("discord")
@@ -238,7 +235,7 @@ async def example_discord_command_handler():
     command_handler = Agent(
         name="CommandHandler",
         role="commands",
-        system_prompt="You process Discord bot commands and provide appropriate responses."
+        system_prompt="You process Discord bot commands and provide appropriate responses.",
     )
     mind.add_agent(command_handler)
 
@@ -247,7 +244,7 @@ async def example_discord_command_handler():
 
     discord_config = {
         "token": os.getenv("DISCORD_BOT_TOKEN"),
-        "guild_id": os.getenv("DISCORD_GUILD_ID")
+        "guild_id": os.getenv("DISCORD_GUILD_ID"),
     }
 
     await manager.load_plugin("discord", discord_config)
@@ -260,7 +257,7 @@ async def example_discord_command_handler():
         commands = {
             "!help": "Show available commands",
             "!status": "Check bot status",
-            "!ask": "Ask the bot a question"
+            "!ask": "Ask the bot a question",
         }
 
         # Send help message
@@ -282,7 +279,7 @@ async def example_multi_channel_bot():
     monitor = Agent(
         name="ChannelMonitor",
         role="monitoring",
-        system_prompt="You monitor multiple channels and provide summaries."
+        system_prompt="You monitor multiple channels and provide summaries.",
     )
     mind.add_agent(monitor)
 
@@ -291,7 +288,7 @@ async def example_multi_channel_bot():
 
     discord_config = {
         "token": os.getenv("DISCORD_BOT_TOKEN"),
-        "guild_id": os.getenv("DISCORD_GUILD_ID")
+        "guild_id": os.getenv("DISCORD_GUILD_ID"),
     }
 
     await manager.load_plugin("discord", discord_config)
@@ -320,7 +317,9 @@ async def main():
     print("Discord Plugin Examples\n")
     print("=" * 50 + "\n")
 
-    print("Note: Set DISCORD_BOT_TOKEN, DISCORD_GUILD_ID, and DISCORD_CHANNEL_ID environment variables.\n")
+    print(
+        "Note: Set DISCORD_BOT_TOKEN, DISCORD_GUILD_ID, and DISCORD_CHANNEL_ID environment variables.\n"
+    )
 
     # Check if credentials are available
     if not os.getenv("DISCORD_BOT_TOKEN"):

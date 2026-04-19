@@ -26,12 +26,7 @@ class HuggingFacePipelineTool(Tool):
         super().__init__(
             name=f"hf_{task_name}",
             description=description,
-            parameters={
-                "text": {
-                    "type": "string",
-                    "description": "Input text to process"
-                }
-            }
+            parameters={"text": {"type": "string", "description": "Input text to process"}},
         )
 
     async def execute(self, text: str) -> str:
@@ -52,13 +47,15 @@ async def example_sentiment_analysis():
         from transformers import pipeline
 
         # Create sentiment analysis pipeline
-        sentiment_pipeline = pipeline("sentiment-analysis", model="distilbert-base-uncased-finetuned-sst-2-english")
+        sentiment_pipeline = pipeline(
+            "sentiment-analysis", model="distilbert-base-uncased-finetuned-sst-2-english"
+        )
 
         # Wrap as AgentMind tool
         sentiment_tool = HuggingFacePipelineTool(
             pipeline=sentiment_pipeline,
             task_name="sentiment_analysis",
-            description="Analyze the sentiment of text (positive/negative)"
+            description="Analyze the sentiment of text (positive/negative)",
         )
 
         # Create AgentMind system
@@ -70,7 +67,7 @@ async def example_sentiment_analysis():
             name="Sentiment_Analyst",
             role="sentiment_analyst",
             system_prompt="You analyze customer feedback and provide insights based on sentiment analysis.",
-            tools=[sentiment_tool]
+            tools=[sentiment_tool],
         )
 
         mind.add_agent(analyst)
@@ -79,14 +76,13 @@ async def example_sentiment_analysis():
         feedback = [
             "I love this product! It's amazing!",
             "Terrible experience, very disappointed.",
-            "It's okay, nothing special."
+            "It's okay, nothing special.",
         ]
 
         for text in feedback:
             print(f"\nFeedback: {text}")
             result = await mind.collaborate(
-                f"Analyze this feedback and provide insights: {text}",
-                max_rounds=2
+                f"Analyze this feedback and provide insights: {text}", max_rounds=2
             )
             print(f"Analysis: {result}\n")
 
@@ -109,7 +105,7 @@ async def example_ner():
         ner_tool = HuggingFacePipelineTool(
             pipeline=ner_pipeline,
             task_name="entity_extraction",
-            description="Extract named entities (people, organizations, locations) from text"
+            description="Extract named entities (people, organizations, locations) from text",
         )
 
         # Create AgentMind system
@@ -121,7 +117,7 @@ async def example_ner():
             name="Entity_Extractor",
             role="information_extractor",
             system_prompt="You extract and organize information from text using entity recognition.",
-            tools=[ner_tool]
+            tools=[ner_tool],
         )
 
         mind.add_agent(extractor)
@@ -131,8 +127,7 @@ async def example_ner():
 
         print(f"Text: {text}\n")
         result = await mind.collaborate(
-            f"Extract all entities from this text and organize them: {text}",
-            max_rounds=2
+            f"Extract all entities from this text and organize them: {text}", max_rounds=2
         )
         print(f"Extracted Information: {result}")
 
@@ -160,9 +155,17 @@ async def example_summarization():
                     description="Summarize long text into concise summaries",
                     parameters={
                         "text": {"type": "string", "description": "Text to summarize"},
-                        "max_length": {"type": "integer", "description": "Maximum summary length", "default": 130},
-                        "min_length": {"type": "integer", "description": "Minimum summary length", "default": 30}
-                    }
+                        "max_length": {
+                            "type": "integer",
+                            "description": "Maximum summary length",
+                            "default": 130,
+                        },
+                        "min_length": {
+                            "type": "integer",
+                            "description": "Minimum summary length",
+                            "default": 30,
+                        },
+                    },
                 )
 
             async def execute(self, text: str, max_length: int = 130, min_length: int = 30) -> str:
@@ -172,9 +175,9 @@ async def example_summarization():
                         text,
                         max_length=max_length,
                         min_length=min_length,
-                        do_sample=False
+                        do_sample=False,
                     )
-                    return result[0]['summary_text']
+                    return result[0]["summary_text"]
                 except Exception as e:
                     return f"Error summarizing: {str(e)}"
 
@@ -189,7 +192,7 @@ async def example_summarization():
             name="Summarizer",
             role="content_summarizer",
             system_prompt="You create concise, informative summaries of long documents.",
-            tools=[summarization_tool]
+            tools=[summarization_tool],
         )
 
         mind.add_agent(summarizer_agent)
@@ -206,10 +209,7 @@ async def example_summarization():
         """
 
         print(f"Original article length: {len(article)} characters\n")
-        result = await mind.collaborate(
-            f"Summarize this article: {article}",
-            max_rounds=2
-        )
+        result = await mind.collaborate(f"Summarize this article: {article}", max_rounds=2)
         print(f"Summary: {result}")
 
     except ImportError:
@@ -230,16 +230,10 @@ async def example_multi_task():
 
         # Create tools
         sentiment_tool = HuggingFacePipelineTool(
-            sentiment_pipeline,
-            "sentiment",
-            "Analyze sentiment"
+            sentiment_pipeline, "sentiment", "Analyze sentiment"
         )
 
-        ner_tool = HuggingFacePipelineTool(
-            ner_pipeline,
-            "ner",
-            "Extract named entities"
-        )
+        ner_tool = HuggingFacePipelineTool(ner_pipeline, "ner", "Extract named entities")
 
         # Create AgentMind system
         llm = OllamaProvider(model="llama3.2")
@@ -250,7 +244,7 @@ async def example_multi_task():
             name="Sentiment_Analyst",
             role="sentiment_specialist",
             system_prompt="You analyze emotional tone and sentiment in text.",
-            tools=[sentiment_tool]
+            tools=[sentiment_tool],
         )
 
         # Entity extractor
@@ -258,14 +252,14 @@ async def example_multi_task():
             name="Entity_Extractor",
             role="entity_specialist",
             system_prompt="You extract and categorize named entities from text.",
-            tools=[ner_tool]
+            tools=[ner_tool],
         )
 
         # Synthesizer
         synthesizer = Agent(
             name="Synthesizer",
             role="information_synthesizer",
-            system_prompt="You combine insights from sentiment and entity analysis into comprehensive reports."
+            system_prompt="You combine insights from sentiment and entity analysis into comprehensive reports.",
         )
 
         mind.add_agent(sentiment_agent)
@@ -278,7 +272,7 @@ async def example_multi_task():
         print(f"Text: {text}\n")
         result = await mind.collaborate(
             f"Perform complete analysis of this text including sentiment and entities: {text}",
-            max_rounds=3
+            max_rounds=3,
         )
         print(f"Complete Analysis: {result}")
 
@@ -306,16 +300,17 @@ async def example_question_answering():
                     description="Answer questions based on provided context",
                     parameters={
                         "question": {"type": "string", "description": "Question to answer"},
-                        "context": {"type": "string", "description": "Context containing the answer"}
-                    }
+                        "context": {
+                            "type": "string",
+                            "description": "Context containing the answer",
+                        },
+                    },
                 )
 
             async def execute(self, question: str, context: str) -> str:
                 try:
                     result = await asyncio.to_thread(
-                        self.pipeline,
-                        question=question,
-                        context=context
+                        self.pipeline, question=question, context=context
                     )
                     return f"Answer: {result['answer']} (confidence: {result['score']:.2f})"
                 except Exception as e:
@@ -332,7 +327,7 @@ async def example_question_answering():
             name="QA_Agent",
             role="qa_specialist",
             system_prompt="You answer questions accurately based on provided context.",
-            tools=[qa_tool]
+            tools=[qa_tool],
         )
 
         mind.add_agent(qa_agent)
@@ -347,14 +342,14 @@ async def example_question_answering():
         questions = [
             "When was AgentMind created?",
             "What LLM providers does it support?",
-            "What are the key features?"
+            "What are the key features?",
         ]
 
         for question in questions:
             print(f"\nQ: {question}")
             result = await mind.collaborate(
                 f"Answer this question using the context: Question: {question}, Context: {context}",
-                max_rounds=2
+                max_rounds=2,
             )
             print(f"A: {result}")
 

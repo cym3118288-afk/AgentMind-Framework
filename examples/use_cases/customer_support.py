@@ -41,6 +41,7 @@ class TicketStatus(str, Enum):
 @dataclass
 class SupportTicket:
     """Represents a customer support ticket"""
+
     id: str
     customer_name: str
     email: str
@@ -70,11 +71,8 @@ class KnowledgeBaseTool(Tool):
             name="search_knowledge_base",
             description="Search the knowledge base for solutions to common issues",
             parameters={
-                "query": {
-                    "type": "string",
-                    "description": "Search query describing the issue"
-                }
-            }
+                "query": {"type": "string", "description": "Search query describing the issue"}
+            },
         )
 
     async def execute(self, query: str) -> str:
@@ -98,23 +96,18 @@ class TicketHistoryTool(Tool):
         self.history = {
             "john@example.com": [
                 "Previous ticket: Password reset - Resolved",
-                "Previous ticket: Billing question - Resolved"
+                "Previous ticket: Billing question - Resolved",
             ],
             "jane@example.com": [
                 "Previous ticket: Feature request - In Progress",
-                "Previous ticket: Technical issue - Escalated"
-            ]
+                "Previous ticket: Technical issue - Escalated",
+            ],
         }
 
         super().__init__(
             name="get_ticket_history",
             description="Get customer's previous support tickets",
-            parameters={
-                "email": {
-                    "type": "string",
-                    "description": "Customer email address"
-                }
-            }
+            parameters={"email": {"type": "string", "description": "Customer email address"}},
         )
 
     async def execute(self, email: str) -> str:
@@ -134,8 +127,8 @@ class EscalationTool(Tool):
             description="Escalate complex or urgent issues to human support agents",
             parameters={
                 "ticket_id": {"type": "string", "description": "Ticket ID"},
-                "reason": {"type": "string", "description": "Reason for escalation"}
-            }
+                "reason": {"type": "string", "description": "Reason for escalation"},
+            },
         )
 
     async def execute(self, ticket_id: str, reason: str) -> str:
@@ -164,7 +157,7 @@ async def create_support_system() -> AgentMind:
         3. Detect sentiment (positive, neutral, negative, angry)
         4. Identify if immediate escalation is needed
 
-        Be concise and accurate in your classification."""
+        Be concise and accurate in your classification.""",
     )
 
     # 2. Knowledge Agent - Searches for solutions
@@ -177,7 +170,7 @@ async def create_support_system() -> AgentMind:
         3. Summarize solutions clearly
 
         Always search the knowledge base before suggesting solutions.""",
-        tools=[kb_tool, history_tool]
+        tools=[kb_tool, history_tool],
     )
 
     # 3. Response Agent - Crafts personalized responses
@@ -191,7 +184,7 @@ async def create_support_system() -> AgentMind:
         4. Match the tone to customer sentiment
         5. Be concise but thorough
 
-        Always be helpful and customer-focused."""
+        Always be helpful and customer-focused.""",
     )
 
     # 4. Escalation Agent - Handles complex cases
@@ -204,7 +197,7 @@ async def create_support_system() -> AgentMind:
         3. Provide context for human agents
 
         Escalate when: issue is complex, customer is angry, or automated solution isn't sufficient.""",
-        tools=[escalation_tool]
+        tools=[escalation_tool],
     )
 
     mind.add_agent(triage_agent)
@@ -266,7 +259,7 @@ async def example_simple_inquiry():
         customer_name="John Doe",
         email="john@example.com",
         subject="Can't log in",
-        message="Hi, I forgot my password and can't access my account. Can you help?"
+        message="Hi, I forgot my password and can't access my account. Can you help?",
     )
 
     await process_ticket(mind, ticket)
@@ -283,7 +276,7 @@ async def example_billing_issue():
         customer_name="Jane Smith",
         email="jane@example.com",
         subject="Charged twice!",
-        message="I was charged twice this month! This is unacceptable. I want a refund immediately."
+        message="I was charged twice this month! This is unacceptable. I want a refund immediately.",
     )
 
     await process_ticket(mind, ticket)
@@ -300,7 +293,7 @@ async def example_technical_issue():
         customer_name="Bob Johnson",
         email="bob@example.com",
         subject="App keeps crashing",
-        message="The mobile app crashes every time I try to upload a file. I've tried restarting but it doesn't help."
+        message="The mobile app crashes every time I try to upload a file. I've tried restarting but it doesn't help.",
     )
 
     await process_ticket(mind, ticket)
@@ -317,7 +310,7 @@ async def example_feature_request():
         customer_name="Alice Williams",
         email="alice@example.com",
         subject="Feature suggestion",
-        message="Love your product! Would be great if you could add dark mode. Many users would appreciate it."
+        message="Love your product! Would be great if you could add dark mode. Many users would appreciate it.",
     )
 
     await process_ticket(mind, ticket)
@@ -334,7 +327,7 @@ async def example_complex_issue():
         customer_name="Charlie Brown",
         email="charlie@example.com",
         subject="Data loss after update",
-        message="After the latest update, all my data is gone! I had important files stored. This is a disaster. I need this fixed ASAP or I want a full refund and compensation."
+        message="After the latest update, all my data is gone! I had important files stored. This is a disaster. I need this fixed ASAP or I want a full refund and compensation.",
     )
 
     await process_ticket(mind, ticket)
@@ -347,9 +340,19 @@ async def example_batch_processing():
     mind = await create_support_system()
 
     tickets = [
-        SupportTicket("TICK-101", "User A", "usera@example.com", "Password reset", "Need to reset my password"),
-        SupportTicket("TICK-102", "User B", "userb@example.com", "Billing question", "What's my current plan?"),
-        SupportTicket("TICK-103", "User C", "userc@example.com", "Feature request", "Please add export feature"),
+        SupportTicket(
+            "TICK-101", "User A", "usera@example.com", "Password reset", "Need to reset my password"
+        ),
+        SupportTicket(
+            "TICK-102", "User B", "userb@example.com", "Billing question", "What's my current plan?"
+        ),
+        SupportTicket(
+            "TICK-103",
+            "User C",
+            "userc@example.com",
+            "Feature request",
+            "Please add export feature",
+        ),
     ]
 
     print(f"Processing {len(tickets)} tickets in batch...\n")

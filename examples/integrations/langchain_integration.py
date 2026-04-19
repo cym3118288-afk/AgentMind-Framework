@@ -24,24 +24,24 @@ class LangChainToolWrapper(Tool):
         super().__init__(
             name=langchain_tool.name,
             description=langchain_tool.description,
-            parameters=self._extract_parameters(langchain_tool)
+            parameters=self._extract_parameters(langchain_tool),
         )
 
     def _extract_parameters(self, tool) -> Dict[str, Any]:
         """Extract parameter schema from LangChain tool"""
-        if hasattr(tool, 'args_schema') and tool.args_schema:
+        if hasattr(tool, "args_schema") and tool.args_schema:
             schema = tool.args_schema.schema()
-            return schema.get('properties', {})
+            return schema.get("properties", {})
         return {"input": {"type": "string", "description": "Tool input"}}
 
     async def execute(self, **kwargs) -> str:
         """Execute the LangChain tool"""
         try:
             # LangChain tools typically expect 'input' parameter
-            if len(kwargs) == 1 and 'input' not in kwargs:
+            if len(kwargs) == 1 and "input" not in kwargs:
                 input_value = list(kwargs.values())[0]
             else:
-                input_value = kwargs.get('input', str(kwargs))
+                input_value = kwargs.get("input", str(kwargs))
 
             # Run synchronous LangChain tool
             result = await asyncio.to_thread(self.lc_tool.run, input_value)
@@ -103,15 +103,14 @@ async def example_langchain_tools_in_agentmind():
             name="Researcher",
             role="research",
             system_prompt="You are a thorough researcher. Use search and Wikipedia tools to find accurate information.",
-            tools=[am_search, am_wiki]
+            tools=[am_search, am_wiki],
         )
 
         mind.add_agent(researcher)
 
         # Collaborate using LangChain tools
         result = await mind.collaborate(
-            "What are the latest developments in quantum computing?",
-            max_rounds=2
+            "What are the latest developments in quantum computing?", max_rounds=2
         )
 
         print(f"Result: {result}")
@@ -137,13 +136,13 @@ async def example_agentmind_in_langchain():
         analyst = Agent(
             name="Analyst",
             role="analyst",
-            system_prompt="You analyze problems and break them down into components."
+            system_prompt="You analyze problems and break them down into components.",
         )
 
         solver = Agent(
             name="Solver",
             role="solver",
-            system_prompt="You provide practical solutions to problems."
+            system_prompt="You provide practical solutions to problems.",
         )
 
         mind.add_agent(analyst)
@@ -153,9 +152,7 @@ async def example_agentmind_in_langchain():
         agentmind_chain = AgentMindChain(mind, max_rounds=2)
 
         # Use in LangChain pipeline
-        result = await agentmind_chain.arun(
-            "How can I improve my Python code performance?"
-        )
+        result = await agentmind_chain.arun("How can I improve my Python code performance?")
 
         print(f"AgentMind Chain Result: {result}")
 
@@ -174,9 +171,18 @@ async def example_hybrid_rag():
 
         # Simulate document retrieval (in real scenario, use vector store)
         documents = [
-            Document(page_content="AgentMind is a lightweight multi-agent framework.", metadata={"source": "docs"}),
-            Document(page_content="It supports Ollama, OpenAI, and Anthropic models.", metadata={"source": "docs"}),
-            Document(page_content="AgentMind has built-in memory and tool systems.", metadata={"source": "docs"}),
+            Document(
+                page_content="AgentMind is a lightweight multi-agent framework.",
+                metadata={"source": "docs"},
+            ),
+            Document(
+                page_content="It supports Ollama, OpenAI, and Anthropic models.",
+                metadata={"source": "docs"},
+            ),
+            Document(
+                page_content="AgentMind has built-in memory and tool systems.",
+                metadata={"source": "docs"},
+            ),
         ]
 
         # Create retrieval tool for AgentMind
@@ -186,12 +192,16 @@ async def example_hybrid_rag():
                 super().__init__(
                     name="retrieve_documents",
                     description="Retrieve relevant documents based on a query",
-                    parameters={"query": {"type": "string", "description": "Search query"}}
+                    parameters={"query": {"type": "string", "description": "Search query"}},
                 )
 
             async def execute(self, query: str) -> str:
                 # Simple keyword matching (use vector search in production)
-                relevant = [doc.page_content for doc in self.docs if query.lower() in doc.page_content.lower()]
+                relevant = [
+                    doc.page_content
+                    for doc in self.docs
+                    if query.lower() in doc.page_content.lower()
+                ]
                 return "\n".join(relevant) if relevant else "No relevant documents found."
 
         # Create AgentMind with retrieval
@@ -204,15 +214,12 @@ async def example_hybrid_rag():
             name="RAG_Agent",
             role="rag_specialist",
             system_prompt="You answer questions using retrieved documents. Always cite your sources.",
-            tools=[retriever_tool]
+            tools=[retriever_tool],
         )
 
         mind.add_agent(rag_agent)
 
-        result = await mind.collaborate(
-            "What LLM providers does AgentMind support?",
-            max_rounds=2
-        )
+        result = await mind.collaborate("What LLM providers does AgentMind support?", max_rounds=2)
 
         print(f"RAG Result: {result}")
 
@@ -233,7 +240,7 @@ async def example_sequential_processing():
     researcher = Agent(
         name="Researcher",
         role="research",
-        system_prompt="You gather information and facts about topics."
+        system_prompt="You gather information and facts about topics.",
     )
     research_mind.add_agent(researcher)
 
@@ -242,7 +249,7 @@ async def example_sequential_processing():
     analyst = Agent(
         name="Analyst",
         role="analyst",
-        system_prompt="You analyze information and identify key insights."
+        system_prompt="You analyze information and identify key insights.",
     )
     analysis_mind.add_agent(analyst)
 
@@ -251,7 +258,7 @@ async def example_sequential_processing():
     writer = Agent(
         name="Writer",
         role="writer",
-        system_prompt="You write clear, engaging content based on analysis."
+        system_prompt="You write clear, engaging content based on analysis.",
     )
     writing_mind.add_agent(writer)
 
@@ -262,22 +269,19 @@ async def example_sequential_processing():
 
     # Step 1: Research
     research_result = await research_mind.collaborate(
-        f"Research key facts about: {topic}",
-        max_rounds=1
+        f"Research key facts about: {topic}", max_rounds=1
     )
     print(f"Research: {research_result[:200]}...\n")
 
     # Step 2: Analysis
     analysis_result = await analysis_mind.collaborate(
-        f"Analyze this research and identify key insights: {research_result}",
-        max_rounds=1
+        f"Analyze this research and identify key insights: {research_result}", max_rounds=1
     )
     print(f"Analysis: {analysis_result[:200]}...\n")
 
     # Step 3: Writing
     final_result = await writing_mind.collaborate(
-        f"Write a brief article based on this analysis: {analysis_result}",
-        max_rounds=1
+        f"Write a brief article based on this analysis: {analysis_result}", max_rounds=1
     )
     print(f"Final Article: {final_result}")
 

@@ -11,6 +11,7 @@ from functools import wraps
 # Try to import resource module (Unix-like systems only)
 try:
     import resource
+
     HAS_RESOURCE = True
 except ImportError:
     HAS_RESOURCE = False
@@ -238,7 +239,8 @@ class SandboxExecutor:
                     # CPU time limit
                     if limits.max_cpu_time:
                         resource.setrlimit(
-                            resource.RLIMIT_CPU, (int(limits.max_cpu_time), int(limits.max_cpu_time))
+                            resource.RLIMIT_CPU,
+                            (int(limits.max_cpu_time), int(limits.max_cpu_time)),
                         )
 
                     # File descriptor limit

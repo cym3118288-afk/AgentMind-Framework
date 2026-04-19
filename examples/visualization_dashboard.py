@@ -16,23 +16,29 @@ async def setup_mind():
     mind = AgentMind(llm_provider=llm)
 
     # Add agents
-    mind.add_agent(Agent(
-        name="researcher",
-        role="researcher",
-        llm_provider=llm,
-    ))
+    mind.add_agent(
+        Agent(
+            name="researcher",
+            role="researcher",
+            llm_provider=llm,
+        )
+    )
 
-    mind.add_agent(Agent(
-        name="analyst",
-        role="analyst",
-        llm_provider=llm,
-    ))
+    mind.add_agent(
+        Agent(
+            name="analyst",
+            role="analyst",
+            llm_provider=llm,
+        )
+    )
 
-    mind.add_agent(Agent(
-        name="writer",
-        role="writer",
-        llm_provider=llm,
-    ))
+    mind.add_agent(
+        Agent(
+            name="writer",
+            role="writer",
+            llm_provider=llm,
+        )
+    )
 
     return mind
 

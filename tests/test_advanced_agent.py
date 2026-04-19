@@ -138,9 +138,7 @@ class TestHumanInLoop:
             human_callback=approval_callback,
         )
 
-        approved = await agent.request_human_approval(
-            "Test action", {"context": "test"}
-        )
+        approved = await agent.request_human_approval("Test action", {"context": "test"})
 
         assert approved is True
         assert agent.state == AgentState.IDLE

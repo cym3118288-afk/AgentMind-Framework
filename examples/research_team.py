@@ -36,7 +36,7 @@ async def main():
         backstory="Expert researcher skilled at finding and analyzing information from multiple sources.",
         temperature=0.7,
         max_tokens=500,
-        tools=["web_search", "calculator"]
+        tools=["web_search", "calculator"],
     )
 
     critic_config = AgentConfig(
@@ -45,7 +45,7 @@ async def main():
         backstory="Critical thinker who evaluates arguments, identifies gaps, and ensures quality.",
         temperature=0.6,
         max_tokens=400,
-        tools=[]
+        tools=[],
     )
 
     writer_config = AgentConfig(
@@ -54,7 +54,7 @@ async def main():
         backstory="Professional writer who synthesizes information into clear, well-structured reports.",
         temperature=0.8,
         max_tokens=600,
-        tools=[]
+        tools=[],
     )
 
     # Create agents (without LLM for this demo - using template responses)
@@ -86,7 +86,7 @@ async def main():
     research_msg = Message(
         content=f"Research the following topic and gather key findings: {topic}",
         sender="system",
-        role=MessageRole.SYSTEM
+        role=MessageRole.SYSTEM,
     )
     research_response = await researcher.process_message(research_msg)
     print(f"{research_response.sender}: {research_response.content}")
@@ -95,8 +95,7 @@ async def main():
     # Simulate tool usage
     print("[*] Researcher uses web_search tool...")
     search_result = await web_search.execute(
-        query="AI impact on software development productivity",
-        max_results=3
+        query="AI impact on software development productivity", max_results=3
     )
     if search_result.success:
         print(f"[Tool Result] Found {search_result.metadata.get('num_results', 0)} results")
@@ -109,7 +108,7 @@ async def main():
     critique_msg = Message(
         content=f"Review the research findings and identify any gaps or concerns: {research_response.content}",
         sender="system",
-        role=MessageRole.SYSTEM
+        role=MessageRole.SYSTEM,
     )
     critique_response = await critic.process_message(critique_msg)
     print(f"{critique_response.sender}: {critique_response.content}")
@@ -121,7 +120,7 @@ async def main():
     write_msg = Message(
         content=f"Write a comprehensive report based on the research and critique. Research: {research_response.content}. Critique: {critique_response.content}",
         sender="system",
-        role=MessageRole.SYSTEM
+        role=MessageRole.SYSTEM,
     )
     write_response = await writer.process_message(write_msg)
     print(f"{write_response.sender}: {write_response.content}")
@@ -136,7 +135,7 @@ async def main():
     result = await mind.start_collaboration(
         initial_message=f"Collaborate to produce a research report on: {topic}",
         max_rounds=3,
-        use_llm=False  # Using template responses for demo
+        use_llm=False,  # Using template responses for demo
     )
 
     print()
@@ -172,7 +171,9 @@ async def main():
     new_mind = AgentMind()
     if new_mind.load_session("research_team_demo"):
         print("    Session loaded successfully!")
-        print(f"    Restored {len(new_mind.agents)} agents and {len(new_mind.conversation_history)} messages")
+        print(
+            f"    Restored {len(new_mind.agents)} agents and {len(new_mind.conversation_history)} messages"
+        )
     print()
 
     print("=" * 60)

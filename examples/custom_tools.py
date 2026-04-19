@@ -209,10 +209,7 @@ async def demo_multi_agent_tools():
     print("=" * 60 + "\n")
 
     llm = OllamaProvider(model="llama3.2")
-    mind = AgentMind(
-        strategy=CollaborationStrategy.ROUND_ROBIN,
-        llm_provider=llm
-    )
+    mind = AgentMind(strategy=CollaborationStrategy.ROUND_ROBIN, llm_provider=llm)
 
     # Weather agent
     weather_agent = Agent(name="WeatherExpert", role="analyst", llm_provider=llm)

@@ -84,12 +84,14 @@ async def demo_debate_improvement():
 
     print(f"\nDebate completed with {len(result['transcript'])} exchanges")
     print(f"\nConsensus:")
-    print(result['consensus'][:200] + "...")
+    print(result["consensus"][:200] + "...")
 
     # Improve an output through criticism
     print("\n\nImproving output through iterative criticism...")
 
-    original_output = "Remote work is good because people can work from home and save time on commuting."
+    original_output = (
+        "Remote work is good because people can work from home and save time on commuting."
+    )
 
     improvement_result = await improver.improve_output(
         original_output,
@@ -101,7 +103,7 @@ async def demo_debate_improvement():
     print(original_output)
 
     print(f"\nImproved Output:")
-    print(improvement_result['final'][:200] + "...")
+    print(improvement_result["final"][:200] + "...")
 
 
 async def demo_feedback_loop():

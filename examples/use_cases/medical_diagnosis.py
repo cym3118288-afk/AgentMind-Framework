@@ -44,6 +44,7 @@ class Urgency(str, Enum):
 @dataclass
 class Symptom:
     """Represents a patient symptom"""
+
     name: str
     severity: Severity
     duration_days: int
@@ -53,6 +54,7 @@ class Symptom:
 @dataclass
 class PatientCase:
     """Represents a patient case for diagnosis"""
+
     case_id: str
     age: int
     gender: str
@@ -66,6 +68,7 @@ class PatientCase:
 @dataclass
 class DiagnosisResult:
     """Diagnosis analysis result"""
+
     case_id: str
     differential_diagnoses: List[Dict[str, any]]
     recommended_tests: List[str]
@@ -78,6 +81,7 @@ class DiagnosisResult:
 
 # Custom Tools for Medical Analysis
 
+
 class SymptomAnalyzerTool(Tool):
     """Analyzes symptoms and identifies patterns"""
 
@@ -87,8 +91,8 @@ class SymptomAnalyzerTool(Tool):
             description="Analyze patient symptoms and identify patterns",
             parameters={
                 "symptoms": {"type": "array", "description": "List of symptoms"},
-                "vital_signs": {"type": "object", "description": "Patient vital signs"}
-            }
+                "vital_signs": {"type": "object", "description": "Patient vital signs"},
+            },
         )
 
     async def execute(self, symptoms: List[Dict], vital_signs: Dict) -> str:
@@ -97,14 +101,15 @@ class SymptomAnalyzerTool(Tool):
             "symptom_count": len(symptoms),
             "severity_distribution": {},
             "duration_analysis": {},
-            "vital_signs_status": {}
+            "vital_signs_status": {},
         }
 
         # Analyze severity distribution
         for symptom in symptoms:
             severity = symptom.get("severity", "unknown")
-            analysis["severity_distribution"][severity] = \
+            analysis["severity_distribution"][severity] = (
                 analysis["severity_distribution"].get(severity, 0) + 1
+            )
 
         # Analyze vital signs
         if vital_signs:
@@ -115,7 +120,7 @@ class SymptomAnalyzerTool(Tool):
             analysis["vital_signs_status"] = {
                 "temperature": "elevated" if temp > 37.5 else "normal",
                 "blood_pressure": "elevated" if bp_sys > 140 else "normal",
-                "heart_rate": "elevated" if heart_rate > 100 else "normal"
+                "heart_rate": "elevated" if heart_rate > 100 else "normal",
             }
 
         return f"Symptom Analysis: {analysis}"
@@ -130,8 +135,11 @@ class MedicalKnowledgeBaseTool(Tool):
             description="Search medical knowledge base for conditions and treatments",
             parameters={
                 "query": {"type": "string", "description": "Search query"},
-                "category": {"type": "string", "description": "Category: diagnosis, treatment, or test"}
-            }
+                "category": {
+                    "type": "string",
+                    "description": "Category: diagnosis, treatment, or test",
+                },
+            },
         )
 
         # Simulated medical knowledge base
@@ -139,18 +147,28 @@ class MedicalKnowledgeBaseTool(Tool):
             "fever + cough + fatigue": {
                 "conditions": ["Influenza", "COVID-19", "Pneumonia", "Bronchitis"],
                 "tests": ["PCR test", "Chest X-ray", "Blood count"],
-                "treatments": ["Rest", "Hydration", "Antipyretics"]
+                "treatments": ["Rest", "Hydration", "Antipyretics"],
             },
             "chest pain + shortness of breath": {
-                "conditions": ["Myocardial infarction", "Pulmonary embolism", "Pneumonia", "Anxiety"],
+                "conditions": [
+                    "Myocardial infarction",
+                    "Pulmonary embolism",
+                    "Pneumonia",
+                    "Anxiety",
+                ],
                 "tests": ["ECG", "Troponin", "D-dimer", "Chest X-ray"],
-                "treatments": ["Emergency evaluation", "Oxygen therapy"]
+                "treatments": ["Emergency evaluation", "Oxygen therapy"],
             },
             "headache + nausea + sensitivity to light": {
-                "conditions": ["Migraine", "Meningitis", "Intracranial pressure", "Cluster headache"],
+                "conditions": [
+                    "Migraine",
+                    "Meningitis",
+                    "Intracranial pressure",
+                    "Cluster headache",
+                ],
                 "tests": ["CT scan", "Lumbar puncture", "Blood tests"],
-                "treatments": ["Pain management", "Anti-nausea medication"]
-            }
+                "treatments": ["Pain management", "Anti-nausea medication"],
+            },
         }
 
     async def execute(self, query: str, category: str = "diagnosis") -> str:
@@ -161,10 +179,7 @@ class MedicalKnowledgeBaseTool(Tool):
 
         for key, data in self.knowledge_base.items():
             if any(term in query_lower for term in key.split(" + ")):
-                results.append({
-                    "pattern": key,
-                    "data": data
-                })
+                results.append({"pattern": key, "data": data})
 
         if not results:
             return "No specific matches found. Recommend comprehensive evaluation."
@@ -180,9 +195,12 @@ class DiagnosticTestRecommenderTool(Tool):
             name="recommend_tests",
             description="Recommend diagnostic tests based on differential diagnosis",
             parameters={
-                "suspected_conditions": {"type": "array", "description": "List of suspected conditions"},
-                "urgency": {"type": "string", "description": "Case urgency level"}
-            }
+                "suspected_conditions": {
+                    "type": "array",
+                    "description": "List of suspected conditions",
+                },
+                "urgency": {"type": "string", "description": "Case urgency level"},
+            },
         )
 
     async def execute(self, suspected_conditions: List[str], urgency: str) -> str:
@@ -196,7 +214,7 @@ class DiagnosticTestRecommenderTool(Tool):
             "pneumonia": ["Chest X-ray", "Blood culture", "Sputum culture"],
             "myocardial infarction": ["ECG", "Troponin", "CK-MB", "Echocardiogram"],
             "migraine": ["CT scan", "MRI", "Blood tests"],
-            "diabetes": ["Fasting glucose", "HbA1c", "Oral glucose tolerance test"]
+            "diabetes": ["Fasting glucose", "HbA1c", "Oral glucose tolerance test"],
         }
 
         for condition in suspected_conditions:
@@ -211,13 +229,15 @@ class DiagnosticTestRecommenderTool(Tool):
         # Prioritize based on urgency
         if urgency == "emergency":
             priority_tests = ["ECG", "Troponin", "CT scan", "Blood culture"]
-            test_recommendations = [t for t in priority_tests if t in test_recommendations] + \
-                                 [t for t in test_recommendations if t not in priority_tests]
+            test_recommendations = [t for t in priority_tests if t in test_recommendations] + [
+                t for t in test_recommendations if t not in priority_tests
+            ]
 
         return f"Recommended Tests: {test_recommendations}"
 
 
 # Agent System Setup
+
 
 async def create_medical_diagnosis_system(llm_provider) -> AgentMind:
     """Create the medical diagnosis agent system"""
@@ -236,7 +256,7 @@ async def create_medical_diagnosis_system(llm_provider) -> AgentMind:
         5. Consider vital signs in your analysis
 
         Be thorough and systematic. Flag any emergency symptoms immediately.""",
-        tools=[SymptomAnalyzerTool()]
+        tools=[SymptomAnalyzerTool()],
     )
 
     # Differential Diagnosis Agent
@@ -251,7 +271,7 @@ async def create_medical_diagnosis_system(llm_provider) -> AgentMind:
         5. Provide reasoning for each diagnosis
 
         Use evidence-based medicine. Consider common conditions first, but don't miss rare but serious ones.""",
-        tools=[MedicalKnowledgeBaseTool()]
+        tools=[MedicalKnowledgeBaseTool()],
     )
 
     # Test Recommendation Agent
@@ -266,7 +286,7 @@ async def create_medical_diagnosis_system(llm_provider) -> AgentMind:
         5. Ensure critical tests are not missed
 
         Balance thoroughness with practicality.""",
-        tools=[DiagnosticTestRecommenderTool()]
+        tools=[DiagnosticTestRecommenderTool()],
     )
 
     # Treatment Advisor Agent
@@ -280,7 +300,7 @@ async def create_medical_diagnosis_system(llm_provider) -> AgentMind:
         4. Provide emergency interventions for urgent cases
         5. Consider evidence-based guidelines
 
-        Patient safety is paramount. When in doubt, recommend specialist consultation."""
+        Patient safety is paramount. When in doubt, recommend specialist consultation.""",
     )
 
     # Add all agents
@@ -334,10 +354,7 @@ Please provide:
 """
 
     # Collaborate to analyze the case
-    result = await mind.collaborate(
-        task=case_description,
-        max_rounds=4
-    )
+    result = await mind.collaborate(task=case_description, max_rounds=4)
 
     print(f"\n{'='*60}")
     print("Analysis Complete")
@@ -347,21 +364,20 @@ Please provide:
     # Parse result into structured format (simplified)
     diagnosis_result = DiagnosisResult(
         case_id=case.case_id,
-        differential_diagnoses=[
-            {"condition": "See detailed analysis", "likelihood": "high"}
-        ],
+        differential_diagnoses=[{"condition": "See detailed analysis", "likelihood": "high"}],
         recommended_tests=["See detailed analysis"],
         urgency=Urgency.ROUTINE,
         treatment_suggestions=["See detailed analysis"],
         specialist_referral="See detailed analysis",
         confidence_score=0.85,
-        reasoning=result
+        reasoning=result,
     )
 
     return diagnosis_result
 
 
 # Example Cases
+
 
 async def example_respiratory_infection():
     """Example: Respiratory infection case"""
@@ -374,7 +390,7 @@ async def example_respiratory_infection():
             Symptom("Fever", Severity.MODERATE, 3, "Temperature 38.5°C"),
             Symptom("Cough", Severity.MODERATE, 4, "Dry cough, worse at night"),
             Symptom("Fatigue", Severity.SEVERE, 5, "Extreme tiredness"),
-            Symptom("Body aches", Severity.MODERATE, 3, "Generalized muscle pain")
+            Symptom("Body aches", Severity.MODERATE, 3, "Generalized muscle pain"),
         ],
         medical_history=["Asthma (controlled)"],
         medications=["Albuterol inhaler as needed"],
@@ -385,8 +401,8 @@ async def example_respiratory_infection():
             "blood_pressure_diastolic": 80,
             "heart_rate": 88,
             "respiratory_rate": 18,
-            "oxygen_saturation": 96
-        }
+            "oxygen_saturation": 96,
+        },
     )
 
     llm = OllamaProvider(model="llama3.2")
@@ -405,7 +421,7 @@ async def example_cardiac_symptoms():
             Symptom("Chest pain", Severity.SEVERE, 0, "Crushing chest pain, radiating to left arm"),
             Symptom("Shortness of breath", Severity.SEVERE, 0, "Difficulty breathing"),
             Symptom("Sweating", Severity.MODERATE, 0, "Profuse sweating"),
-            Symptom("Nausea", Severity.MODERATE, 0, "Feeling nauseous")
+            Symptom("Nausea", Severity.MODERATE, 0, "Feeling nauseous"),
         ],
         medical_history=["Hypertension", "High cholesterol", "Type 2 diabetes"],
         medications=["Lisinopril", "Atorvastatin", "Metformin"],
@@ -416,8 +432,8 @@ async def example_cardiac_symptoms():
             "blood_pressure_diastolic": 95,
             "heart_rate": 110,
             "respiratory_rate": 22,
-            "oxygen_saturation": 94
-        }
+            "oxygen_saturation": 94,
+        },
     )
 
     llm = OllamaProvider(model="llama3.2")

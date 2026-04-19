@@ -29,6 +29,7 @@ from agentmind.tools import Tool
 @dataclass
 class Product:
     """Product information"""
+
     id: str
     name: str
     category: str
@@ -42,6 +43,7 @@ class Product:
 @dataclass
 class UserProfile:
     """User profile and behavior"""
+
     user_id: str
     purchase_history: List[str]
     browsing_history: List[str]
@@ -51,22 +53,86 @@ class UserProfile:
 
 # Sample data
 PRODUCTS = [
-    Product("P001", "Wireless Headphones", "Electronics", 79.99, 50, 4.5,
-            ["audio", "wireless", "bluetooth"], "High-quality wireless headphones with noise cancellation"),
-    Product("P002", "Running Shoes", "Sports", 89.99, 30, 4.7,
-            ["footwear", "running", "athletic"], "Comfortable running shoes for daily training"),
-    Product("P003", "Coffee Maker", "Home", 129.99, 20, 4.3,
-            ["kitchen", "appliance", "coffee"], "Programmable coffee maker with thermal carafe"),
-    Product("P004", "Yoga Mat", "Sports", 29.99, 100, 4.6,
-            ["fitness", "yoga", "exercise"], "Non-slip yoga mat with carrying strap"),
-    Product("P005", "Smart Watch", "Electronics", 199.99, 15, 4.4,
-            ["wearable", "fitness", "smart"], "Fitness tracking smartwatch with heart rate monitor"),
-    Product("P006", "Backpack", "Accessories", 49.99, 60, 4.5,
-            ["travel", "storage", "outdoor"], "Durable backpack with laptop compartment"),
-    Product("P007", "Blender", "Home", 69.99, 40, 4.2,
-            ["kitchen", "appliance", "smoothie"], "High-speed blender for smoothies and soups"),
-    Product("P008", "Desk Lamp", "Home", 39.99, 80, 4.4,
-            ["lighting", "office", "led"], "Adjustable LED desk lamp with USB charging"),
+    Product(
+        "P001",
+        "Wireless Headphones",
+        "Electronics",
+        79.99,
+        50,
+        4.5,
+        ["audio", "wireless", "bluetooth"],
+        "High-quality wireless headphones with noise cancellation",
+    ),
+    Product(
+        "P002",
+        "Running Shoes",
+        "Sports",
+        89.99,
+        30,
+        4.7,
+        ["footwear", "running", "athletic"],
+        "Comfortable running shoes for daily training",
+    ),
+    Product(
+        "P003",
+        "Coffee Maker",
+        "Home",
+        129.99,
+        20,
+        4.3,
+        ["kitchen", "appliance", "coffee"],
+        "Programmable coffee maker with thermal carafe",
+    ),
+    Product(
+        "P004",
+        "Yoga Mat",
+        "Sports",
+        29.99,
+        100,
+        4.6,
+        ["fitness", "yoga", "exercise"],
+        "Non-slip yoga mat with carrying strap",
+    ),
+    Product(
+        "P005",
+        "Smart Watch",
+        "Electronics",
+        199.99,
+        15,
+        4.4,
+        ["wearable", "fitness", "smart"],
+        "Fitness tracking smartwatch with heart rate monitor",
+    ),
+    Product(
+        "P006",
+        "Backpack",
+        "Accessories",
+        49.99,
+        60,
+        4.5,
+        ["travel", "storage", "outdoor"],
+        "Durable backpack with laptop compartment",
+    ),
+    Product(
+        "P007",
+        "Blender",
+        "Home",
+        69.99,
+        40,
+        4.2,
+        ["kitchen", "appliance", "smoothie"],
+        "High-speed blender for smoothies and soups",
+    ),
+    Product(
+        "P008",
+        "Desk Lamp",
+        "Home",
+        39.99,
+        80,
+        4.4,
+        ["lighting", "office", "led"],
+        "Adjustable LED desk lamp with USB charging",
+    ),
 ]
 
 
@@ -83,13 +149,16 @@ class ProductSearchTool(Tool):
                 "tags": {"type": "array", "description": "Product tags to match"},
                 "min_price": {"type": "number", "description": "Minimum price"},
                 "max_price": {"type": "number", "description": "Maximum price"},
-            }
+            },
         )
 
-    async def execute(self, category: Optional[str] = None,
-                     tags: Optional[List[str]] = None,
-                     min_price: Optional[float] = None,
-                     max_price: Optional[float] = None) -> str:
+    async def execute(
+        self,
+        category: Optional[str] = None,
+        tags: Optional[List[str]] = None,
+        min_price: Optional[float] = None,
+        max_price: Optional[float] = None,
+    ) -> str:
         """Search products based on criteria"""
         results = self.products
 
@@ -108,16 +177,22 @@ class ProductSearchTool(Tool):
         # Sort by rating
         results.sort(key=lambda p: p.rating, reverse=True)
 
-        return json.dumps([{
-            "id": p.id,
-            "name": p.name,
-            "category": p.category,
-            "price": p.price,
-            "stock": p.stock,
-            "rating": p.rating,
-            "tags": p.tags,
-            "description": p.description
-        } for p in results[:10]], indent=2)
+        return json.dumps(
+            [
+                {
+                    "id": p.id,
+                    "name": p.name,
+                    "category": p.category,
+                    "price": p.price,
+                    "stock": p.stock,
+                    "rating": p.rating,
+                    "tags": p.tags,
+                    "description": p.description,
+                }
+                for p in results[:10]
+            ],
+            indent=2,
+        )
 
 
 class InventoryCheckTool(Tool):
@@ -130,7 +205,7 @@ class InventoryCheckTool(Tool):
             description="Check if products are in stock",
             parameters={
                 "product_ids": {"type": "array", "description": "List of product IDs to check"}
-            }
+            },
         )
 
     async def execute(self, product_ids: List[str]) -> str:
@@ -139,13 +214,19 @@ class InventoryCheckTool(Tool):
         for pid in product_ids:
             if pid in self.products:
                 p = self.products[pid]
-                results.append({
-                    "id": p.id,
-                    "name": p.name,
-                    "stock": p.stock,
-                    "available": p.stock > 0,
-                    "stock_status": "In Stock" if p.stock > 10 else "Low Stock" if p.stock > 0 else "Out of Stock"
-                })
+                results.append(
+                    {
+                        "id": p.id,
+                        "name": p.name,
+                        "stock": p.stock,
+                        "available": p.stock > 0,
+                        "stock_status": (
+                            "In Stock"
+                            if p.stock > 10
+                            else "Low Stock" if p.stock > 0 else "Out of Stock"
+                        ),
+                    }
+                )
 
         return json.dumps(results, indent=2)
 
@@ -158,22 +239,24 @@ class UserHistoryTool(Tool):
         super().__init__(
             name="get_user_history",
             description="Get user's purchase and browsing history",
-            parameters={}
+            parameters={},
         )
 
     async def execute(self) -> str:
         """Get user history"""
-        return json.dumps({
-            "user_id": self.profile.user_id,
-            "purchase_history": self.profile.purchase_history,
-            "browsing_history": self.profile.browsing_history,
-            "preferences": self.profile.preferences,
-            "budget_range": self.profile.budget_range
-        }, indent=2)
+        return json.dumps(
+            {
+                "user_id": self.profile.user_id,
+                "purchase_history": self.profile.purchase_history,
+                "browsing_history": self.profile.browsing_history,
+                "preferences": self.profile.preferences,
+                "budget_range": self.profile.budget_range,
+            },
+            indent=2,
+        )
 
 
-async def generate_recommendations(user_profile: UserProfile,
-                                   context: str = "") -> Dict[str, Any]:
+async def generate_recommendations(user_profile: UserProfile, context: str = "") -> Dict[str, Any]:
     """
     Generate personalized product recommendations using multi-agent system
 
@@ -201,7 +284,7 @@ async def generate_recommendations(user_profile: UserProfile,
         Analyze user purchase history, browsing patterns, and preferences to understand
         their needs and interests. Identify patterns and make insights about what products
         they might be interested in.""",
-        tools=[history_tool]
+        tools=[history_tool],
     )
 
     product_expert = Agent(
@@ -210,7 +293,7 @@ async def generate_recommendations(user_profile: UserProfile,
         system_prompt="""You are a product specialist who knows the entire catalog.
         Search for products that match user preferences, considering categories, tags,
         price ranges, and ratings. Focus on high-quality products that fit the user's needs.""",
-        tools=[search_tool]
+        tools=[search_tool],
     )
 
     inventory_manager = Agent(
@@ -219,7 +302,7 @@ async def generate_recommendations(user_profile: UserProfile,
         system_prompt="""You are an inventory manager who ensures recommended products
         are actually available. Check stock levels and prioritize in-stock items.
         Flag low-stock items and suggest alternatives if needed.""",
-        tools=[inventory_tool]
+        tools=[inventory_tool],
     )
 
     recommender = Agent(
@@ -229,7 +312,7 @@ async def generate_recommendations(user_profile: UserProfile,
         from the analyst, product matches from the expert, and inventory data to create
         a final ranked list of 3-5 product recommendations. Provide clear reasoning for
         each recommendation and explain why it fits the user's needs.""",
-        tools=[]
+        tools=[],
     )
 
     # Add agents to mind
@@ -263,7 +346,7 @@ async def generate_recommendations(user_profile: UserProfile,
         "user_id": user_profile.user_id,
         "context": context,
         "recommendations": result,
-        "timestamp": datetime.now().isoformat()
+        "timestamp": datetime.now().isoformat(),
     }
 
 
@@ -278,49 +361,49 @@ async def main():
         preferences={
             "categories": ["Sports", "Electronics", "Health"],
             "interests": ["fitness", "running", "wellness"],
-            "preferred_brands": ["Nike", "Fitbit", "Apple"]
+            "preferred_brands": ["Nike", "Fitbit", "Apple"],
         },
-        budget_range=(30.0, 150.0)
+        budget_range=(30.0, 150.0),
     )
 
     # Scenario 1: General recommendations
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("SCENARIO 1: General Recommendations")
-    print("="*60)
+    print("=" * 60)
     result1 = await generate_recommendations(user)
     print("\nRecommendations:")
     print(result1["recommendations"])
 
     # Scenario 2: Specific context
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("SCENARIO 2: Home Workout Setup")
-    print("="*60)
+    print("=" * 60)
     result2 = await generate_recommendations(
-        user,
-        context="User wants to set up a home workout space"
+        user, context="User wants to set up a home workout space"
     )
     print("\nRecommendations:")
     print(result2["recommendations"])
 
     # Scenario 3: Gift recommendations
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("SCENARIO 3: Gift for Fitness Enthusiast")
-    print("="*60)
+    print("=" * 60)
     result3 = await generate_recommendations(
-        user,
-        context="Looking for a birthday gift for a fitness enthusiast friend"
+        user, context="Looking for a birthday gift for a fitness enthusiast friend"
     )
     print("\nRecommendations:")
     print(result3["recommendations"])
 
 
 if __name__ == "__main__":
-    print("""
+    print(
+        """
     ╔══════════════════════════════════════════════════════════╗
     ║   E-commerce Recommendation System - AgentMind Demo     ║
     ║                                                          ║
     ║   Multi-agent system for personalized recommendations   ║
     ╚══════════════════════════════════════════════════════════╝
-    """)
+    """
+    )
 
     asyncio.run(main())

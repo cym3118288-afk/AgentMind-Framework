@@ -30,6 +30,7 @@ from agentmind.tools import Tool
 @dataclass
 class FinancialData:
     """Financial metrics and data"""
+
     company: str
     ticker: str
     revenue: float
@@ -45,6 +46,7 @@ class FinancialData:
 @dataclass
 class MarketData:
     """Market and economic indicators"""
+
     date: datetime
     sp500: float
     nasdaq: float
@@ -55,12 +57,42 @@ class MarketData:
 
 # Sample financial data
 COMPANIES = [
-    FinancialData("TechCorp", "TECH", 50_000_000, 8_000_000, 5_000_000,
-                  15_000_000, 200_000_000, 25.0, 0.15, "Technology"),
-    FinancialData("RetailGiant", "RETL", 80_000_000, 4_000_000, 20_000_000,
-                  10_000_000, 150_000_000, 18.5, 0.08, "Retail"),
-    FinancialData("BioPharm", "BPHR", 30_000_000, 2_000_000, 8_000_000,
-                  12_000_000, 100_000_000, 50.0, 0.25, "Healthcare"),
+    FinancialData(
+        "TechCorp",
+        "TECH",
+        50_000_000,
+        8_000_000,
+        5_000_000,
+        15_000_000,
+        200_000_000,
+        25.0,
+        0.15,
+        "Technology",
+    ),
+    FinancialData(
+        "RetailGiant",
+        "RETL",
+        80_000_000,
+        4_000_000,
+        20_000_000,
+        10_000_000,
+        150_000_000,
+        18.5,
+        0.08,
+        "Retail",
+    ),
+    FinancialData(
+        "BioPharm",
+        "BPHR",
+        30_000_000,
+        2_000_000,
+        8_000_000,
+        12_000_000,
+        100_000_000,
+        50.0,
+        0.25,
+        "Healthcare",
+    ),
 ]
 
 
@@ -72,9 +104,7 @@ class FinancialDataTool(Tool):
         super().__init__(
             name="get_financial_data",
             description="Get financial metrics for a company by ticker symbol",
-            parameters={
-                "ticker": {"type": "string", "description": "Stock ticker symbol"}
-            }
+            parameters={"ticker": {"type": "string", "description": "Stock ticker symbol"}},
         )
 
     async def execute(self, ticker: str) -> str:
@@ -83,21 +113,24 @@ class FinancialDataTool(Tool):
             return json.dumps({"error": f"Ticker {ticker} not found"})
 
         company = self.companies[ticker.upper()]
-        return json.dumps({
-            "company": company.company,
-            "ticker": company.ticker,
-            "revenue": company.revenue,
-            "profit": company.profit,
-            "profit_margin": (company.profit / company.revenue) * 100,
-            "debt": company.debt,
-            "cash": company.cash,
-            "net_debt": company.debt - company.cash,
-            "market_cap": company.market_cap,
-            "pe_ratio": company.pe_ratio,
-            "growth_rate": company.growth_rate * 100,
-            "sector": company.sector,
-            "debt_to_equity": (company.debt / (company.market_cap * 0.6)) * 100,
-        }, indent=2)
+        return json.dumps(
+            {
+                "company": company.company,
+                "ticker": company.ticker,
+                "revenue": company.revenue,
+                "profit": company.profit,
+                "profit_margin": (company.profit / company.revenue) * 100,
+                "debt": company.debt,
+                "cash": company.cash,
+                "net_debt": company.debt - company.cash,
+                "market_cap": company.market_cap,
+                "pe_ratio": company.pe_ratio,
+                "growth_rate": company.growth_rate * 100,
+                "sector": company.sector,
+                "debt_to_equity": (company.debt / (company.market_cap * 0.6)) * 100,
+            },
+            indent=2,
+        )
 
 
 class RatioCalculatorTool(Tool):
@@ -113,11 +146,12 @@ class RatioCalculatorTool(Tool):
                 "debt": {"type": "number"},
                 "equity": {"type": "number"},
                 "assets": {"type": "number"},
-            }
+            },
         )
 
-    async def execute(self, revenue: float, profit: float, debt: float,
-                     equity: float, assets: float) -> str:
+    async def execute(
+        self, revenue: float, profit: float, debt: float, equity: float, assets: float
+    ) -> str:
         """Calculate key financial ratios"""
         ratios = {
             "profit_margin": (profit / revenue) * 100 if revenue > 0 else 0,
@@ -136,7 +170,7 @@ class MarketDataTool(Tool):
         super().__init__(
             name="get_market_data",
             description="Get current market indices and economic indicators",
-            parameters={}
+            parameters={},
         )
 
     async def execute(self) -> str:
@@ -167,11 +201,12 @@ class RiskAssessmentTool(Tool):
                 "profit_margin": {"type": "number"},
                 "volatility": {"type": "number"},
                 "sector": {"type": "string"},
-            }
+            },
         )
 
-    async def execute(self, debt_to_equity: float, profit_margin: float,
-                     volatility: float, sector: str) -> str:
+    async def execute(
+        self, debt_to_equity: float, profit_margin: float, volatility: float, sector: str
+    ) -> str:
         """Assess risk level"""
         risk_score = 0
 
@@ -206,17 +241,36 @@ class RiskAssessmentTool(Tool):
 
         risk_level = "Low" if risk_score <= 4 else "Medium" if risk_score <= 7 else "High"
 
-        return json.dumps({
-            "risk_score": risk_score,
-            "risk_level": risk_level,
-            "factors": {
-                "debt_risk": "High" if debt_to_equity > 100 else "Medium" if debt_to_equity > 50 else "Low",
-                "profitability_risk": "High" if profit_margin < 5 else "Medium" if profit_margin < 10 else "Low",
-                "volatility_risk": "High" if volatility > 30 else "Medium" if volatility > 20 else "Low",
-                "sector_risk": "High" if sector in high_risk_sectors else "Medium"
+        return json.dumps(
+            {
+                "risk_score": risk_score,
+                "risk_level": risk_level,
+                "factors": {
+                    "debt_risk": (
+                        "High"
+                        if debt_to_equity > 100
+                        else "Medium" if debt_to_equity > 50 else "Low"
+                    ),
+                    "profitability_risk": (
+                        "High" if profit_margin < 5 else "Medium" if profit_margin < 10 else "Low"
+                    ),
+                    "volatility_risk": (
+                        "High" if volatility > 30 else "Medium" if volatility > 20 else "Low"
+                    ),
+                    "sector_risk": "High" if sector in high_risk_sectors else "Medium",
+                },
+                "recommendation": (
+                    "Proceed with caution"
+                    if risk_level == "High"
+                    else (
+                        "Suitable for moderate investors"
+                        if risk_level == "Medium"
+                        else "Suitable for conservative investors"
+                    )
+                ),
             },
-            "recommendation": "Proceed with caution" if risk_level == "High" else "Suitable for moderate investors" if risk_level == "Medium" else "Suitable for conservative investors"
-        }, indent=2)
+            indent=2,
+        )
 
 
 async def analyze_investment(ticker: str, investment_amount: float) -> Dict[str, Any]:
@@ -248,7 +302,7 @@ async def analyze_investment(ticker: str, investment_amount: float) -> Dict[str,
         company financial data including revenue, profit, debt, and market metrics.
         Calculate key ratios and identify trends. Present data clearly and highlight
         important metrics.""",
-        tools=[financial_tool, ratio_tool]
+        tools=[financial_tool, ratio_tool],
     )
 
     market_analyst = Agent(
@@ -257,7 +311,7 @@ async def analyze_investment(ticker: str, investment_amount: float) -> Dict[str,
         system_prompt="""You are a market analyst who monitors economic indicators
         and market conditions. Analyze current market trends, interest rates, inflation,
         and overall economic health. Assess how market conditions might impact the investment.""",
-        tools=[market_tool]
+        tools=[market_tool],
     )
 
     risk_analyst = Agent(
@@ -266,7 +320,7 @@ async def analyze_investment(ticker: str, investment_amount: float) -> Dict[str,
         system_prompt="""You are a risk assessment specialist. Evaluate investment
         risks based on financial metrics, market conditions, and sector factors.
         Provide clear risk ratings and identify potential concerns.""",
-        tools=[risk_tool]
+        tools=[risk_tool],
     )
 
     investment_advisor = Agent(
@@ -276,7 +330,7 @@ async def analyze_investment(ticker: str, investment_amount: float) -> Dict[str,
         data, market analysis, and risk assessment to provide clear investment
         recommendations. Consider the investment amount and provide specific advice
         on whether to invest, how much, and what to watch for.""",
-        tools=[]
+        tools=[],
     )
 
     # Add agents to mind
@@ -309,7 +363,7 @@ async def analyze_investment(ticker: str, investment_amount: float) -> Dict[str,
         "ticker": ticker,
         "investment_amount": investment_amount,
         "analysis": result,
-        "timestamp": datetime.now().isoformat()
+        "timestamp": datetime.now().isoformat(),
     }
 
 
@@ -336,7 +390,7 @@ async def generate_portfolio_report(tickers: List[str]) -> Dict[str, Any]:
         system_prompt="""You are a portfolio analyst. Analyze multiple holdings,
         assess diversification, identify concentration risks, and evaluate overall
         portfolio health. Provide actionable recommendations for rebalancing.""",
-        tools=[financial_tool, market_tool, risk_tool]
+        tools=[financial_tool, market_tool, risk_tool],
     )
 
     mind.add_agent(portfolio_analyst)
@@ -357,48 +411,46 @@ async def generate_portfolio_report(tickers: List[str]) -> Dict[str, Any]:
 
     result = await mind.collaborate(task, max_rounds=3)
 
-    return {
-        "portfolio": tickers,
-        "report": result,
-        "timestamp": datetime.now().isoformat()
-    }
+    return {"portfolio": tickers, "report": result, "timestamp": datetime.now().isoformat()}
 
 
 async def main():
     """Run financial analysis examples"""
 
     # Scenario 1: Single stock analysis
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("SCENARIO 1: Investment Analysis - TechCorp")
-    print("="*60)
+    print("=" * 60)
     result1 = await analyze_investment("TECH", 10000)
     print("\nAnalysis:")
     print(result1["analysis"])
 
     # Scenario 2: Different company
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("SCENARIO 2: Investment Analysis - BioPharm")
-    print("="*60)
+    print("=" * 60)
     result2 = await analyze_investment("BPHR", 5000)
     print("\nAnalysis:")
     print(result2["analysis"])
 
     # Scenario 3: Portfolio analysis
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("SCENARIO 3: Portfolio Analysis")
-    print("="*60)
+    print("=" * 60)
     result3 = await generate_portfolio_report(["TECH", "RETL", "BPHR"])
     print("\nPortfolio Report:")
     print(result3["report"])
 
 
 if __name__ == "__main__":
-    print("""
+    print(
+        """
     ╔══════════════════════════════════════════════════════════╗
     ║   Financial Analysis System - AgentMind Demo            ║
     ║                                                          ║
     ║   Multi-agent system for investment analysis            ║
     ╚══════════════════════════════════════════════════════════╝
-    """)
+    """
+    )
 
     asyncio.run(main())

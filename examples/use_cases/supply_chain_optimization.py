@@ -52,6 +52,7 @@ class RiskLevel(str, Enum):
 @dataclass
 class Product:
     """Represents a product in the supply chain"""
+
     product_id: str
     name: str
     category: ProductCategory
@@ -63,6 +64,7 @@ class Product:
 @dataclass
 class Inventory:
     """Inventory status"""
+
     product_id: str
     warehouse_id: str
     current_stock: int
@@ -74,6 +76,7 @@ class Inventory:
 @dataclass
 class Supplier:
     """Supplier information"""
+
     supplier_id: str
     name: str
     location: str
@@ -85,6 +88,7 @@ class Supplier:
 @dataclass
 class Shipment:
     """Shipment tracking"""
+
     shipment_id: str
     origin: str
     destination: str
@@ -97,6 +101,7 @@ class Shipment:
 @dataclass
 class SupplyChainReport:
     """Complete supply chain analysis report"""
+
     inventory_status: Dict[str, any]
     demand_forecast: Dict[str, any]
     logistics_optimization: Dict[str, any]
@@ -108,6 +113,7 @@ class SupplyChainReport:
 
 # Custom Tools for Supply Chain
 
+
 class DemandForecastTool(Tool):
     """Forecasts product demand"""
 
@@ -118,11 +124,13 @@ class DemandForecastTool(Tool):
             parameters={
                 "product_id": {"type": "string", "description": "Product ID"},
                 "historical_data": {"type": "array", "description": "Historical sales data"},
-                "forecast_days": {"type": "integer", "description": "Days to forecast"}
-            }
+                "forecast_days": {"type": "integer", "description": "Days to forecast"},
+            },
         )
 
-    async def execute(self, product_id: str, historical_data: List[Dict], forecast_days: int = 30) -> str:
+    async def execute(
+        self, product_id: str, historical_data: List[Dict], forecast_days: int = 30
+    ) -> str:
         """Forecast demand"""
 
         if not historical_data:
@@ -148,7 +156,7 @@ class DemandForecastTool(Tool):
             "trend_factor": round(trend_factor, 3),
             "forecasted_total_demand": round(avg_daily_demand * forecast_days * trend_factor, 0),
             "confidence_level": "medium" if len(recent_sales) >= 30 else "low",
-            "seasonal_factors": self._detect_seasonality(recent_sales)
+            "seasonal_factors": self._detect_seasonality(recent_sales),
         }
 
         return f"Demand Forecast: {forecast}"
@@ -163,7 +171,7 @@ class DemandForecastTool(Tool):
         return {
             "detected": True,
             "pattern": "weekly",
-            "peak_days": "weekends" if random.random() > 0.5 else "weekdays"
+            "peak_days": "weekends" if random.random() > 0.5 else "weekdays",
         }
 
 
@@ -177,17 +185,19 @@ class InventoryOptimizerTool(Tool):
             parameters={
                 "inventory": {"type": "object", "description": "Current inventory status"},
                 "demand_forecast": {"type": "object", "description": "Demand forecast"},
-                "constraints": {"type": "object", "description": "Optimization constraints"}
-            }
+                "constraints": {"type": "object", "description": "Optimization constraints"},
+            },
         )
 
-    async def execute(self, inventory: Dict, demand_forecast: Dict, constraints: Dict = None) -> str:
+    async def execute(
+        self, inventory: Dict, demand_forecast: Dict, constraints: Dict = None
+    ) -> str:
         """Optimize inventory"""
 
         constraints = constraints or {
             "max_storage_capacity": 10000,
             "holding_cost_per_unit": 0.5,
-            "stockout_cost_per_unit": 10.0
+            "stockout_cost_per_unit": 10.0,
         }
 
         current_stock = inventory.get("current_stock", 0)
@@ -201,8 +211,7 @@ class InventoryOptimizerTool(Tool):
 
         optimal_reorder_point = (daily_demand * lead_time) + safety_stock
         optimal_order_quantity = max(
-            daily_demand * 30,  # 30 days supply
-            inventory.get("min_order_quantity", 100)
+            daily_demand * 30, inventory.get("min_order_quantity", 100)  # 30 days supply
         )
 
         optimization = {
@@ -211,17 +220,18 @@ class InventoryOptimizerTool(Tool):
             "optimal_order_quantity": round(optimal_order_quantity, 0),
             "safety_stock": round(safety_stock, 0),
             "days_of_supply": round(current_stock / daily_demand, 1) if daily_demand > 0 else 999,
-            "action_needed": "reorder" if current_stock < optimal_reorder_point else "maintain"
+            "action_needed": "reorder" if current_stock < optimal_reorder_point else "maintain",
         }
 
         # Calculate costs
         if current_stock < optimal_reorder_point:
             optimization["estimated_stockout_risk"] = "high"
-            optimization["recommended_action"] = f"Order {optimization['optimal_order_quantity']} units immediately"
+            optimization["recommended_action"] = (
+                f"Order {optimization['optimal_order_quantity']} units immediately"
+            )
         elif current_stock > optimal_reorder_point * 2:
             optimization["estimated_holding_cost"] = round(
-                (current_stock - optimal_reorder_point) * constraints["holding_cost_per_unit"],
-                2
+                (current_stock - optimal_reorder_point) * constraints["holding_cost_per_unit"], 2
             )
             optimization["recommended_action"] = "Reduce order quantities"
         else:
@@ -239,8 +249,8 @@ class RouteOptimizerTool(Tool):
             description="Optimize delivery routes for cost and time efficiency",
             parameters={
                 "shipments": {"type": "array", "description": "List of shipments"},
-                "constraints": {"type": "object", "description": "Route constraints"}
-            }
+                "constraints": {"type": "object", "description": "Route constraints"},
+            },
         )
 
     async def execute(self, shipments: List[Dict], constraints: Dict = None) -> str:
@@ -250,7 +260,7 @@ class RouteOptimizerTool(Tool):
             "max_distance_per_route": 500,  # km
             "max_stops_per_route": 10,
             "vehicle_capacity": 1000,  # units
-            "cost_per_km": 2.0
+            "cost_per_km": 2.0,
         }
 
         # Group shipments by region
@@ -265,7 +275,7 @@ class RouteOptimizerTool(Tool):
                 "distance_km": round(distance, 1),
                 "estimated_time_hours": round(distance / 60, 1),  # Assuming 60 km/h avg
                 "estimated_cost": round(distance * constraints["cost_per_km"], 2),
-                "priority": shipment.get("priority", "normal")
+                "priority": shipment.get("priority", "normal"),
             }
             routes.append(route)
 
@@ -278,7 +288,7 @@ class RouteOptimizerTool(Tool):
             "total_cost": sum(r["estimated_cost"] for r in routes),
             "total_time_hours": sum(r["estimated_time_hours"] for r in routes),
             "routes": routes[:5],  # Top 5 routes
-            "optimization_savings": "15-20% vs unoptimized routes"
+            "optimization_savings": "15-20% vs unoptimized routes",
         }
 
         return f"Route Optimization: {optimization}"
@@ -293,8 +303,8 @@ class SupplierEvaluatorTool(Tool):
             description="Evaluate suppliers based on multiple criteria",
             parameters={
                 "suppliers": {"type": "array", "description": "List of suppliers"},
-                "criteria": {"type": "object", "description": "Evaluation criteria"}
-            }
+                "criteria": {"type": "object", "description": "Evaluation criteria"},
+            },
         )
 
     async def execute(self, suppliers: List[Dict], criteria: Dict = None) -> str:
@@ -304,7 +314,7 @@ class SupplierEvaluatorTool(Tool):
             "reliability_weight": 0.3,
             "cost_weight": 0.3,
             "lead_time_weight": 0.2,
-            "quality_weight": 0.2
+            "quality_weight": 0.2,
         }
 
         evaluations = []
@@ -317,10 +327,10 @@ class SupplierEvaluatorTool(Tool):
             quality_score = supplier.get("quality_score", 0.8)
 
             total_score = (
-                reliability * criteria["reliability_weight"] +
-                cost_score * criteria["cost_weight"] +
-                lead_time_score * criteria["lead_time_weight"] +
-                quality_score * criteria["quality_weight"]
+                reliability * criteria["reliability_weight"]
+                + cost_score * criteria["cost_weight"]
+                + lead_time_score * criteria["lead_time_weight"]
+                + quality_score * criteria["quality_weight"]
             )
 
             evaluation = {
@@ -331,7 +341,11 @@ class SupplierEvaluatorTool(Tool):
                 "cost_competitiveness": round(cost_score, 3),
                 "lead_time_performance": round(lead_time_score, 3),
                 "quality": quality_score,
-                "recommendation": "preferred" if total_score > 0.7 else "acceptable" if total_score > 0.5 else "review"
+                "recommendation": (
+                    "preferred"
+                    if total_score > 0.7
+                    else "acceptable" if total_score > 0.5 else "review"
+                ),
             }
             evaluations.append(evaluation)
 
@@ -350,8 +364,8 @@ class RiskAssessmentTool(Tool):
             description="Assess supply chain risks and vulnerabilities",
             parameters={
                 "supply_chain_data": {"type": "object", "description": "Supply chain data"},
-                "external_factors": {"type": "object", "description": "External risk factors"}
-            }
+                "external_factors": {"type": "object", "description": "External risk factors"},
+            },
         )
 
     async def execute(self, supply_chain_data: Dict, external_factors: Dict = None) -> str:
@@ -364,54 +378,63 @@ class RiskAssessmentTool(Tool):
         # Inventory risks
         low_stock_items = supply_chain_data.get("low_stock_items", [])
         if low_stock_items:
-            risks.append({
-                "risk_type": "stockout",
-                "level": "high" if len(low_stock_items) > 5 else "medium",
-                "affected_items": len(low_stock_items),
-                "mitigation": "Increase safety stock, expedite orders"
-            })
+            risks.append(
+                {
+                    "risk_type": "stockout",
+                    "level": "high" if len(low_stock_items) > 5 else "medium",
+                    "affected_items": len(low_stock_items),
+                    "mitigation": "Increase safety stock, expedite orders",
+                }
+            )
 
         # Supplier concentration risk
         supplier_count = supply_chain_data.get("active_suppliers", 10)
         if supplier_count < 3:
-            risks.append({
-                "risk_type": "supplier_concentration",
-                "level": "high",
-                "description": "Over-reliance on few suppliers",
-                "mitigation": "Diversify supplier base"
-            })
+            risks.append(
+                {
+                    "risk_type": "supplier_concentration",
+                    "level": "high",
+                    "description": "Over-reliance on few suppliers",
+                    "mitigation": "Diversify supplier base",
+                }
+            )
 
         # Transportation risks
         delayed_shipments = supply_chain_data.get("delayed_shipments", 0)
         if delayed_shipments > 5:
-            risks.append({
-                "risk_type": "logistics_disruption",
-                "level": "medium",
-                "affected_shipments": delayed_shipments,
-                "mitigation": "Use alternative carriers, build buffer time"
-            })
+            risks.append(
+                {
+                    "risk_type": "logistics_disruption",
+                    "level": "medium",
+                    "affected_shipments": delayed_shipments,
+                    "mitigation": "Use alternative carriers, build buffer time",
+                }
+            )
 
         # External risks
         if external_factors.get("weather_alert"):
-            risks.append({
-                "risk_type": "weather_disruption",
-                "level": "medium",
-                "description": "Severe weather may impact deliveries",
-                "mitigation": "Reroute shipments, communicate with customers"
-            })
+            risks.append(
+                {
+                    "risk_type": "weather_disruption",
+                    "level": "medium",
+                    "description": "Severe weather may impact deliveries",
+                    "mitigation": "Reroute shipments, communicate with customers",
+                }
+            )
 
         assessment = {
             "total_risks_identified": len(risks),
             "highest_risk_level": max([r["level"] for r in risks]) if risks else "low",
             "risks": risks,
             "overall_risk_score": len(risks) * 0.2,  # Simplified
-            "recommended_actions": [r["mitigation"] for r in risks]
+            "recommended_actions": [r["mitigation"] for r in risks],
         }
 
         return f"Risk Assessment: {assessment}"
 
 
 # Agent System Setup
+
 
 async def create_supply_chain_system(llm_provider) -> AgentMind:
     """Create the supply chain optimization agent system"""
@@ -430,7 +453,7 @@ async def create_supply_chain_system(llm_provider) -> AgentMind:
         5. Provide confidence intervals
 
         Accurate forecasts drive the entire supply chain.""",
-        tools=[DemandForecastTool()]
+        tools=[DemandForecastTool()],
     )
 
     # Inventory Optimizer Agent
@@ -445,7 +468,7 @@ async def create_supply_chain_system(llm_provider) -> AgentMind:
         5. Balance cost and service level
 
         Find the sweet spot between too much and too little inventory.""",
-        tools=[InventoryOptimizerTool()]
+        tools=[InventoryOptimizerTool()],
     )
 
     # Logistics Coordinator Agent
@@ -460,7 +483,7 @@ async def create_supply_chain_system(llm_provider) -> AgentMind:
         5. Handle logistics disruptions
 
         Get products where they need to be, on time and cost-effectively.""",
-        tools=[RouteOptimizerTool()]
+        tools=[RouteOptimizerTool()],
     )
 
     # Supplier Manager Agent
@@ -475,7 +498,7 @@ async def create_supply_chain_system(llm_provider) -> AgentMind:
         5. Manage supplier risks
 
         Strong suppliers are the foundation of a resilient supply chain.""",
-        tools=[SupplierEvaluatorTool()]
+        tools=[SupplierEvaluatorTool()],
     )
 
     # Risk Analyst Agent
@@ -490,7 +513,7 @@ async def create_supply_chain_system(llm_provider) -> AgentMind:
         5. Ensure business continuity
 
         Anticipate and prepare for disruptions.""",
-        tools=[RiskAssessmentTool()]
+        tools=[RiskAssessmentTool()],
     )
 
     # Add all agents
@@ -504,10 +527,7 @@ async def create_supply_chain_system(llm_provider) -> AgentMind:
 
 
 async def optimize_supply_chain(
-    products: List[Product],
-    inventory: List[Inventory],
-    suppliers: List[Supplier],
-    llm_provider
+    products: List[Product], inventory: List[Inventory], suppliers: List[Supplier], llm_provider
 ) -> SupplyChainReport:
     """Optimize supply chain operations"""
 
@@ -563,10 +583,7 @@ Provide actionable recommendations to improve efficiency and reduce costs.
 """
 
     # Collaborate to optimize supply chain
-    result = await mind.collaborate(
-        task=optimization_request,
-        max_rounds=5
-    )
+    result = await mind.collaborate(task=optimization_request, max_rounds=5)
 
     print(f"\n{'='*60}")
     print("Supply Chain Optimization Complete")
@@ -581,13 +598,14 @@ Provide actionable recommendations to improve efficiency and reduce costs.
         supplier_recommendations=[],
         risk_assessment={},
         cost_analysis={},
-        recommendations=[]
+        recommendations=[],
     )
 
     return report
 
 
 # Example Supply Chain Scenarios
+
 
 async def example_ecommerce_supply_chain():
     """Example: E-commerce supply chain"""

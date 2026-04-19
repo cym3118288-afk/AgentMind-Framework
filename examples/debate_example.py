@@ -64,23 +64,11 @@ async def debate_example() -> None:
     mind = AgentMind(llm_provider=provider)
 
     # Create agents with different perspectives
-    optimist = Agent(
-        name="Optimist",
-        role=AgentRole.CREATIVE.value,
-        llm_provider=provider
-    )
+    optimist = Agent(name="Optimist", role=AgentRole.CREATIVE.value, llm_provider=provider)
 
-    pessimist = Agent(
-        name="Pessimist",
-        role=AgentRole.CRITIC.value,
-        llm_provider=provider
-    )
+    pessimist = Agent(name="Pessimist", role=AgentRole.CRITIC.value, llm_provider=provider)
 
-    moderator = Agent(
-        name="Moderator",
-        role=AgentRole.COORDINATOR.value,
-        llm_provider=provider
-    )
+    moderator = Agent(name="Moderator", role=AgentRole.COORDINATOR.value, llm_provider=provider)
 
     # Add agents to the mind
     mind.add_agent(optimist)
@@ -105,11 +93,7 @@ async def debate_example() -> None:
     topic = "Should our company invest heavily in AI technology for the next year?"
     print(f"\nTopic: {topic}\n")
 
-    result = await mind.start_collaboration(
-        topic,
-        max_rounds=3,
-        use_llm=provider is not None
-    )
+    result = await mind.start_collaboration(topic, max_rounds=3, use_llm=provider is not None)
 
     # Display results
     print("\n" + "=" * 60)
@@ -138,9 +122,9 @@ async def debate_example() -> None:
     print(f"Active agents: {summary['active_agents']}/{summary['total_agents']}")
 
     # Show recent messages
-    if summary['recent_messages']:
+    if summary["recent_messages"]:
         print("\nRecent messages:")
-        for msg in summary['recent_messages'][-3:]:
+        for msg in summary["recent_messages"][-3:]:
             preview = msg[:100] + "..." if len(msg) > 100 else msg
             print(f"  • {preview}")
 
@@ -149,7 +133,7 @@ async def debate_example() -> None:
     print("=" * 60)
 
     # Cleanup
-    if provider and hasattr(provider, 'close'):
+    if provider and hasattr(provider, "close"):
         await provider.close()
 
 

@@ -12,7 +12,12 @@ import asyncio
 from pathlib import Path
 
 from agentmind.core.agent import Agent
-from agentmind.core.mind import AgentMind, TaskPriority, CoordinationStrategy, ConflictResolutionStrategy
+from agentmind.core.mind import (
+    AgentMind,
+    TaskPriority,
+    CoordinationStrategy,
+    ConflictResolutionStrategy,
+)
 from agentmind.core.types import CollaborationStrategy, Message, MessageRole
 
 
@@ -24,9 +29,9 @@ def system_observer(event_type, data):
 
 async def demo_task_management():
     """Demonstrate advanced task management with dependencies."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("DEMO 1: Advanced Task Management")
-    print("="*60)
+    print("=" * 60)
 
     mind = AgentMind(
         strategy=CollaborationStrategy.BROADCAST,
@@ -95,9 +100,9 @@ async def demo_task_management():
 
 async def demo_resource_allocation():
     """Demonstrate resource allocation and scheduling."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("DEMO 2: Resource Allocation")
-    print("="*60)
+    print("=" * 60)
 
     mind = AgentMind(max_concurrent_tasks=3)
 
@@ -131,9 +136,9 @@ async def demo_resource_allocation():
 
 async def demo_checkpointing():
     """Demonstrate checkpointing and recovery."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("DEMO 3: Checkpointing & Recovery")
-    print("="*60)
+    print("=" * 60)
 
     mind = AgentMind(enable_checkpointing=True)
 
@@ -172,9 +177,9 @@ async def demo_checkpointing():
 
 async def demo_observability():
     """Demonstrate system observability."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("DEMO 4: System Observability")
-    print("="*60)
+    print("=" * 60)
 
     mind = AgentMind()
 
@@ -227,9 +232,9 @@ async def demo_observability():
 
 async def demo_collaboration_patterns():
     """Demonstrate collaboration patterns."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("DEMO 5: Collaboration Patterns")
-    print("="*60)
+    print("=" * 60)
 
     mind = AgentMind(coordination_strategy=CoordinationStrategy.DECENTRALIZED)
 
@@ -273,9 +278,9 @@ async def demo_collaboration_patterns():
 
 async def demo_deadlock_detection():
     """Demonstrate deadlock detection and resolution."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("DEMO 6: Deadlock Detection")
-    print("="*60)
+    print("=" * 60)
 
     mind = AgentMind()
 
@@ -301,9 +306,9 @@ async def demo_deadlock_detection():
 
 async def demo_priority_scheduling():
     """Demonstrate priority-based task scheduling."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("DEMO 7: Priority Scheduling")
-    print("="*60)
+    print("=" * 60)
 
     mind = AgentMind()
 
@@ -330,9 +335,9 @@ async def demo_priority_scheduling():
 
 async def demo_task_cancellation():
     """Demonstrate task cancellation and timeout."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("DEMO 8: Task Cancellation & Timeout")
-    print("="*60)
+    print("=" * 60)
 
     mind = AgentMind()
 
@@ -363,9 +368,9 @@ async def demo_task_cancellation():
 
 async def main():
     """Run all demos."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("ADVANCED MIND FEATURES DEMONSTRATION")
-    print("="*60)
+    print("=" * 60)
 
     await demo_task_management()
     await demo_resource_allocation()
@@ -376,9 +381,9 @@ async def main():
     await demo_priority_scheduling()
     await demo_task_cancellation()
 
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("ALL DEMOS COMPLETED")
-    print("="*60)
+    print("=" * 60)
 
 
 if __name__ == "__main__":

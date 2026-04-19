@@ -20,11 +20,7 @@ async def example_caching():
     print("\n=== Response Caching Example ===\n")
 
     # Create cache manager
-    cache = CacheManager(
-        backend=InMemoryCache(max_size=100),
-        default_ttl=3600,
-        enabled=True
-    )
+    cache = CacheManager(backend=InMemoryCache(max_size=100), default_ttl=3600, enabled=True)
 
     # Create LLM provider
     llm = OllamaProvider(model="llama3.2")
@@ -68,12 +64,7 @@ async def example_batch_processing():
         return response.content if response else "No response"
 
     # Create batch processor
-    processor = BatchProcessor(
-        max_concurrent=5,
-        timeout=30.0,
-        retry_failed=True,
-        max_retries=2
-    )
+    processor = BatchProcessor(max_concurrent=5, timeout=30.0, retry_failed=True, max_retries=2)
 
     # Prepare tasks
     tasks = [
@@ -121,11 +112,7 @@ async def example_memory_optimization():
     print(f"Memory size before optimization: {len(agent.memory)} messages")
 
     # Create optimizer
-    optimizer = MemoryOptimizer(
-        max_messages=50,
-        sliding_window=25,
-        compression_threshold=40
-    )
+    optimizer = MemoryOptimizer(max_messages=50, sliding_window=25, compression_threshold=40)
 
     # Optimize memory
     agent.memory = await optimizer.optimize(agent.memory, strategy="sliding_window")
@@ -186,8 +173,7 @@ async def example_complete_optimization():
 
     with profiler.profile("collaboration"):
         result = await mind.start_collaboration(
-            "Analyze the benefits of AI in healthcare",
-            max_rounds=3
+            "Analyze the benefits of AI in healthcare", max_rounds=3
         )
 
     # Optimize memory
@@ -232,6 +218,7 @@ async def main():
     except Exception as e:
         print(f"\nError running examples: {e}")
         import traceback
+
         traceback.print_exc()
 
 

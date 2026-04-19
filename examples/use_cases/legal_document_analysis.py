@@ -47,6 +47,7 @@ class RiskLevel(str, Enum):
 @dataclass
 class LegalDocument:
     """Represents a legal document for analysis"""
+
     doc_id: str
     title: str
     doc_type: DocumentType
@@ -59,6 +60,7 @@ class LegalDocument:
 @dataclass
 class ClauseAnalysis:
     """Analysis of a specific clause"""
+
     clause_type: str
     content: str
     risk_level: RiskLevel
@@ -69,6 +71,7 @@ class ClauseAnalysis:
 @dataclass
 class DocumentAnalysisResult:
     """Complete document analysis result"""
+
     doc_id: str
     summary: str
     key_terms: Dict[str, str]
@@ -82,6 +85,7 @@ class DocumentAnalysisResult:
 
 # Custom Tools for Legal Analysis
 
+
 class ClauseExtractorTool(Tool):
     """Extracts and categorizes clauses from legal documents"""
 
@@ -91,8 +95,8 @@ class ClauseExtractorTool(Tool):
             description="Extract and categorize clauses from legal documents",
             parameters={
                 "document": {"type": "string", "description": "Document text"},
-                "doc_type": {"type": "string", "description": "Document type"}
-            }
+                "doc_type": {"type": "string", "description": "Document type"},
+            },
         )
 
         # Common clause patterns
@@ -106,7 +110,7 @@ class ClauseExtractorTool(Tool):
             "warranty": ["warranty", "guarantee", "representation"],
             "force_majeure": ["force majeure", "act of god", "unforeseeable"],
             "assignment": ["assignment", "transfer", "delegate"],
-            "governing_law": ["governing law", "jurisdiction", "venue"]
+            "governing_law": ["governing law", "jurisdiction", "venue"],
         }
 
     async def execute(self, document: str, doc_type: str) -> str:
@@ -132,8 +136,8 @@ class RiskAnalyzerTool(Tool):
             description="Analyze legal risks in document clauses",
             parameters={
                 "clauses": {"type": "array", "description": "List of clauses to analyze"},
-                "doc_type": {"type": "string", "description": "Document type"}
-            }
+                "doc_type": {"type": "string", "description": "Document type"},
+            },
         )
 
         # Risk indicators
@@ -145,15 +149,15 @@ class RiskAnalyzerTool(Tool):
                 "automatic renewal",
                 "unilateral modification",
                 "waive all rights",
-                "sole discretion"
+                "sole discretion",
             ],
             "medium": [
                 "may terminate",
                 "reasonable efforts",
                 "as-is",
                 "no warranty",
-                "third party beneficiary"
-            ]
+                "third party beneficiary",
+            ],
         }
 
     async def execute(self, clauses: List[str], doc_type: str) -> str:
@@ -166,20 +170,12 @@ class RiskAnalyzerTool(Tool):
             # Check for high-risk terms
             for term in self.risk_indicators["high"]:
                 if term in clause_lower:
-                    risks.append({
-                        "level": "high",
-                        "term": term,
-                        "clause": clause[:100]
-                    })
+                    risks.append({"level": "high", "term": term, "clause": clause[:100]})
 
             # Check for medium-risk terms
             for term in self.risk_indicators["medium"]:
                 if term in clause_lower:
-                    risks.append({
-                        "level": "medium",
-                        "term": term,
-                        "clause": clause[:100]
-                    })
+                    risks.append({"level": "medium", "term": term, "clause": clause[:100]})
 
         return f"Identified Risks: {risks}"
 
@@ -194,8 +190,8 @@ class ComplianceCheckerTool(Tool):
             parameters={
                 "doc_type": {"type": "string", "description": "Document type"},
                 "jurisdiction": {"type": "string", "description": "Legal jurisdiction"},
-                "clauses": {"type": "array", "description": "Document clauses"}
-            }
+                "clauses": {"type": "array", "description": "Document clauses"},
+            },
         )
 
         # Required clauses by document type
@@ -205,27 +201,17 @@ class ComplianceCheckerTool(Tool):
                 "termination",
                 "confidentiality",
                 "intellectual_property",
-                "dispute_resolution"
+                "dispute_resolution",
             ],
-            "nda": [
-                "confidentiality",
-                "term",
-                "return_of_materials",
-                "remedies"
-            ],
-            "contract": [
-                "payment",
-                "termination",
-                "liability",
-                "governing_law"
-            ],
+            "nda": ["confidentiality", "term", "return_of_materials", "remedies"],
+            "contract": ["payment", "termination", "liability", "governing_law"],
             "privacy_policy": [
                 "data_collection",
                 "data_use",
                 "data_sharing",
                 "user_rights",
-                "security"
-            ]
+                "security",
+            ],
         }
 
     async def execute(self, doc_type: str, jurisdiction: str, clauses: List[str]) -> str:
@@ -242,7 +228,7 @@ class ComplianceCheckerTool(Tool):
             "jurisdiction": jurisdiction,
             "required_clauses": required,
             "missing_clauses": missing,
-            "compliance_score": (len(required) - len(missing)) / len(required) if required else 1.0
+            "compliance_score": (len(required) - len(missing)) / len(required) if required else 1.0,
         }
 
         return f"Compliance Check: {compliance_status}"
@@ -257,24 +243,24 @@ class LegalPrecedentSearchTool(Tool):
             description="Search for relevant legal precedents and case law",
             parameters={
                 "issue": {"type": "string", "description": "Legal issue to research"},
-                "jurisdiction": {"type": "string", "description": "Legal jurisdiction"}
-            }
+                "jurisdiction": {"type": "string", "description": "Legal jurisdiction"},
+            },
         )
 
         # Simulated precedent database
         self.precedents = {
             "liability limitation": [
                 "Smith v. Tech Corp (2020): Liability caps upheld in commercial contracts",
-                "Jones v. Services Inc (2019): Unconscionable limitation struck down"
+                "Jones v. Services Inc (2019): Unconscionable limitation struck down",
             ],
             "non-compete": [
                 "Brown v. Employer (2021): 2-year non-compete deemed reasonable",
-                "Davis v. Company (2020): Geographic restriction too broad"
+                "Davis v. Company (2020): Geographic restriction too broad",
             ],
             "intellectual property": [
                 "Tech Co v. Developer (2022): Work-for-hire doctrine applied",
-                "Creator v. Platform (2021): IP assignment must be explicit"
-            ]
+                "Creator v. Platform (2021): IP assignment must be explicit",
+            ],
         }
 
     async def execute(self, issue: str, jurisdiction: str) -> str:
@@ -294,6 +280,7 @@ class LegalPrecedentSearchTool(Tool):
 
 # Agent System Setup
 
+
 async def create_legal_analysis_system(llm_provider) -> AgentMind:
     """Create the legal document analysis agent system"""
 
@@ -311,7 +298,7 @@ async def create_legal_analysis_system(llm_provider) -> AgentMind:
         5. Note any unusual or non-standard provisions
 
         Be thorough and precise. Legal language matters.""",
-        tools=[ClauseExtractorTool()]
+        tools=[ClauseExtractorTool()],
     )
 
     # Risk Assessment Agent
@@ -326,7 +313,7 @@ async def create_legal_analysis_system(llm_provider) -> AgentMind:
         5. Consider worst-case scenarios
 
         Protect the client's interests. Be conservative in risk assessment.""",
-        tools=[RiskAnalyzerTool()]
+        tools=[RiskAnalyzerTool()],
     )
 
     # Compliance Specialist Agent
@@ -341,7 +328,7 @@ async def create_legal_analysis_system(llm_provider) -> AgentMind:
         5. Flag potential compliance violations
 
         Stay current with legal requirements. Compliance is non-negotiable.""",
-        tools=[ComplianceCheckerTool()]
+        tools=[ComplianceCheckerTool()],
     )
 
     # Legal Research Agent
@@ -356,7 +343,7 @@ async def create_legal_analysis_system(llm_provider) -> AgentMind:
         5. Support analysis with legal authority
 
         Ground recommendations in legal precedent.""",
-        tools=[LegalPrecedentSearchTool()]
+        tools=[LegalPrecedentSearchTool()],
     )
 
     # Advisory Agent
@@ -370,7 +357,7 @@ async def create_legal_analysis_system(llm_provider) -> AgentMind:
         4. Prioritize issues by importance
         5. Offer strategic legal advice
 
-        Provide practical, business-minded legal counsel."""
+        Provide practical, business-minded legal counsel.""",
     )
 
     # Add all agents
@@ -417,10 +404,7 @@ Please provide comprehensive analysis including:
 """
 
     # Collaborate to analyze the document
-    result = await mind.collaborate(
-        task=analysis_request,
-        max_rounds=5
-    )
+    result = await mind.collaborate(task=analysis_request, max_rounds=5)
 
     print(f"\n{'='*60}")
     print("Analysis Complete")
@@ -437,13 +421,14 @@ Please provide comprehensive analysis including:
         compliance_issues=[],
         recommendations=[],
         overall_risk_score=0.5,
-        missing_clauses=[]
+        missing_clauses=[],
     )
 
     return analysis_result
 
 
 # Example Documents
+
 
 async def example_employment_agreement():
     """Example: Employment agreement analysis"""
@@ -491,7 +476,7 @@ This is at-will employment. Either party may terminate at any time for any reaso
 
 9. GOVERNING LAW
 This agreement shall be governed by California law.
-"""
+""",
     )
 
     llm = OllamaProvider(model="llama3.2")
@@ -545,7 +530,7 @@ in addition to other remedies.
 
 8. GOVERNING LAW
 Governed by Delaware law. Disputes resolved in Delaware courts.
-"""
+""",
     )
 
     llm = OllamaProvider(model="llama3.2")

@@ -6,7 +6,9 @@ We release patches for security vulnerabilities. Currently supported versions:
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 0.2.x   | :white_check_mark: |
+| 0.4.x   | :white_check_mark: |
+| 0.3.x   | :white_check_mark: |
+| 0.2.x   | :x:                |
 | 0.1.x   | :x:                |
 
 ## Reporting a Vulnerability
@@ -20,7 +22,7 @@ We take the security of AgentMind seriously. If you believe you have found a sec
 
 ### Please DO:
 
-1. Email the details to: [security contact - add your email]
+1. Email the details to: security@agentmind.dev (or cym3118288@gmail.com)
 2. Include the following information:
    - Type of vulnerability
    - Full paths of source file(s) related to the vulnerability
@@ -41,6 +43,14 @@ We take the security of AgentMind seriously. If you believe you have found a sec
 - We will coordinate with you on the disclosure timeline
 - We prefer to fully remediate vulnerabilities before public disclosure
 - We will credit you in the security advisory (unless you prefer to remain anonymous)
+
+## Security Hall of Fame
+
+We recognize security researchers who responsibly disclose vulnerabilities:
+
+- [Your name could be here!]
+
+Thank you to all researchers who help keep AgentMind secure.
 
 ## Security Best Practices for Users
 

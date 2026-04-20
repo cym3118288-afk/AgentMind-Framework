@@ -324,7 +324,7 @@ class TestTemplatePerformance:
         for _ in range(1000):
             template = registry.get("research")
             assert template is not None
-        elapsed = time.time()-start
+        elapsed = time.time() - start
 
         assert elapsed < 0.1  # Should be very fast
 

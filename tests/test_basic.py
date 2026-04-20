@@ -13,8 +13,8 @@ import pytest
 # Add src directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from agentmind import Agent, AgentMind, Message
-from agentmind.core.types import (
+from agentmind import Agent, AgentMind, Message  # noqa: E402
+from agentmind.core.types import (  # noqa: E402
     AgentConfig,
     AgentRole,
     CollaborationResult,

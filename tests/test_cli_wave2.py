@@ -123,7 +123,7 @@ class TestInitCommand:
                 "ollama",
                 "--template",
                 "basic",
-                "--no - interactive",
+                "--no-interactive",
             ],
         )
 
@@ -151,7 +151,7 @@ class TestInitCommand:
                 "ollama",
                 "--template",
                 "basic",
-                "--no - interactive",
+                "--no-interactive",
             ],
             input="n\n",
         )
@@ -175,7 +175,7 @@ class TestInitCommand:
                 "ollama",
                 "--template",
                 "research",
-                "--no - interactive",
+                "--no-interactive",
             ],
         )
 
@@ -194,7 +194,7 @@ class TestAgentCreateCommand:
         """Test basic agent creation."""
         result = runner.invoke(
             cli,
-            ["agent", "create", "--name", "TestAgent", "--role", "Tester", "--no - interactive"],
+            ["agent", "create", "--name", "TestAgent", "--role", "Tester", "--no-interactive"],
         )
 
         assert result.exit_code == 0
@@ -216,7 +216,7 @@ class TestAgentCreateCommand:
                 "Data Analysis Expert",
                 "--output",
                 str(output_file),
-                "--no - interactive",
+                "--no-interactive",
             ],
         )
 
@@ -238,9 +238,9 @@ class TestAgentCreateCommand:
                 "CustomAgent",
                 "--role",
                 "Custom Role",
-                "--system - prompt",
+                "--system-prompt",
                 "Custom system prompt here",
-                "--no - interactive",
+                "--no-interactive",
             ],
         )
 

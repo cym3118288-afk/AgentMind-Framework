@@ -7,8 +7,6 @@ This module provides clear, actionable error messages for common issues.
 class AgentMindError(Exception):
     """Base exception for all AgentMind errors."""
 
-    pass
-
 
 class AgentConfigError(AgentMindError):
     """Raised when agent configuration is invalid."""

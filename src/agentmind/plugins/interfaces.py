@@ -33,7 +33,6 @@ class LLMProvider(ABC):
         Returns:
             Dict with 'content', 'model', 'usage', and 'metadata'
         """
-        pass
 
     @abstractmethod
     async def generate_stream(
@@ -54,7 +53,6 @@ class LLMProvider(ABC):
         Yields:
             Text chunks
         """
-        pass
 
     @abstractmethod
     def get_model_info(self) -> Dict[str, Any]:
@@ -63,7 +61,6 @@ class LLMProvider(ABC):
         Returns:
             Dict with model name, capabilities, limits, etc.
         """
-        pass
 
 
 class MemoryBackend(ABC):
@@ -78,7 +75,6 @@ class MemoryBackend(ABC):
             value: Value to store
             metadata: Optional metadata
         """
-        pass
 
     @abstractmethod
     async def retrieve(self, key: str) -> Optional[Any]:
@@ -90,7 +86,6 @@ class MemoryBackend(ABC):
         Returns:
             Retrieved value or None
         """
-        pass
 
     @abstractmethod
     async def search(
@@ -109,7 +104,6 @@ class MemoryBackend(ABC):
         Returns:
             List of matching entries
         """
-        pass
 
     @abstractmethod
     async def delete(self, key: str) -> bool:
@@ -121,12 +115,10 @@ class MemoryBackend(ABC):
         Returns:
             True if deleted, False if not found
         """
-        pass
 
     @abstractmethod
     async def clear(self) -> None:
         """Clear all memory."""
-        pass
 
     @abstractmethod
     async def list_keys(self, pattern: Optional[str] = None) -> List[str]:
@@ -138,7 +130,6 @@ class MemoryBackend(ABC):
         Returns:
             List of matching keys
         """
-        pass
 
 
 class ToolRegistry(ABC):
@@ -160,7 +151,6 @@ class ToolRegistry(ABC):
             description: Tool description
             parameters: Parameter schema
         """
-        pass
 
     @abstractmethod
     async def execute_tool(self, name: str, **kwargs: Any) -> Dict[str, Any]:
@@ -173,7 +163,6 @@ class ToolRegistry(ABC):
         Returns:
             Execution result
         """
-        pass
 
     @abstractmethod
     def get_tool_definitions(self) -> List[Dict[str, Any]]:
@@ -182,7 +171,6 @@ class ToolRegistry(ABC):
         Returns:
             List of tool definitions
         """
-        pass
 
     @abstractmethod
     def list_tools(self) -> List[str]:
@@ -191,7 +179,6 @@ class ToolRegistry(ABC):
         Returns:
             List of tool names
         """
-        pass
 
 
 class Orchestrator(ABC):
@@ -216,7 +203,6 @@ class Orchestrator(ABC):
         Returns:
             Orchestration result
         """
-        pass
 
     @abstractmethod
     def get_strategy_name(self) -> str:
@@ -225,7 +211,6 @@ class Orchestrator(ABC):
         Returns:
             Strategy name
         """
-        pass
 
     @abstractmethod
     def supports_parallel(self) -> bool:
@@ -234,7 +219,6 @@ class Orchestrator(ABC):
         Returns:
             True if parallel execution is supported
         """
-        pass
 
 
 class Observer(ABC):
@@ -249,7 +233,6 @@ class Observer(ABC):
             task: Task description
             context: Execution context
         """
-        pass
 
     @abstractmethod
     async def on_agent_end(
@@ -265,7 +248,6 @@ class Observer(ABC):
             result: Agent result
             context: Execution context
         """
-        pass
 
     @abstractmethod
     async def on_agent_error(
@@ -281,7 +263,6 @@ class Observer(ABC):
             error: Exception that occurred
             context: Execution context
         """
-        pass
 
     @abstractmethod
     async def on_message(self, message: Message, context: Dict[str, Any]) -> None:
@@ -291,7 +272,6 @@ class Observer(ABC):
             message: Message object
             context: Execution context
         """
-        pass
 
 
 class PluginMetadata(BaseModel):
@@ -317,7 +297,6 @@ class PluginInterface(ABC):
         Returns:
             Plugin metadata
         """
-        pass
 
     @abstractmethod
     async def initialize(self, config: Optional[Dict[str, Any]] = None) -> None:
@@ -326,12 +305,10 @@ class PluginInterface(ABC):
         Args:
             config: Optional configuration
         """
-        pass
 
     @abstractmethod
     async def shutdown(self) -> None:
         """Shutdown the plugin."""
-        pass
 
     @abstractmethod
     def health_check(self) -> bool:
@@ -340,4 +317,3 @@ class PluginInterface(ABC):
         Returns:
             True if healthy
         """
-        pass

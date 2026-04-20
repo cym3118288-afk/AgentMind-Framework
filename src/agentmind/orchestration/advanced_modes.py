@@ -122,12 +122,10 @@ class BaseOrchestrator(ABC):
         Returns:
             Collaboration result
         """
-        pass
 
     @abstractmethod
     def get_mode(self) -> OrchestrationMode:
         """Get orchestration mode."""
-        pass
 
     async def _safe_process_message(
         self, agent: Agent, message: Message, timeout: Optional[float] = None

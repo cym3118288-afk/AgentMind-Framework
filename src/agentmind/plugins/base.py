@@ -59,7 +59,6 @@ class Plugin(ABC):
         Returns:
             Plugin metadata
         """
-        pass
 
     @abstractmethod
     async def initialize(self) -> None:
@@ -68,7 +67,6 @@ class Plugin(ABC):
         Called when the plugin is loaded. Use this to set up
         connections, load resources, etc.
         """
-        pass
 
     @abstractmethod
     async def shutdown(self) -> None:
@@ -77,7 +75,6 @@ class Plugin(ABC):
         Called when the plugin is unloaded. Use this to clean up
         resources, close connections, etc.
         """
-        pass
 
     def validate_config(self, config: Dict[str, Any]) -> bool:
         """Validate plugin configuration.
@@ -120,7 +117,6 @@ class ToolPlugin(Plugin):
         Returns:
             Tool execution result
         """
-        pass
 
     @abstractmethod
     def get_tool_definition(self) -> Dict[str, Any]:
@@ -129,7 +125,6 @@ class ToolPlugin(Plugin):
         Returns:
             Tool definition dictionary
         """
-        pass
 
 
 class IntegrationPlugin(Plugin):
@@ -138,12 +133,10 @@ class IntegrationPlugin(Plugin):
     @abstractmethod
     async def connect(self) -> None:
         """Establish connection to external service."""
-        pass
 
     @abstractmethod
     async def disconnect(self) -> None:
         """Disconnect from external service."""
-        pass
 
     @abstractmethod
     async def send_message(self, message: str, **kwargs) -> Any:
@@ -156,7 +149,6 @@ class IntegrationPlugin(Plugin):
         Returns:
             Response from service
         """
-        pass
 
 
 class MemoryPlugin(Plugin):
@@ -170,7 +162,6 @@ class MemoryPlugin(Plugin):
             key: Storage key
             value: Value to store
         """
-        pass
 
     @abstractmethod
     async def retrieve(self, key: str) -> Optional[Any]:
@@ -182,7 +173,6 @@ class MemoryPlugin(Plugin):
         Returns:
             Retrieved value or None
         """
-        pass
 
     @abstractmethod
     async def delete(self, key: str) -> None:
@@ -191,7 +181,6 @@ class MemoryPlugin(Plugin):
         Args:
             key: Storage key
         """
-        pass
 
     @abstractmethod
     async def list_keys(self, pattern: Optional[str] = None) -> List[str]:
@@ -203,7 +192,6 @@ class MemoryPlugin(Plugin):
         Returns:
             List of matching keys
         """
-        pass
 
 
 class LLMProviderPlugin(Plugin):
@@ -220,17 +208,14 @@ class LLMProviderPlugin(Plugin):
         Returns:
             Generated text
         """
-        pass
 
     @abstractmethod
     def supports_streaming(self) -> bool:
         """Check if provider supports streaming."""
-        pass
 
     @abstractmethod
     def get_model_name(self) -> str:
         """Get model name."""
-        pass
 
 
 class OrchestrationPlugin(Plugin):
@@ -248,7 +233,6 @@ class OrchestrationPlugin(Plugin):
         Returns:
             Orchestration result
         """
-        pass
 
 
 class MiddlewarePlugin(Plugin):
@@ -264,7 +248,6 @@ class MiddlewarePlugin(Plugin):
         Returns:
             Modified context
         """
-        pass
 
     @abstractmethod
     async def after_response(self, context: Dict[str, Any], response: Any) -> Any:
@@ -277,7 +260,6 @@ class MiddlewarePlugin(Plugin):
         Returns:
             Modified response
         """
-        pass
 
 
 class UIPlugin(Plugin):
@@ -290,7 +272,6 @@ class UIPlugin(Plugin):
         Returns:
             List of route definitions
         """
-        pass
 
     @abstractmethod
     def get_static_files(self) -> Optional[str]:
@@ -299,7 +280,6 @@ class UIPlugin(Plugin):
         Returns:
             Path to static files or None
         """
-        pass
 
     @abstractmethod
     def get_templates(self) -> Optional[str]:
@@ -308,4 +288,3 @@ class UIPlugin(Plugin):
         Returns:
             Path to templates or None
         """
-        pass

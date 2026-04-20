@@ -86,7 +86,6 @@ class LLMProvider(ABC):
         Raises:
             Exception: If generation fails
         """
-        pass
 
     @abstractmethod
     async def generate_stream(
@@ -110,7 +109,6 @@ class LLMProvider(ABC):
         Raises:
             Exception: If generation fails
         """
-        pass
 
     def build_messages(
         self,

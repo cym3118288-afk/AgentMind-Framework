@@ -15,8 +15,7 @@ import json
 from pathlib import Path
 
 from .mind import AgentMind as BaseAgentMind
-from .agent import Agent
-from .types import CollaborationResult, CollaborationStrategy, Message, MessageRole
+from .types import CollaborationResult, CollaborationStrategy
 from ..llm.provider import LLMProvider
 
 
@@ -448,7 +447,7 @@ class EnhancedAgentMind(BaseAgentMind):
             observer: Observer callback
         """
         self.observers.append(observer)
-        print(f"[Observer] Added observer")
+        print("[Observer] Added observer")
 
     async def _notify_observers(self, event_type: str, data: Any) -> None:
         """Notify all observers of an event.

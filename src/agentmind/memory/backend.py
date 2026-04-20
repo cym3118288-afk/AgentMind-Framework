@@ -22,34 +22,28 @@ class MemoryBackend(ABC):
     @abstractmethod
     async def add(self, entry: MemoryEntry) -> None:
         """Add a memory entry to storage."""
-        pass
 
     @abstractmethod
     async def get_recent(self, limit: int) -> List[MemoryEntry]:
         """Get the most recent N memory entries."""
-        pass
 
     @abstractmethod
     async def get_all(self) -> List[MemoryEntry]:
         """Get all memory entries."""
-        pass
 
     @abstractmethod
     async def search_by_importance(
         self, min_importance: float, limit: int = 10
     ) -> List[MemoryEntry]:
         """Search entries by minimum importance score."""
-        pass
 
     @abstractmethod
     async def clear(self) -> None:
         """Clear all memory entries."""
-        pass
 
     @abstractmethod
     async def count(self) -> int:
         """Get total number of entries."""
-        pass
 
     async def add_batch(self, entries: List[MemoryEntry]) -> None:
         """Add multiple memory entries at once (optional optimization).

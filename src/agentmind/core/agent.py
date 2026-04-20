@@ -938,9 +938,18 @@ class Agent:
         """
         # Role-based response templates (will be replaced with LLM in Phase 1)
         role_templates = {
-            AgentRole.ANALYST: f"[Analysis] {self.name}: From a data perspective, '{message.content}' requires further analysis",
-            AgentRole.CREATIVE: f"[Creative] {self.name}: This gives me an interesting idea about '{message.content}'",
-            AgentRole.COORDINATOR: f"[Coordination] {self.name}: Let's integrate the perspectives on '{message.content}'",
+            AgentRole.ANALYST: (
+                f"[Analysis] {self.name}: From a data perspective, "
+                f"'{message.content}' requires further analysis"
+            ),
+            AgentRole.CREATIVE: (
+                f"[Creative] {self.name}: This gives me an interesting idea "
+                f"about '{message.content}'"
+            ),
+            AgentRole.COORDINATOR: (
+                f"[Coordination] {self.name}: Let's integrate the perspectives "
+                f"on '{message.content}'"
+            ),
             AgentRole.CRITIC: f"[Critique] {self.name}: I see potential issues with '{message.content}'",
             AgentRole.RESEARCHER: f"[Research] {self.name}: I need to investigate '{message.content}' further",
             AgentRole.EXECUTOR: f"[Execution] {self.name}: I will take action on '{message.content}'",

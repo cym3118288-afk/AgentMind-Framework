@@ -1,23 +1,24 @@
 """Profiling script for core modules to identify optimization opportunities."""
 
-import asyncio
-import cProfile
-import io
-import pstats
 import sys
-import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from agentmind import Agent, AgentMind, Message
-from agentmind.core.types import CollaborationStrategy
+import asyncio  # noqa: E402
+import cProfile  # noqa: E402
+import io  # noqa: E402
+import pstats  # noqa: E402
+import time  # noqa: E402
+
+from agentmind import Agent, AgentMind, Message  # noqa: E402
+from agentmind.core.types import CollaborationStrategy  # noqa: E402
 
 
 def profile_agent_creation():
     """Profile agent creation."""
     for i in range(100):
-        agent = Agent(name=f"agent_{i}", role="analyst")
+        Agent(name=f"agent_{i}", role="analyst")
 
 
 def profile_message_processing():
@@ -42,7 +43,7 @@ def profile_memory_operations():
 
     # Retrieve recent memory multiple times
     for _ in range(100):
-        recent = agent.get_recent_memory(limit=10)
+        agent.get_recent_memory(limit=10)
 
 
 def profile_agentmind_collaboration():
@@ -107,7 +108,7 @@ def profile_session_save_load():
 
 def run_profile(func, name):
     """Run profiling on a function."""
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"Profiling: {name}")
     print("=" * 60)
 
@@ -137,7 +138,7 @@ def benchmark_operations():
     # Agent creation
     start = time.time()
     for i in range(1000):
-        agent = Agent(name=f"agent_{i}", role="analyst")
+        Agent(name=f"agent_{i}", role="analyst")
     agent_creation_time = time.time() - start
     print(
         f"Agent creation (1000x): {agent_creation_time:.4f}s ({agent_creation_time / 1000 * 1000:.2f}ms each)"
@@ -146,7 +147,7 @@ def benchmark_operations():
     # Message creation
     start = time.time()
     for i in range(1000):
-        msg = Message(content=f"Message {i}", sender="user")
+        Message(content=f"Message {i}", sender="user")
     message_creation_time = time.time() - start
     print(
         f"Message creation (1000x): {message_creation_time:.4f}s ({message_creation_time / 1000 * 1000:.2f}ms each)"
@@ -159,7 +160,7 @@ def benchmark_operations():
 
     start = time.time()
     for _ in range(1000):
-        recent = agent.get_recent_memory(limit=10)
+        agent.get_recent_memory(limit=10)
     memory_retrieval_time = time.time() - start
     print(
         f"Memory retrieval (1000x): {memory_retrieval_time:.4f}s ({memory_retrieval_time / 1000 * 1000:.2f}ms each)"

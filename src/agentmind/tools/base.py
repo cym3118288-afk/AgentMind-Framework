@@ -49,7 +49,6 @@ class Tool(ABC):
         Returns:
             ToolResult with execution outcome
         """
-        pass
 
     def get_definition(self) -> ToolDefinition:
         """Get the tool definition for LLM function calling.

@@ -21,7 +21,6 @@ console = Console()
 @click.group(name="plugin")
 def plugin_cli():
     """Plugin management commands."""
-    pass
 
 
 @plugin_cli.command()

@@ -33,7 +33,6 @@ class DocumentProcessor:
 
     def __init__(self):
         """Initialize document processor."""
-        pass
 
     def extract_text_from_pdf(
         self, path: Union[str, Path], pages: Optional[List[int]] = None

@@ -24,9 +24,7 @@ logger = logging.getLogger(__name__)
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="AgentMind API",
-    description="Multi-agent collaboration framework API",
-    version="0.3.0"
+    title="AgentMind API", description="Multi-agent collaboration framework API", version="0.3.0"
 )
 
 # Add CORS middleware
@@ -45,6 +43,7 @@ sessions: Dict[str, Dict[str, Any]] = {}
 # Request/Response Models
 class AgentConfig(BaseModel):
     """Configuration for an agent."""
+
     name: str = Field(..., description="Agent name")
     role: str = Field(..., description="Agent role")
     system_prompt: Optional[str] = Field(None, description="Custom system prompt")
@@ -53,10 +52,13 @@ class AgentConfig(BaseModel):
 
 class CollaborationRequest(BaseModel):
     """Request to start a collaboration."""
+
     task: str = Field(..., description="Task description")
     agents: List[AgentConfig] = Field(..., description="Agent configurations")
     max_rounds: int = Field(default=5, ge=1, le=20, description="Maximum collaboration rounds")
-    llm_provider: str = Field(default="ollama", description="LLM provider (ollama, openai, anthropic)")
+    llm_provider: str = Field(
+        default="ollama", description="LLM provider (ollama, openai, anthropic)"
+    )
     llm_model: str = Field(default="llama3.2", description="LLM model name")
     temperature: float = Field(default=0.7, ge=0.0, le=2.0, description="LLM temperature")
     stream: bool = Field(default=False, description="Stream responses")
@@ -65,6 +67,7 @@ class CollaborationRequest(BaseModel):
 
 class CollaborationResponse(BaseModel):
     """Response from a collaboration."""
+
     session_id: str = Field(..., description="Unique session identifier")
     result: str = Field(..., description="Collaboration result")
     rounds: int = Field(..., description="Number of rounds executed")
@@ -75,6 +78,7 @@ class CollaborationResponse(BaseModel):
 
 class SessionStatus(BaseModel):
     """Status of a collaboration session."""
+
     session_id: str
     status: str  # running, completed, failed
     progress: Optional[str] = None
@@ -93,9 +97,7 @@ def create_llm_provider(provider_type: str, model: str, temperature: float):
 
 
 async def run_collaboration(
-    session_id: str,
-    request: CollaborationRequest,
-    tracer: Optional[Tracer] = None
+    session_id: str, request: CollaborationRequest, tracer: Optional[Tracer] = None
 ) -> CollaborationResponse:
     """Run a multi-agent collaboration.
 
@@ -108,6 +110,7 @@ async def run_collaboration(
         Collaboration response
     """
     import time
+
     start_time = time.time()
 
     try:
@@ -116,9 +119,7 @@ async def run_collaboration(
 
         # Create LLM provider
         llm_provider = create_llm_provider(
-            request.llm_provider,
-            request.llm_model,
-            request.temperature
+            request.llm_provider, request.llm_model, request.temperature
         )
 
         # Create AgentMind instance
@@ -126,11 +127,7 @@ async def run_collaboration(
 
         # Create and add agents
         for agent_config in request.agents:
-            agent = Agent(
-                name=agent_config.name,
-                role=agent_config.role,
-                llm_provider=llm_provider
-            )
+            agent = Agent(name=agent_config.name, role=agent_config.role, llm_provider=llm_provider)
             mind.add_agent(agent)
 
         # Start tracing if enabled
@@ -138,10 +135,7 @@ async def run_collaboration(
             tracer.start()
 
         # Run collaboration
-        result = await mind.collaborate(
-            task=request.task,
-            max_rounds=request.max_rounds
-        )
+        result = await mind.collaborate(task=request.task, max_rounds=request.max_rounds)
 
         # End tracing
         if tracer:
@@ -165,7 +159,7 @@ async def run_collaboration(
             rounds=len(mind.conversation_history) // len(request.agents),
             token_usage=token_usage,
             cost_estimate=cost_estimate,
-            duration_ms=duration_ms
+            duration_ms=duration_ms,
         )
 
         # Update session
@@ -192,8 +186,8 @@ async def root():
         "endpoints": {
             "POST /collaborate": "Start a new collaboration",
             "GET /session/{session_id}": "Get session status",
-            "GET /health": "Health check"
-        }
+            "GET /health": "Health check",
+        },
     }
 
 
@@ -202,15 +196,12 @@ async def health_check():
     """Health check endpoint."""
     return {
         "status": "healthy",
-        "active_sessions": len([s for s in sessions.values() if s["status"] == "running"])
+        "active_sessions": len([s for s in sessions.values() if s["status"] == "running"]),
     }
 
 
 @app.post("/collaborate", response_model=CollaborationResponse)
-async def collaborate(
-    request: CollaborationRequest,
-    background_tasks: BackgroundTasks
-):
+async def collaborate(request: CollaborationRequest, background_tasks: BackgroundTasks):
     """Start a multi-agent collaboration.
 
     Args:
@@ -230,15 +221,14 @@ async def collaborate(
     sessions[session_id] = {
         "status": "initializing",
         "request": request.model_dump(),
-        "created_at": asyncio.get_event_loop().time()
+        "created_at": asyncio.get_event_loop().time(),
     }
 
     # Create tracer if enabled
     tracer = None
     if request.enable_tracing:
         tracer = Tracer(
-            session_id=session_id,
-            metadata={"task": request.task, "agents": len(request.agents)}
+            session_id=session_id, metadata={"task": request.task, "agents": len(request.agents)}
         )
 
     try:
@@ -247,10 +237,7 @@ async def collaborate(
 
         # Save trace in background if enabled
         if tracer and request.enable_tracing:
-            background_tasks.add_task(
-                tracer.save_jsonl,
-                f"traces/{session_id}.jsonl"
-            )
+            background_tasks.add_task(tracer.save_jsonl, f"traces/{session_id}.jsonl")
 
         return response
 
@@ -279,9 +266,7 @@ async def collaborate_stream(request: CollaborationRequest):
 
             # Create LLM provider
             llm_provider = create_llm_provider(
-                request.llm_provider,
-                request.llm_model,
-                request.temperature
+                request.llm_provider, request.llm_model, request.temperature
             )
 
             # Create AgentMind instance
@@ -290,9 +275,7 @@ async def collaborate_stream(request: CollaborationRequest):
             # Create and add agents
             for agent_config in request.agents:
                 agent = Agent(
-                    name=agent_config.name,
-                    role=agent_config.role,
-                    llm_provider=llm_provider
+                    name=agent_config.name, role=agent_config.role, llm_provider=llm_provider
                 )
                 mind.add_agent(agent)
                 yield f"data: {{'event': 'agent_added', 'agent': '{agent_config.name}'}}\n\n"
@@ -300,10 +283,7 @@ async def collaborate_stream(request: CollaborationRequest):
             # Run collaboration with streaming
             # Note: This is a simplified version - full streaming would require
             # modifications to the AgentMind.collaborate method
-            result = await mind.collaborate(
-                task=request.task,
-                max_rounds=request.max_rounds
-            )
+            result = await mind.collaborate(task=request.task, max_rounds=request.max_rounds)
 
             # Send completion event
             yield f"data: {{'event': 'completed', 'result': '{result}'}}\n\n"
@@ -312,10 +292,7 @@ async def collaborate_stream(request: CollaborationRequest):
             logger.error(f"Streaming error: {e}", exc_info=True)
             yield f"data: {{'event': 'error', 'message': '{str(e)}'}}\n\n"
 
-    return StreamingResponse(
-        event_generator(),
-        media_type="text/event-stream"
-    )
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 
 @app.get("/session/{session_id}", response_model=SessionStatus)
@@ -337,9 +314,7 @@ async def get_session_status(session_id: str):
     session = sessions[session_id]
 
     return SessionStatus(
-        session_id=session_id,
-        status=session["status"],
-        result=session.get("result")
+        session_id=session_id, status=session["status"], result=session.get("result")
     )
 
 
@@ -377,20 +352,14 @@ async def list_sessions():
             {
                 "session_id": sid,
                 "status": session["status"],
-                "created_at": session.get("created_at")
+                "created_at": session.get("created_at"),
             }
             for sid, session in sessions.items()
-        ]
+        ],
     }
 
 
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(
-        "api_server:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=True,
-        log_level="info"
-    )
+    uvicorn.run("api_server:app", host="0.0.0.0", port=8000, reload=True, log_level="info")

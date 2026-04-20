@@ -85,8 +85,7 @@ def create_comparison_charts(results: dict, output_dir: str = "benchmarks/charts
 
     for i, framework in enumerate(frameworks):
         scenario_latencies = [
-            aggregated[framework]["scenarios"].get(s, {}).get("latency_ms", 0)
-            for s in scenarios
+            aggregated[framework]["scenarios"].get(s, {}).get("latency_ms", 0) for s in scenarios
         ]
         ax.bar(
             x + i * width,
@@ -113,8 +112,7 @@ def create_comparison_charts(results: dict, output_dir: str = "benchmarks/charts
 
     for i, framework in enumerate(frameworks):
         scenario_memory = [
-            aggregated[framework]["scenarios"].get(s, {}).get("memory_mb", 0)
-            for s in scenarios
+            aggregated[framework]["scenarios"].get(s, {}).get("memory_mb", 0) for s in scenarios
         ]
         ax.bar(
             x + i * width,

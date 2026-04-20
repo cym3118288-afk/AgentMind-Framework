@@ -19,20 +19,19 @@ import uuid
 from typing import Dict, List
 import redis
 
-sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
+sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 
 from agentmind.core.agent import Agent, Message
 from agentmind.core.mind import AgentMind
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv('SESSION_SECRET', 'agentmind-chat-secret')
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
+app.config["SECRET_KEY"] = os.getenv("SESSION_SECRET", "agentmind-chat-secret")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 
 # Redis for session storage
 try:
     redis_client = redis.from_url(
-        os.getenv('REDIS_URL', 'redis://localhost:6379/1'),
-        decode_responses=True
+        os.getenv("REDIS_URL", "redis://localhost:6379/1"), decode_responses=True
     )
     redis_client.ping()
     print("[✓] Redis connected")
@@ -92,11 +91,7 @@ def save_session(session_id: str, data: Dict):
     """Save session data to Redis or memory."""
     if redis_client:
         try:
-            redis_client.setex(
-                f"chat_session:{session_id}",
-                86400,  # 24 hours
-                json.dumps(data)
-            )
+            redis_client.setex(f"chat_session:{session_id}", 86400, json.dumps(data))  # 24 hours
             return
         except:
             pass
@@ -115,17 +110,17 @@ def export_to_markdown(session_id: str) -> str:
     md += f"**Messages:** {len(session.get('messages', []))}\n\n"
     md += "---\n\n"
 
-    for msg in session.get('messages', []):
-        sender = msg.get('sender', 'Unknown')
-        content = msg.get('content', '')
-        timestamp = msg.get('timestamp', '')
-        msg_type = msg.get('type', 'user')
+    for msg in session.get("messages", []):
+        sender = msg.get("sender", "Unknown")
+        content = msg.get("content", "")
+        timestamp = msg.get("timestamp", "")
+        msg_type = msg.get("type", "user")
 
-        if msg_type == 'user':
+        if msg_type == "user":
             md += f"### 👤 {sender} ({timestamp})\n\n"
         else:
-            emoji = msg.get('emoji', '🤖')
-            role = msg.get('role', 'assistant')
+            emoji = msg.get("emoji", "🤖")
+            role = msg.get("role", "assistant")
             md += f"### {emoji} {sender} - *{role}* ({timestamp})\n\n"
 
         md += f"{content}\n\n"
@@ -134,23 +129,25 @@ def export_to_markdown(session_id: str) -> str:
     return md
 
 
-@app.route('/')
+@app.route("/")
 def index():
     """Serve the main chat interface."""
-    return render_template('chat_enhanced.html')
+    return render_template("chat_enhanced.html")
 
 
-@app.route('/health')
+@app.route("/health")
 def health():
     """Health check endpoint."""
-    return jsonify({
-        "status": "healthy",
-        "agents": len(mind.agents),
-        "redis_connected": redis_client is not None
-    })
+    return jsonify(
+        {
+            "status": "healthy",
+            "agents": len(mind.agents),
+            "redis_connected": redis_client is not None,
+        }
+    )
 
 
-@app.route('/api/sessions', methods=['GET'])
+@app.route("/api/sessions", methods=["GET"])
 def list_sessions():
     """List all chat sessions."""
     if redis_client:
@@ -161,26 +158,32 @@ def list_sessions():
                 session_id = key.split(":")[-1]
                 data = get_session(session_id)
                 if data:
-                    session_list.append({
-                        "session_id": session_id,
-                        "created_at": data.get("created_at"),
-                        "message_count": len(data.get("messages", []))
-                    })
+                    session_list.append(
+                        {
+                            "session_id": session_id,
+                            "created_at": data.get("created_at"),
+                            "message_count": len(data.get("messages", [])),
+                        }
+                    )
             return jsonify({"sessions": session_list})
         except:
             pass
 
-    return jsonify({"sessions": [
+    return jsonify(
         {
-            "session_id": sid,
-            "created_at": data.get("created_at"),
-            "message_count": len(data.get("messages", []))
+            "sessions": [
+                {
+                    "session_id": sid,
+                    "created_at": data.get("created_at"),
+                    "message_count": len(data.get("messages", [])),
+                }
+                for sid, data in sessions.items()
+            ]
         }
-        for sid, data in sessions.items()
-    ]})
+    )
 
 
-@app.route('/api/sessions/<session_id>', methods=['GET'])
+@app.route("/api/sessions/<session_id>", methods=["GET"])
 def get_session_data(session_id: str):
     """Get session data."""
     session = get_session(session_id)
@@ -189,28 +192,25 @@ def get_session_data(session_id: str):
     return jsonify(session)
 
 
-@app.route('/api/sessions/<session_id>/export', methods=['GET'])
+@app.route("/api/sessions/<session_id>/export", methods=["GET"])
 def export_session(session_id: str):
     """Export session to Markdown."""
-    format_type = request.args.get('format', 'markdown')
+    format_type = request.args.get("format", "markdown")
 
-    if format_type == 'markdown':
+    if format_type == "markdown":
         md_content = export_to_markdown(session_id)
         filename = f"agentmind_session_{session_id[:8]}.md"
 
         # Save to temp file
         temp_path = f"/tmp/{filename}"
-        with open(temp_path, 'w') as f:
+        with open(temp_path, "w") as f:
             f.write(md_content)
 
         return send_file(
-            temp_path,
-            as_attachment=True,
-            download_name=filename,
-            mimetype='text/markdown'
+            temp_path, as_attachment=True, download_name=filename, mimetype="text/markdown"
         )
 
-    elif format_type == 'json':
+    elif format_type == "json":
         session = get_session(session_id)
         if not session:
             return jsonify({"error": "Session not found"}), 404
@@ -218,20 +218,17 @@ def export_session(session_id: str):
         filename = f"agentmind_session_{session_id[:8]}.json"
         temp_path = f"/tmp/{filename}"
 
-        with open(temp_path, 'w') as f:
+        with open(temp_path, "w") as f:
             json.dump(session, f, indent=2)
 
         return send_file(
-            temp_path,
-            as_attachment=True,
-            download_name=filename,
-            mimetype='application/json'
+            temp_path, as_attachment=True, download_name=filename, mimetype="application/json"
         )
 
     return jsonify({"error": "Unsupported format"}), 400
 
 
-@socketio.on('connect')
+@socketio.on("connect")
 def handle_connect():
     """Handle client connection."""
     initialize_agents()
@@ -243,79 +240,77 @@ def handle_connect():
     session_data = {
         "session_id": session_id,
         "created_at": datetime.now().isoformat(),
-        "messages": []
+        "messages": [],
     }
     save_session(session_id, session_data)
 
     # Send agent list to the newly connected client
     agent_list = [
         {
-            'name': agent.name,
-            'role': agent.role,
-            'emoji': getattr(agent, 'emoji', '🤖'),
-            'description': getattr(agent, 'description', ''),
-            'is_active': agent.is_active
+            "name": agent.name,
+            "role": agent.role,
+            "emoji": getattr(agent, "emoji", "🤖"),
+            "description": getattr(agent, "description", ""),
+            "is_active": agent.is_active,
         }
         for agent in mind.agents
     ]
 
-    emit('session_created', {
-        'session_id': session_id,
-        'agents': agent_list
-    })
+    emit("session_created", {"session_id": session_id, "agents": agent_list})
 
-    emit('system_message', {
-        'content': f'Welcome! {len(mind.agents)} agents are ready to collaborate.',
-        'timestamp': datetime.now().strftime('%H:%M:%S')
-    })
+    emit(
+        "system_message",
+        {
+            "content": f"Welcome! {len(mind.agents)} agents are ready to collaborate.",
+            "timestamp": datetime.now().strftime("%H:%M:%S"),
+        },
+    )
 
 
-@socketio.on('disconnect')
+@socketio.on("disconnect")
 def handle_disconnect():
     """Handle client disconnection."""
-    print('[!] Client disconnected')
+    print("[!] Client disconnected")
 
 
-@socketio.on('join_session')
+@socketio.on("join_session")
 def handle_join_session(data):
     """Join an existing session."""
-    session_id = data.get('session_id')
+    session_id = data.get("session_id")
     join_room(session_id)
 
     session = get_session(session_id)
     if session:
-        emit('session_history', {
-            'messages': session.get('messages', [])
-        })
+        emit("session_history", {"messages": session.get("messages", [])})
 
 
-@socketio.on('user_message')
+@socketio.on("user_message")
 def handle_user_message(data):
     """Handle user message."""
-    content = data.get('content', '')
-    username = data.get('username', 'User')
-    session_id = data.get('session_id')
+    content = data.get("content", "")
+    username = data.get("username", "User")
+    session_id = data.get("session_id")
 
     if not content.strip():
         return
 
     # Create message object
     message_data = {
-        'sender': username,
-        'content': content,
-        'timestamp': datetime.now().strftime('%H:%M:%S'),
-        'type': 'user',
-        'emoji': '👤'
+        "sender": username,
+        "content": content,
+        "timestamp": datetime.now().strftime("%H:%M:%S"),
+        "type": "user",
+        "emoji": "👤",
     }
 
     # Save to session
     session = get_session(session_id)
     if session:
-        session['messages'].append(message_data)
+        session["messages"].append(message_data)
         save_session(session_id, session)
 
     # Broadcast user message
-    emit('new_message', message_data, room=session_id, broadcast=True)
+    emit("new_message", message_data, room=session_id, broadcast=True)
 
     # Create message for agents
     user_msg = Message(content=content, sender=username)
@@ -335,21 +330,21 @@ def handle_user_message(data):
                 agent = next((a for a in mind.agents if a.name == response.sender), None)
 
                 agent_message = {
-                    'sender': response.sender,
-                    'content': response.content,
-                    'timestamp': response.timestamp.strftime('%H:%M:%S'),
-                    'type': 'agent',
-                    'role': agent.role if agent else 'assistant',
-                    'emoji': getattr(agent, 'emoji', '🤖') if agent else '🤖'
+                    "sender": response.sender,
+                    "content": response.content,
+                    "timestamp": response.timestamp.strftime("%H:%M:%S"),
+                    "type": "agent",
+                    "role": agent.role if agent else "assistant",
+                    "emoji": getattr(agent, "emoji", "🤖") if agent else "🤖",
                 }
 
                 # Save to session
                 session = get_session(session_id)
                 if session:
-                    session['messages'].append(agent_message)
+                    session["messages"].append(agent_message)
                     save_session(session_id, session)
 
-                socketio.emit('new_message', agent_message, room=session_id)
+                socketio.emit("new_message", agent_message, room=session_id)
 
         finally:
             loop.close()
@@ -358,40 +353,42 @@ def handle_user_message(data):
     socketio.start_background_task(process_agents)
 
 
-@socketio.on('toggle_agent')
+@socketio.on("toggle_agent")
 def handle_toggle_agent(data):
     """Toggle agent active status."""
-    agent_name = data.get('agent_name')
-    session_id = data.get('session_id')
+    agent_name = data.get("agent_name")
+    session_id = data.get("session_id")
 
     agent = next((a for a in mind.agents if a.name == agent_name), None)
 
     if agent:
         agent.is_active = not agent.is_active
-        emit('agent_toggled', {
-            'agent_name': agent_name,
-            'is_active': agent.is_active
-        }, room=session_id, broadcast=True)
+        emit(
+            "agent_toggled",
+            {"agent_name": agent_name, "is_active": agent.is_active},
+            room=session_id,
+            broadcast=True,
+        )
 
 
-@socketio.on('clear_session')
+@socketio.on("clear_session")
 def handle_clear_session(data):
     """Clear session history."""
-    session_id = data.get('session_id')
+    session_id = data.get("session_id")
 
     session = get_session(session_id)
     if session:
-        session['messages'] = []
+        session["messages"] = []
         save_session(session_id, session)
 
-        emit('session_cleared', {}, room=session_id, broadcast=True)
+        emit("session_cleared", {}, room=session_id, broadcast=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print("=" * 60)
     print("🚀 AgentMind Enhanced Chat Server Starting...")
     print("=" * 60)
     print("📡 Server will be available at: http://localhost:5000")
     print("💬 Multi-session chat interface with export support!")
     print("=" * 60)
-    socketio.run(app, debug=False, host='0.0.0.0', port=5000)
+    socketio.run(app, debug=False, host="0.0.0.0", port=5000)

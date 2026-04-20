@@ -263,7 +263,9 @@ These functions should be refactored to reduce complexity:
 """
 
     for func in analysis["complex_functions"][:20]:
-        report += f"| {func['file']} | {func['function']} | {func['complexity']} | {func['line']} |\n"
+        report += (
+            f"| {func['file']} | {func['function']} | {func['complexity']} | {func['line']} |\n"
+        )
 
     report += """
 ## Missing Type Hints

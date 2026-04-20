@@ -30,7 +30,9 @@ def add_type_hints_to_file(filepath: str) -> Tuple[bool, List[str]]:
             # Add str type to string parameters
             (
                 r"def (\w+)\((\w+):",
-                lambda m: f"def {m.group(1)}({m.group(2)}: str:" if ":" not in m.group(2) else m.group(0),
+                lambda m: (
+                    f"def {m.group(1)}({m.group(2)}: str:" if ":" not in m.group(2) else m.group(0)
+                ),
             ),
         ]
 

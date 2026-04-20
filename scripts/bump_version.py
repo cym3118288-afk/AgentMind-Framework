@@ -85,8 +85,12 @@ def update_version_in_file(file_path: Path, old_version: str, new_version: str) 
 
     content = file_path.read_text()
     updated_content = content.replace(f'version="{old_version}"', f'version="{new_version}"')
-    updated_content = updated_content.replace(f"version = '{old_version}'", f"version = '{new_version}'")
-    updated_content = updated_content.replace(f'__version__ = "{old_version}"', f'__version__ = "{new_version}"')
+    updated_content = updated_content.replace(
+        f"version = '{old_version}'", f"version = '{new_version}'"
+    )
+    updated_content = updated_content.replace(
+        f'__version__ = "{old_version}"', f'__version__ = "{new_version}"'
+    )
 
     if content != updated_content:
         file_path.write_text(updated_content)

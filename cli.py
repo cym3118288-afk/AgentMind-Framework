@@ -42,7 +42,7 @@ def create_default_agents(llm_provider, num_agents: int) -> List[Agent]:
         ("Researcher", "Research relevant information and provide context"),
         ("Strategist", "Develop strategies and approaches to solve the problem"),
         ("Implementer", "Propose concrete implementation steps"),
-        ("Reviewer", "Review solutions and provide feedback")
+        ("Reviewer", "Review solutions and provide feedback"),
     ]
 
     agents = []
@@ -83,7 +83,7 @@ def run(
     temperature: float,
     trace: bool,
     trace_file: Optional[str],
-    verbose: bool
+    verbose: bool,
 ):
     """Run a multi-agent collaboration.
 
@@ -103,28 +103,32 @@ def run(
         sys.exit(1)
 
     # Display configuration
-    console.print(Panel.fit(
-        f"[bold cyan]AgentMind Collaboration[/bold cyan]\n\n"
-        f"Task: {task}\n"
-        f"Agents: {agents}\n"
-        f"Max Rounds: {rounds}\n"
-        f"Provider: {provider}\n"
-        f"Model: {model}",
-        border_style="cyan"
-    ))
+    console.print(
+        Panel.fit(
+            f"[bold cyan]AgentMind Collaboration[/bold cyan]\n\n"
+            f"Task: {task}\n"
+            f"Agents: {agents}\n"
+            f"Max Rounds: {rounds}\n"
+            f"Provider: {provider}\n"
+            f"Model: {model}",
+            border_style="cyan",
+        )
+    )
 
     # Run collaboration
-    asyncio.run(run_collaboration(
-        task=task,
-        num_agents=agents,
-        max_rounds=rounds,
-        provider=provider,
-        model=model,
-        temperature=temperature,
-        enable_trace=trace,
-        trace_file=trace_file,
-        verbose=verbose
-    ))
+    asyncio.run(
+        run_collaboration(
+            task=task,
+            num_agents=agents,
+            max_rounds=rounds,
+            provider=provider,
+            model=model,
+            temperature=temperature,
+            enable_trace=trace,
+            trace_file=trace_file,
+            verbose=verbose,
+        )
+    )
 
 
 async def run_collaboration(
@@ -136,10 +140,11 @@ async def run_collaboration(
     temperature: float,
     enable_trace: bool,
     trace_file: Optional[str],
-    verbose: bool
+    verbose: bool,
 ):
     """Run the collaboration asynchronously."""
     import time
+
     start_time = time.time()
 
     try:
@@ -161,6 +166,7 @@ async def run_collaboration(
         tracer = None
         if enable_trace:
             import uuid
+
             session_id = str(uuid.uuid4())[:8]
             tracer = Tracer(session_id=session_id, metadata={"task": task})
             tracer.start()
@@ -169,9 +175,7 @@ async def run_collaboration(
         console.print("\n[bold green]Starting collaboration...[/bold green]\n")
 
         with Progress(
-            SpinnerColumn(),
-            TextColumn("[progress.description]{task.description}"),
-            console=console
+            SpinnerColumn(), TextColumn("[progress.description]{task.description}"), console=console
         ) as progress:
             task_id = progress.add_task("Collaborating...", total=None)
 
@@ -188,11 +192,13 @@ async def run_collaboration(
 
         # Display result
         console.print("\n" + "=" * 80 + "\n")
-        console.print(Panel(
-            Markdown(result),
-            title="[bold green]Collaboration Result[/bold green]",
-            border_style="green"
-        ))
+        console.print(
+            Panel(
+                Markdown(result),
+                title="[bold green]Collaboration Result[/bold green]",
+                border_style="green",
+            )
+        )
 
         # Display statistics
         console.print("\n[bold]Statistics:[/bold]")
@@ -236,6 +242,7 @@ async def run_collaboration(
         console.print(f"\n[red]Error: {e}[/red]")
         if verbose:
             import traceback
+
             console.print(traceback.format_exc())
         sys.exit(1)
 
@@ -304,22 +311,22 @@ if __name__ == "__main__":
     (project_path / "main.py").write_text(main_content)
 
     # Create requirements.txt
-    requirements = f'''agentmind{"[full]" if llm != "ollama" else ""}
-'''
+    requirements = f"""agentmind{"[full]" if llm != "ollama" else ""}
+"""
     (project_path / "requirements.txt").write_text(requirements)
 
     # Create .env.example
-    env_content = f'''# LLM Configuration
+    env_content = f"""# LLM Configuration
 {"OLLAMA_BASE_URL=http://localhost:11434" if llm == "ollama" else "OPENAI_API_KEY=your-key-here"}
 
 # AgentMind Settings
 AGENTMIND_LOG_LEVEL=INFO
 AGENTMIND_MAX_RETRIES=3
-'''
+"""
     (project_path / ".env.example").write_text(env_content)
 
     # Create README.md
-    readme = f'''# {name}
+    readme = f"""# {name}
 
 AgentMind multi-agent team project.
 
@@ -338,7 +345,7 @@ python main.py
 ## Configuration
 
 Copy `.env.example` to `.env` and configure your settings.
-'''
+"""
     (project_path / "README.md").write_text(readme)
 
     # Display success
@@ -393,6 +400,7 @@ def example(example_name: str):
     console.print(f"[bold cyan]Running example: {example_name}[/bold cyan]\n")
 
     import subprocess
+
     result = subprocess.run([sys.executable, str(example_path)])
     sys.exit(result.returncode)
 
@@ -408,6 +416,7 @@ def dashboard():
     console.print("Press Ctrl+C to stop\n")
 
     import subprocess
+
     try:
         subprocess.run([sys.executable, "tools_server.py"])
     except KeyboardInterrupt:
@@ -436,13 +445,15 @@ def analyze(trace_file: str):
                     events.append(data["data"])
 
         # Display metadata
-        console.print(Panel.fit(
-            f"[bold cyan]Trace Analysis[/bold cyan]\n\n"
-            f"Session ID: {metadata.get('session_id', 'N/A')}\n"
-            f"Start Time: {metadata.get('start_time', 'N/A')}\n"
-            f"Duration: {metadata.get('total_duration_ms', 0) / 1000:.2f}s",
-            border_style="cyan"
-        ))
+        console.print(
+            Panel.fit(
+                f"[bold cyan]Trace Analysis[/bold cyan]\n\n"
+                f"Session ID: {metadata.get('session_id', 'N/A')}\n"
+                f"Start Time: {metadata.get('start_time', 'N/A')}\n"
+                f"Duration: {metadata.get('total_duration_ms', 0) / 1000:.2f}s",
+                border_style="cyan",
+            )
+        )
 
         # Event statistics
         console.print("\n[bold]Event Statistics:[/bold]")
@@ -492,7 +503,9 @@ def analyze(trace_file: str):
             if token_usage.get("total_tokens"):
                 usage_table.add_row("Total Tokens", str(token_usage["total_tokens"]))
                 usage_table.add_row("Prompt Tokens", str(token_usage.get("prompt_tokens", 0)))
-                usage_table.add_row("Completion Tokens", str(token_usage.get("completion_tokens", 0)))
+                usage_table.add_row(
+                    "Completion Tokens", str(token_usage.get("completion_tokens", 0))
+                )
 
             if cost_estimate.get("total_cost"):
                 usage_table.add_row("Estimated Cost", f"${cost_estimate['total_cost']:.4f}")
@@ -585,7 +598,9 @@ def version():
     console.print("[bold cyan]AgentMind CLI[/bold cyan]")
     console.print("Version: 0.3.0")
     console.print("Framework: AgentMind")
-    console.print("\nFor more information, visit: https://github.com/cym3118288-afk/AgentMind-Framework")
+    console.print(
+        "\nFor more information, visit: https://github.com/cym3118288-afk/AgentMind-Framework"
+    )
 
 
 # Add plugin commands

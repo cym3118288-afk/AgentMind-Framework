@@ -17,6 +17,7 @@ import statistics
 @dataclass
 class BenchmarkResult:
     """Results from a single benchmark run"""
+
     framework: str
     scenario: str
     latency_ms: float
@@ -33,9 +34,7 @@ class PerformanceBenchmark:
         self.results: List[BenchmarkResult] = []
         self.process = psutil.Process()
 
-    async def measure_performance(
-        self, func, framework: str, scenario: str
-    ) -> BenchmarkResult:
+    async def measure_performance(self, func, framework: str, scenario: str) -> BenchmarkResult:
         """Measure performance metrics for a function"""
         # Start memory tracking
         tracemalloc.start()
@@ -126,9 +125,7 @@ class PerformanceBenchmark:
             mind.add_agent(writer)
             mind.add_agent(reviewer)
 
-            result = await mind.collaborate(
-                "Write a short article about AI safety", max_rounds=3
-            )
+            result = await mind.collaborate("Write a short article about AI safety", max_rounds=3)
             return {"result": result, "tokens_used": 500}
 
         result = await self.measure_performance(run, "AgentMind", "complex_collaboration")
@@ -188,14 +185,10 @@ class PerformanceBenchmark:
             for i in range(5):
                 await mind.collaborate(f"Remember this number: {i}", max_rounds=1)
 
-            result = await mind.collaborate(
-                "What numbers did I tell you?", max_rounds=1
-            )
+            result = await mind.collaborate("What numbers did I tell you?", max_rounds=1)
             return {"result": result, "tokens_used": 300}
 
-        result = await self.measure_performance(
-            run, "AgentMind", "long_conversation"
-        )
+        result = await self.measure_performance(run, "AgentMind", "long_conversation")
         self.results.append(result)
         return asdict(result)
 
@@ -248,12 +241,8 @@ class PerformanceBenchmark:
         # Calculate averages
         for framework, data in aggregated.items():
             scenarios = data["scenarios"]
-            data["avg_latency"] = statistics.mean(
-                [s["latency_ms"] for s in scenarios.values()]
-            )
-            data["avg_memory"] = statistics.mean(
-                [s["memory_mb"] for s in scenarios.values()]
-            )
+            data["avg_latency"] = statistics.mean([s["latency_ms"] for s in scenarios.values()])
+            data["avg_memory"] = statistics.mean([s["memory_mb"] for s in scenarios.values()])
             data["total_tokens"] = sum([s["tokens_used"] for s in scenarios.values()])
 
         return aggregated
@@ -281,7 +270,9 @@ class PerformanceBenchmark:
 
         print("\nFramework Comparison:")
         print("-" * 80)
-        print(f"{'Framework':<15} {'Avg Latency (ms)':<20} {'Avg Memory (MB)':<20} {'Total Tokens':<15}")
+        print(
+            f"{'Framework':<15} {'Avg Latency (ms)':<20} {'Avg Memory (MB)':<20} {'Total Tokens':<15}"
+        )
         print("-" * 80)
 
         for framework, data in sorted(aggregated.items()):
@@ -323,9 +314,7 @@ class PerformanceBenchmark:
                     latency_diff = (
                         (data["avg_latency"] - agentmind_latency) / agentmind_latency * 100
                     )
-                    memory_diff = (
-                        (data["avg_memory"] - agentmind_memory) / agentmind_memory * 100
-                    )
+                    memory_diff = (data["avg_memory"] - agentmind_memory) / agentmind_memory * 100
 
                     print(
                         f"{framework:<15} {latency_diff:>+6.1f}% slower    {memory_diff:>+6.1f}% more memory"

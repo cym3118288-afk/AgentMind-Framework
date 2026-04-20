@@ -41,8 +41,7 @@ from agentmind.llm import OllamaProvider, LiteLLMProvider
 
 # Logging setup
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -59,11 +58,11 @@ security = HTTPBearer()
 limiter = Limiter(key_func=get_remote_address)
 
 # Metrics
-request_counter = Counter('agentmind_requests_total', 'Total requests', ['method', 'endpoint'])
-request_duration = Histogram('agentmind_request_duration_seconds', 'Request duration')
-active_sessions = Gauge('agentmind_active_sessions', 'Active collaboration sessions')
-token_usage = Counter('agentmind_tokens_total', 'Total tokens used', ['model', 'type'])
-error_counter = Counter('agentmind_errors_total', 'Total errors', ['type'])
+request_counter = Counter("agentmind_requests_total", "Total requests", ["method", "endpoint"])
+request_duration = Histogram("agentmind_request_duration_seconds", "Request duration")
+active_sessions = Gauge("agentmind_active_sessions", "Active collaboration sessions")
+token_usage = Counter("agentmind_tokens_total", "Total tokens used", ["model", "type"])
+error_counter = Counter("agentmind_errors_total", "Total errors", ["type"])
 
 # Global state
 redis_client: Optional[aioredis.Redis] = None
@@ -82,9 +81,7 @@ async def lifespan(app: FastAPI):
     # Initialize Redis
     try:
         redis_client = await aioredis.from_url(
-            "redis://redis:6379/0",
-            encoding="utf-8",
-            decode_responses=True
+            "redis://redis:6379/0", encoding="utf-8", decode_responses=True
         )
         await redis_client.ping()
         logger.info("Redis connection established")
@@ -114,7 +111,7 @@ app = FastAPI(
     lifespan=lifespan,
     docs_url="/docs",
     redoc_url="/redoc",
-    openapi_url="/openapi.json"
+    openapi_url="/openapi.json",
 )
 
 # Add middleware
@@ -137,12 +134,14 @@ FastAPIInstrumentor.instrument_app(app)
 # Models
 class Token(BaseModel):
     """JWT token response."""
+
     access_token: str
     token_type: str = "bearer"
 
 
 class User(BaseModel):
     """User model."""
+
     username: str
     email: Optional[str] = None
     disabled: Optional[bool] = False
@@ -150,22 +149,26 @@ class User(BaseModel):
 
 class AgentConfig(BaseModel):
     """Configuration for an agent."""
+
     name: str = Field(..., description="Agent name", min_length=1, max_length=50)
     role: str = Field(..., description="Agent role", min_length=1, max_length=100)
     system_prompt: Optional[str] = Field(None, description="Custom system prompt")
     tools: List[str] = Field(default_factory=list, description="Available tools")
 
-    @validator('name')
+    @validator("name")
     def validate_name(cls, v):
-        if not v.replace('_', '').replace('-', '').isalnum():
-            raise ValueError('Name must be alphanumeric with optional _ or -')
+        if not v.replace("_", "").replace("-", "").isalnum():
+            raise ValueError("Name must be alphanumeric with optional _ or -")
         return v
 
 
 class CollaborationRequest(BaseModel):
     """Request to start a collaboration."""
+
     task: str = Field(..., description="Task description", min_length=1, max_length=5000)
-    agents: List[AgentConfig] = Field(..., description="Agent configurations", min_items=1, max_items=20)
+    agents: List[AgentConfig] = Field(
+        ..., description="Agent configurations", min_items=1, max_items=20
+    )
     max_rounds: int = Field(default=5, ge=1, le=20, description="Maximum collaboration rounds")
     llm_provider: str = Field(default="ollama", description="LLM provider")
     llm_model: str = Field(default="llama3.2", description="LLM model name")
@@ -177,6 +180,7 @@ class CollaborationRequest(BaseModel):
 
 class CollaborationResponse(BaseModel):
     """Response from a collaboration."""
+
     session_id: str
     result: str
     rounds: int
@@ -188,6 +192,7 @@ class CollaborationResponse(BaseModel):
 
 class SessionStatus(BaseModel):
     """Status of a collaboration session."""
+
     session_id: str
     status: str
     progress: Optional[str] = None
@@ -197,6 +202,7 @@ class SessionStatus(BaseModel):
 
 class HealthResponse(BaseModel):
     """Health check response."""
+
     status: str
     version: str
     active_sessions: int
@@ -249,11 +255,7 @@ def create_llm_provider(provider_type: str, model: str, temperature: float):
 async def store_session(session_id: str, data: Dict[str, Any]):
     """Store session data in Redis or memory."""
     if redis_client:
-        await redis_client.setex(
-            f"session:{session_id}",
-            3600,  # 1 hour TTL
-            str(data)
-        )
+        await redis_client.setex(f"session:{session_id}", 3600, str(data))  # 1 hour TTL
     else:
         # Fallback to in-memory storage
         pass
@@ -275,15 +277,15 @@ def detect_pii(text: str) -> List[str]:
     import re
 
     # Email pattern
-    if re.search(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', text):
+    if re.search(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b", text):
         warnings.append("Potential email address detected")
 
     # Phone pattern
-    if re.search(r'\b\d{3}[-.]?\d{3}[-.]?\d{4}\b', text):
+    if re.search(r"\b\d{3}[-.]?\d{3}[-.]?\d{4}\b", text):
         warnings.append("Potential phone number detected")
 
     # SSN pattern
-    if re.search(r'\b\d{3}-\d{2}-\d{4}\b', text):
+    if re.search(r"\b\d{3}-\d{2}-\d{4}\b", text):
         warnings.append("Potential SSN detected")
 
     return warnings
@@ -311,7 +313,7 @@ def calculate_cost(token_usage: Dict[str, int], model: str) -> Dict[str, float]:
     return {
         "input_cost_usd": round(input_cost, 6),
         "output_cost_usd": round(output_cost, 6),
-        "total_cost_usd": round(input_cost + output_cost, 6)
+        "total_cost_usd": round(input_cost + output_cost, 6),
     }
 
 
@@ -330,7 +332,7 @@ async def root():
             "Streaming Support",
             "OpenTelemetry Tracing",
             "PII Detection",
-            "Cost Tracking"
+            "Cost Tracking",
         ],
         "endpoints": {
             "POST /auth/token": "Get access token",
@@ -340,8 +342,8 @@ async def root():
             "GET /session/{session_id}": "Get session status",
             "GET /health": "Health check",
             "GET /metrics": "Prometheus metrics",
-            "GET /docs": "API documentation"
-        }
+            "GET /docs": "API documentation",
+        },
     }
 
 
@@ -361,7 +363,7 @@ async def health_check():
         version="0.3.0",
         active_sessions=int(active_sessions._value.get()),
         redis_connected=redis_connected,
-        timestamp=datetime.utcnow().isoformat()
+        timestamp=datetime.utcnow().isoformat(),
     )
 
 
@@ -377,20 +379,18 @@ async def login(username: str, password: str):
     """Get JWT access token (demo - implement proper auth in production)."""
     # Demo: accept any username/password
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": username}, expires_delta=access_token_expires
-    )
+    access_token = create_access_token(data={"sub": username}, expires_delta=access_token_expires)
     return Token(access_token=access_token)
 
 
 @app.post("/collaborate", response_model=CollaborationResponse, tags=["Collaboration"])
 @limiter.limit("10/minute")
 async def collaborate(
-    request: CollaborationRequest,
-    current_user: User = Depends(get_current_user)
+    request: CollaborationRequest, current_user: User = Depends(get_current_user)
 ):
     """Start a multi-agent collaboration."""
     import time
+
     start_time = time.time()
 
     session_id = str(uuid.uuid4())
@@ -403,14 +403,12 @@ async def collaborate(
             warnings.extend(pii_warnings)
 
         # Track metrics
-        request_counter.labels(method='POST', endpoint='/collaborate').inc()
+        request_counter.labels(method="POST", endpoint="/collaborate").inc()
         active_sessions.inc()
 
         # Create LLM provider
         llm_provider = create_llm_provider(
-            request.llm_provider,
-            request.llm_model,
-            request.temperature
+            request.llm_provider, request.llm_model, request.temperature
         )
 
         # Create AgentMind instance
@@ -418,18 +416,11 @@ async def collaborate(
 
         # Create and add agents
         for agent_config in request.agents:
-            agent = Agent(
-                name=agent_config.name,
-                role=agent_config.role,
-                llm_provider=llm_provider
-            )
+            agent = Agent(name=agent_config.name, role=agent_config.role, llm_provider=llm_provider)
             mind.add_agent(agent)
 
         # Run collaboration
-        result = await mind.collaborate(
-            task=request.task,
-            max_rounds=request.max_rounds
-        )
+        result = await mind.collaborate(task=request.task, max_rounds=request.max_rounds)
 
         # Calculate metrics
         duration_ms = (time.time() - start_time) * 1000
@@ -438,27 +429,30 @@ async def collaborate(
         token_usage_data = {
             "input_tokens": len(request.task.split()) * 10,
             "output_tokens": len(result.split()) * 10,
-            "total_tokens": (len(request.task.split()) + len(result.split())) * 10
+            "total_tokens": (len(request.task.split()) + len(result.split())) * 10,
         }
 
         # Calculate cost
         cost_estimate = calculate_cost(token_usage_data, request.llm_model)
 
         # Track token metrics
-        token_usage.labels(model=request.llm_model, type='input').inc(
+        token_usage.labels(model=request.llm_model, type="input").inc(
             token_usage_data["input_tokens"]
         )
-        token_usage.labels(model=request.llm_model, type='output').inc(
+        token_usage.labels(model=request.llm_model, type="output").inc(
             token_usage_data["output_tokens"]
         )
 
         # Store session
-        await store_session(session_id, {
-            "status": "completed",
-            "result": result,
-            "created_at": datetime.utcnow().isoformat(),
-            "user": current_user.username
-        })
+        await store_session(
+            session_id,
+            {
+                "status": "completed",
+                "result": result,
+                "created_at": datetime.utcnow().isoformat(),
+                "user": current_user.username,
+            },
+        )
 
         # Track duration
         request_duration.observe(duration_ms / 1000)
@@ -471,12 +465,12 @@ async def collaborate(
             token_usage=token_usage_data,
             cost_estimate=cost_estimate,
             duration_ms=duration_ms,
-            warnings=warnings
+            warnings=warnings,
         )
 
     except Exception as e:
         logger.error(f"Collaboration failed: {e}", exc_info=True)
-        error_counter.labels(type='collaboration_error').inc()
+        error_counter.labels(type="collaboration_error").inc()
         active_sessions.dec()
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -484,8 +478,7 @@ async def collaborate(
 @app.post("/collaborate/stream", tags=["Collaboration"])
 @limiter.limit("10/minute")
 async def collaborate_stream(
-    request: CollaborationRequest,
-    current_user: User = Depends(get_current_user)
+    request: CollaborationRequest, current_user: User = Depends(get_current_user)
 ):
     """Start a streaming multi-agent collaboration."""
     session_id = str(uuid.uuid4())
@@ -498,9 +491,7 @@ async def collaborate_stream(
 
             # Create LLM provider
             llm_provider = create_llm_provider(
-                request.llm_provider,
-                request.llm_model,
-                request.temperature
+                request.llm_provider, request.llm_model, request.temperature
             )
 
             # Create AgentMind instance
@@ -509,9 +500,7 @@ async def collaborate_stream(
             # Create and add agents
             for agent_config in request.agents:
                 agent = Agent(
-                    name=agent_config.name,
-                    role=agent_config.role,
-                    llm_provider=llm_provider
+                    name=agent_config.name, role=agent_config.role, llm_provider=llm_provider
                 )
                 mind.add_agent(agent)
                 yield f"data: {{'event': 'agent_added', 'agent': '{agent_config.name}', 'role': '{agent_config.role}'}}\n\n"
@@ -519,10 +508,7 @@ async def collaborate_stream(
             # Run collaboration with progress updates
             yield f"data: {{'event': 'collaboration_start', 'task': '{request.task[:100]}...'}}\n\n"
 
-            result = await mind.collaborate(
-                task=request.task,
-                max_rounds=request.max_rounds
-            )
+            result = await mind.collaborate(task=request.task, max_rounds=request.max_rounds)
 
             # Send completion event
             yield f"data: {{'event': 'completed', 'result': '{result}', 'session_id': '{session_id}'}}\n\n"
@@ -534,10 +520,7 @@ async def collaborate_stream(
     return StreamingResponse(
         event_generator(),
         media_type="text/event-stream",
-        headers={
-            "Cache-Control": "no-cache",
-            "X-Accel-Buffering": "no"
-        }
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
 
 
@@ -551,21 +534,20 @@ async def websocket_endpoint(websocket: WebSocket, session_id: str):
         while True:
             data = await websocket.receive_text()
             # Handle incoming messages
-            await websocket.send_json({
-                "type": "ack",
-                "message": "Message received",
-                "timestamp": datetime.utcnow().isoformat()
-            })
+            await websocket.send_json(
+                {
+                    "type": "ack",
+                    "message": "Message received",
+                    "timestamp": datetime.utcnow().isoformat(),
+                }
+            )
     except WebSocketDisconnect:
         logger.info(f"WebSocket disconnected: {session_id}")
         del websocket_connections[session_id]
 
 
 @app.get("/session/{session_id}", response_model=SessionStatus, tags=["Sessions"])
-async def get_session_status(
-    session_id: str,
-    current_user: User = Depends(get_current_user)
-):
+async def get_session_status(session_id: str, current_user: User = Depends(get_current_user)):
     """Get the status of a collaboration session."""
     session = await get_session(session_id)
 
@@ -576,15 +558,12 @@ async def get_session_status(
         session_id=session_id,
         status=session.get("status", "unknown"),
         result=session.get("result"),
-        created_at=session.get("created_at")
+        created_at=session.get("created_at"),
     )
 
 
 @app.delete("/session/{session_id}", tags=["Sessions"])
-async def delete_session(
-    session_id: str,
-    current_user: User = Depends(get_current_user)
-):
+async def delete_session(session_id: str, current_user: User = Depends(get_current_user)):
     """Delete a collaboration session."""
     if redis_client:
         await redis_client.delete(f"session:{session_id}")
@@ -602,11 +581,13 @@ async def list_sessions(current_user: User = Depends(get_current_user)):
             session_id = key.split(":")[-1]
             data = await get_session(session_id)
             if data:
-                sessions.append({
-                    "session_id": session_id,
-                    "status": data.get("status"),
-                    "created_at": data.get("created_at")
-                })
+                sessions.append(
+                    {
+                        "session_id": session_id,
+                        "status": data.get("status"),
+                        "created_at": data.get("created_at"),
+                    }
+                )
         return {"total": len(sessions), "sessions": sessions}
 
     return {"total": 0, "sessions": []}
@@ -621,5 +602,5 @@ if __name__ == "__main__":
         port=8000,
         reload=False,
         workers=4,
-        log_level="info"
+        log_level="info",
     )

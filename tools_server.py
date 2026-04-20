@@ -295,11 +295,13 @@ async def websocket_collaboration(websocket: WebSocket):
 
     try:
         # Send initial connection message
-        await websocket.send_json({
-            "agent": "System",
-            "timestamp": datetime.now().isoformat(),
-            "content": "Connected to collaboration stream"
-        })
+        await websocket.send_json(
+            {
+                "agent": "System",
+                "timestamp": datetime.now().isoformat(),
+                "content": "Connected to collaboration stream",
+            }
+        )
 
         # Keep connection alive and listen for messages
         while True:
@@ -321,7 +323,7 @@ async def broadcast_message(message: Dict):
     message_data = {
         "agent": message.get("agent", "Unknown"),
         "timestamp": datetime.now().isoformat(),
-        "content": message.get("content", "")
+        "content": message.get("content", ""),
     }
 
     for connection in active_connections:
@@ -340,7 +342,7 @@ async def health_check():
         "status": "healthy",
         "service": "agentmind-tools",
         "version": "0.3.0",
-        "active_connections": len(active_connections)
+        "active_connections": len(active_connections),
     }
 
 

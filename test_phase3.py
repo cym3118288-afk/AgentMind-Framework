@@ -54,6 +54,7 @@ def test_api_imports():
     print("\nTesting API server imports...")
     try:
         import api_server
+
         assert hasattr(api_server, "app")
         assert hasattr(api_server, "collaborate")
         print("✓ API server imports successfully!")
@@ -67,6 +68,7 @@ def test_cli_imports():
     print("\nTesting CLI imports...")
     try:
         import cli
+
         assert hasattr(cli, "cli")
         assert hasattr(cli, "run")
         print("✓ CLI imports successfully!")

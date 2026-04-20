@@ -485,10 +485,10 @@ class TestFileIOAdvanced:
         with tempfile.TemporaryDirectory() as tmpdir:
             file_io = FileIO(base_dir=tmpdir)
             result = await file_io.execute(
-                operation="write", path="subdir/nested / file.txt", content="test content"
+                operation="write", path="subdir/nested/file.txt", content="test content"
             )
             assert result.success is True
-            assert Path(tmpdir, "subdir/nested / file.txt").exists()
+            assert Path(tmpdir, "subdir/nested/file.txt").exists()
 
     @pytest.mark.asyncio
     async def test_overwrite_existing_file(self):

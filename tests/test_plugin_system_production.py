@@ -425,18 +425,18 @@ class TestPluginManager:
         manager.registry.register(MockPlugin)
 
         # Load plugin
-        success = await manager.load_plugin("mock - plugin")
+        success = await manager.load_plugin("mock-plugin")
         assert success
 
         # Check state
-        assert manager.get_plugin_state("mock - plugin") == "active"
+        assert manager.get_plugin_state("mock-plugin") == "active"
 
         # Check health
-        health = await manager.check_plugin_health("mock - plugin")
+        health = await manager.check_plugin_health("mock-plugin")
         assert health["healthy"]
 
         # Unload
-        await manager.unload_plugin("mock - plugin")
+        await manager.unload_plugin("mock-plugin")
 
     @pytest.mark.asyncio
     async def test_plugin_execution(self):
@@ -444,10 +444,10 @@ class TestPluginManager:
         manager = PluginManager(enable_security=True)
 
         manager.registry.register(MockPlugin)
-        await manager.load_plugin("mock - plugin")
+        await manager.load_plugin("mock-plugin")
 
         # Execute plugin
-        result = await manager.execute_plugin("mock - plugin", sandboxed=True)
+        result = await manager.execute_plugin("mock-plugin", sandboxed=True)
         assert result["status"] == "success"
 
     @pytest.mark.asyncio

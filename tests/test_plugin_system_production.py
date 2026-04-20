@@ -1,26 +1,27 @@
 """Comprehensive tests for production - grade plugin system."""
 
-import pytest
 import asyncio
 
-from agentmind.plugins.manager import PluginManager
-from agentmind.plugins.lifecycle import PluginLifecycleManager, PluginState, HealthStatus
+import pytest
+
+from agentmind.plugins.audit import AuditEventType, PluginAuditLogger
+from agentmind.plugins.config import ConfigManager
 from agentmind.plugins.dependencies import DependencyResolver, PluginDependency, VersionChecker
+from agentmind.plugins.lifecycle import HealthStatus, PluginLifecycleManager, PluginState
+from agentmind.plugins.manager import PluginManager
+from agentmind.plugins.marketplace import (
+    PluginCategory,
+    PluginManifest,
+)
+from agentmind.plugins.marketplace import PluginRegistry as MarketplaceRegistry
 from agentmind.plugins.security import (
     PermissionManager,
     PluginPermissions,
-    SandboxExecutor,
     ResourceLimits,
+    SandboxExecutor,
     SignatureVerifier,
 )
-from agentmind.plugins.config import ConfigManager
-from agentmind.plugins.marketplace import (
-    PluginRegistry as MarketplaceRegistry,
-    PluginManifest,
-    PluginCategory,
-)
-from agentmind.plugins.audit import PluginAuditLogger, AuditEventType
-from agentmind.plugins.testing import MockPlugin, FailingPlugin, PluginTestHarness
+from agentmind.plugins.testing import FailingPlugin, MockPlugin, PluginTestHarness
 
 
 class TestPluginLifecycle:

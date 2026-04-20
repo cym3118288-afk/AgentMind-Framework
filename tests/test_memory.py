@@ -2,6 +2,7 @@
 
 import asyncio
 import json
+import sys
 import tempfile
 import time
 from pathlib import Path
@@ -389,6 +390,9 @@ class TestMemoryPerformance:
         assert get_time < 0.1
         assert search_time < 0.1
 
+    @pytest.mark.skipif(
+        sys.platform == "win32", reason="Performance test too slow on Windows CI"
+    )
     @pytest.mark.asyncio
     async def test_sqlite_performance_1000_entries(self):
         """Benchmark SQLiteBackend with 1000 entries."""

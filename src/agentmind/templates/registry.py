@@ -158,7 +158,11 @@ class TemplateRegistry:
                     AgentTemplate(
                         name="reviewer",
                         role="reviewer",
-                        system_prompt="You are a code reviewer who checks for bugs, security issues, performance problems, and code quality. Be thorough and constructive.",
+                        system_prompt=(
+                            "You are a code reviewer who checks for bugs, "
+                            "security issues, performance problems, and code "
+                            "quality. Be thorough and constructive."
+                        ),
                         description="Reviews and improves code",
                     ),
                 ],

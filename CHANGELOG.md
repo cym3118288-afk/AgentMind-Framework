@@ -146,4 +146,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Real-time collaboration features
 - Advanced monitoring and observability
 
-[0.1.0]: https://github.com/cym3118288-afk/AgentMind-Framework/releases/tag/v0.1.0
+[0.1.0]: https://github.com/cym3118288-afk/AgentMind/releases/tag/v0.1.0

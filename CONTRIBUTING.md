@@ -14,8 +14,8 @@ Thank you for your interest in contributing to AgentMind! This document provides
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/cym3118288-afk/AgentMind-Framework.git
-   cd AgentMind-Framework
+   git clone https://github.com/cym3118288-afk/AgentMind.git
+   cd AgentMind
    ```
 
 2. **Create a virtual environment**
@@ -184,42 +184,7 @@ feat: add hierarchical orchestration strategy
 
 ### Good First Issues
 
-We've labeled several issues as "good first issue" to help new contributors get started. Here are some specific tasks:
-
-#### Documentation (Easy)
-- **Issue #101**: Fix typos in QUICKSTART.md
-- **Issue #102**: Add more examples to API.md
-- **Issue #103**: Improve docstrings in `core/agent.py`
-- **Issue #104**: Create tutorial for custom tools
-- **Issue #105**: Add troubleshooting section to FAQ.md
-
-#### Code (Easy-Medium)
-- **Issue #106**: Add new agent role template for "translator"
-- **Issue #107**: Implement rate limiting for tool calls
-- **Issue #108**: Add validation for agent names (no special chars)
-- **Issue #109**: Improve error message when LLM provider fails
-- **Issue #110**: Add `__repr__` methods to core classes
-
-#### Testing (Easy-Medium)
-- **Issue #111**: Add tests for edge cases in message handling
-- **Issue #112**: Increase test coverage for memory backends
-- **Issue #113**: Add integration test for Ollama provider
-- **Issue #114**: Test error handling in distributed execution
-- **Issue #115**: Add performance regression tests
-
-#### Tools & Integrations (Medium)
-- **Issue #116**: Create web scraping tool
-- **Issue #117**: Add GitHub API integration tool
-- **Issue #118**: Implement email notification tool
-- **Issue #119**: Create Slack integration
-- **Issue #120**: Add database query tool (SQLite)
-
-#### Examples (Easy-Medium)
-- **Issue #121**: Create customer support chatbot example
-- **Issue #122**: Build personal assistant agent example
-- **Issue #123**: Add game AI example (chess/tic-tac-toe)
-- **Issue #124**: Create social media content generator
-- **Issue #125**: Build meeting notes summarizer
+Check our [Issues](https://github.com/cym3118288-afk/AgentMind/issues) page for tasks labeled "good first issue" to help new contributors get started.
 
 ### Advanced Contributions
 - Performance optimizations

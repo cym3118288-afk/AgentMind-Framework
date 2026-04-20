@@ -48,7 +48,7 @@ class ResilientAgent(Agent):
                 logger.error(f"Attempt {attempt + 1} failed: {str(e)}")
 
                 if attempt < self.max_retries - 1:
-                    wait_time = 2 ** attempt  # Exponential backoff
+                    wait_time = 2**attempt  # Exponential backoff
                     logger.info(f"Retrying in {wait_time} seconds...")
                     await asyncio.sleep(wait_time)
                 else:

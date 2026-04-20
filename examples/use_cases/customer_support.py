@@ -341,10 +341,18 @@ async def example_batch_processing():
 
     tickets = [
         SupportTicket(
-            "TICK - 101", "User A", "usera@example.com", "Password reset", "Need to reset my password"
+            "TICK - 101",
+            "User A",
+            "usera@example.com",
+            "Password reset",
+            "Need to reset my password",
         ),
         SupportTicket(
-            "TICK - 102", "User B", "userb@example.com", "Billing question", "What's my current plan?"
+            "TICK - 102",
+            "User B",
+            "userb@example.com",
+            "Billing question",
+            "What's my current plan?",
         ),
         SupportTicket(
             "TICK - 103",

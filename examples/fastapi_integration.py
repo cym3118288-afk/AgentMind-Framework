@@ -6,7 +6,6 @@ This example shows a practical API for content generation with multiple agents.
 Use case: Content creation API with research, writing, and editing agents.
 """
 
-
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
@@ -36,7 +35,9 @@ class ContentResponse(BaseModel):
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="AgentMind Content API", description="Multi - agent content generation API", version="1.0.0"
+    title="AgentMind Content API",
+    description="Multi - agent content generation API",
+    version="1.0.0",
 )
 
 

@@ -278,7 +278,7 @@ class DataAnalysisTool(Tool):
         n = len(values)
         mean = sum(values) / n
         variance = sum((x - mean) ** 2 for x in values) / n
-        std_dev = variance ** 0.5
+        std_dev = variance**0.5
         min_val = min(values)
         max_val = max(values)
 
@@ -295,7 +295,7 @@ class DataAnalysisTool(Tool):
         # Hypothesis testing (simplified)
         if analysis_type == "hypothesis_test":
             # Simple t - test simulation
-            t_statistic = mean / (std_dev / (n ** 0.5)) if std_dev > 0 else 0
+            t_statistic = mean / (std_dev / (n**0.5)) if std_dev > 0 else 0
             analysis["t_statistic"] = round(t_statistic, 3)
             analysis["significant"] = abs(t_statistic) > 2.0  # Simplified
 

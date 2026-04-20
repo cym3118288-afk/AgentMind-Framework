@@ -47,7 +47,8 @@ async def example_sentiment_analysis():
 
         # Create sentiment analysis pipeline
         sentiment_pipeline = pipeline(
-            "sentiment - analysis", model="distilbert - base - uncased - finetuned - sst - 2 - english"
+            "sentiment - analysis",
+            model="distilbert - base - uncased - finetuned - sst - 2 - english",
         )
 
         # Wrap as AgentMind tool
@@ -98,7 +99,9 @@ async def example_ner():
         from transformers import pipeline
 
         # Create NER pipeline
-        ner_pipeline = pipeline("ner", model="dslim / bert - base - NER", aggregation_strategy="simple")
+        ner_pipeline = pipeline(
+            "ner", model="dslim / bert - base - NER", aggregation_strategy="simple"
+        )
 
         # Wrap as tool
         ner_tool = HuggingFacePipelineTool(
@@ -288,7 +291,9 @@ async def example_question_answering():
         from transformers import pipeline
 
         # Create QA pipeline
-        qa_pipeline = pipeline("question - answering", model="distilbert - base - cased - distilled - squad")
+        qa_pipeline = pipeline(
+            "question - answering", model="distilbert - base - cased - distilled - squad"
+        )
 
         # Create QA tool
         class QATool(Tool):

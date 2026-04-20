@@ -110,7 +110,10 @@ class SEOAnalysisTool(Tool):
             description="Analyze content for SEO optimization",
             parameters={
                 "content": {"type": "string", "description": "Content to analyze"},
-                "keywords": {"type": "string", "description": "Target keywords (comma - separated)"},
+                "keywords": {
+                    "type": "string",
+                    "description": "Target keywords (comma - separated)",
+                },
             },
         )
 

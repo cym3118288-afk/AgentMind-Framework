@@ -96,9 +96,9 @@ class HumanInterface:
         """Request human approval"""
         self.pending_approvals.append(request)
 
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"APPROVAL REQUEST #{request.request_id}")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
         print(f"Agent: {request.agent_name}")
         print(f"Action: {request.action}")
         print(f"Risk Level: {request.risk_level.value}")
@@ -107,7 +107,7 @@ class HumanInterface:
         print("  1. Approve")
         print("  2. Reject")
         print("  3. Modify")
-        print(f"{'='*60}\n")
+        print(f"{'=' * 60}\n")
 
         # Simulate human decision (in production, this would be actual user input)
         # For demo purposes, auto - approve low risk, escalate high risk
@@ -125,14 +125,14 @@ class HumanInterface:
 
     async def get_feedback(self, agent_name: str, action: str, result: str) -> HumanFeedback:
         """Get human feedback on action"""
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print("FEEDBACK REQUEST")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
         print(f"Agent: {agent_name}")
         print(f"Action: {action}")
         print(f"Result: {result[:100]}...")
         print("\nPlease rate (1 - 5) and provide feedback:")
-        print(f"{'='*60}\n")
+        print(f"{'=' * 60}\n")
 
         # Simulate feedback (in production, get actual user input)
         feedback = HumanFeedback(

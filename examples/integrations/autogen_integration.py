@@ -235,7 +235,7 @@ async def example_5_hybrid_system():
     """Example 5: Hybrid AutoGen + AgentMind system"""
     print("\n=== Example 5: Hybrid System ===\n")
 
-    llm = OllamaProvider(model="llama3.2:3b")
+    _llm = OllamaProvider(model="llama3.2:3b")
 
     # Create hybrid system
     print("Hybrid System Features:")

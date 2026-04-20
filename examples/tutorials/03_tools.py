@@ -163,7 +163,7 @@ async def example_1_basic_tool():
     registry.register_tool(calculator)
 
     # Create agent with tools
-    agent = Agent(name="math_assistant", role="assistant", llm_provider=llm, tool_registry=registry)
+    _agent = Agent(name="math_assistant", role="assistant", llm_provider=llm, tool_registry=registry)
 
     # Test the tool directly
     result = await calculator.execute(operation="add", a=15, b=27)
@@ -185,7 +185,7 @@ async def example_2_multiple_tools():
     registry.register_tool(DatabaseTool())
 
     # Create agent
-    agent = Agent(name="assistant", role="assistant", llm_provider=llm, tool_registry=registry)
+    _agent = Agent(name="assistant", role="assistant", llm_provider=llm, tool_registry=registry)
 
     print(f"Agent has access to {len(registry.list_tools())} tools:")
     for tool_name in registry.list_tools():

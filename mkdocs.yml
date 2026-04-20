@@ -1,0 +1,165 @@
+site_name: AgentMind Framework
+site_url: https://docs.agentmind.dev
+site_description: Lightweight multi-agent collaboration framework for Python
+site_author: Terry Carson
+repo_url: https://github.com/cym3118288-afk/AgentMind-Framework
+repo_name: AgentMind
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep purple
+      accent: purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep purple
+      accent: purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+  icon:
+    repo: fontawesome/brands/github
+    logo: material/brain
+
+plugins:
+  - search:
+      lang: en
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            show_source: true
+            show_root_heading: true
+            show_category_heading: true
+            members_order: source
+            heading_level: 2
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - attr_list
+  - md_in_html
+  - tables
+  - footnotes
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Quick Start: getting-started/quickstart.md
+    - Installation: getting-started/installation.md
+    - First Agent: getting-started/first-agent.md
+    - Basic Concepts: getting-started/concepts.md
+  - Tutorials:
+    - Overview: tutorials/index.md
+    - Building Your First Team: tutorials/first-team.md
+    - Custom Tools: tutorials/custom-tools.md
+    - Memory Management: tutorials/memory.md
+    - Advanced Orchestration: tutorials/orchestration.md
+    - Production Deployment: tutorials/deployment.md
+  - How-to Guides:
+    - Agent Configuration: guides/agent-config.md
+    - LLM Providers: guides/llm-providers.md
+    - Tool Development: guides/tools.md
+    - Error Handling: guides/error-handling.md
+    - Performance Optimization: guides/performance.md
+    - Testing Strategies: guides/testing.md
+  - API Reference:
+    - Core:
+      - Agent: api/core/agent.md
+      - AgentMind: api/core/mind.md
+      - Types: api/core/types.md
+    - LLM:
+      - Provider: api/llm/provider.md
+      - Ollama: api/llm/ollama.md
+      - LiteLLM: api/llm/litellm.md
+    - Tools: api/tools.md
+    - Memory: api/memory.md
+    - Orchestration: api/orchestration.md
+  - Architecture:
+    - Overview: architecture/overview.md
+    - Design Principles: architecture/principles.md
+    - Core Components: architecture/components.md
+    - Extension Points: architecture/extensions.md
+  - Deployment:
+    - Docker: deployment/docker.md
+    - Kubernetes: deployment/kubernetes.md
+    - Cloud Platforms: deployment/cloud.md
+    - Monitoring: deployment/monitoring.md
+  - Migration Guide:
+    - From CrewAI: migration/crewai.md
+    - From LangGraph: migration/langgraph.md
+    - From AutoGen: migration/autogen.md
+    - Version Upgrades: migration/versions.md
+  - Examples:
+    - Overview: examples/index.md
+    - Research Team: examples/research-team.md
+    - Code Review: examples/code-review.md
+    - Customer Support: examples/customer-support.md
+    - Content Generation: examples/content-generation.md
+  - FAQ: faq.md
+  - Contributing: contributing.md
+  - Changelog: changelog.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/cym3118288-afk/AgentMind-Framework
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/agentmind
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/agentmind
+  analytics:
+    provider: google
+    property: G-XXXXXXXXXX
+  version:
+    provider: mike
+
+extra_css:
+  - stylesheets/extra.css
+
+copyright: Copyright &copy; 2024 Terry Carson

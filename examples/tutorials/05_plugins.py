@@ -218,7 +218,7 @@ async def example_1_custom_llm_provider():
     custom_llm = CustomLLMProvider(model="my - custom - model", api_key="test")
 
     # Create agent with custom provider
-    agent = Agent(name="assistant", role="assistant", llm_provider=custom_llm)
+    _agent = Agent(name="assistant", role="assistant", llm_provider=custom_llm)
 
     print(f"Agent using custom LLM provider: {custom_llm.model}")
     print(f"Provider config: {custom_llm.config}\n")

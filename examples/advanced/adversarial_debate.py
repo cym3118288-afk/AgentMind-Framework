@@ -224,9 +224,9 @@ class DebateSystem:
 
     async def start_debate(self, num_rounds: int = 3):
         """Start the debate"""
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"DEBATE: {self.topic}")
-        print(f"{'='*60}\n")
+        print(f"{'=' * 60}\n")
 
         # Introduction
         intro = await self.moderator.introduce_topic(self.topic)
@@ -241,9 +241,9 @@ class DebateSystem:
 
     async def _conduct_round(self, round_num: int):
         """Conduct a debate round"""
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"ROUND {round_num}")
-        print(f"{'='*60}\n")
+        print(f"{'=' * 60}\n")
 
         debate_round = DebateRound(round_num, self.topic)
         self.current_round = debate_round
@@ -278,9 +278,9 @@ class DebateSystem:
 
     async def _final_assessment(self):
         """Provide final debate assessment"""
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print("FINAL ASSESSMENT")
-        print(f"{'='*60}\n")
+        print(f"{'=' * 60}\n")
 
         # Collect all arguments
         arguments_for = []

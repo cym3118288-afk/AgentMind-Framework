@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>🧠 AgentMind Monitoring Dashboard</h1>
+            <div class="header-stats">
+                <div class="stat-card">
+                    <span class="stat-label">Status</span>
+                    <span class="stat-value" id="status">●</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Active Sessions</span>
+                    <span class="stat-value" id="active-sessions">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Total Requests</span>
+                    <span class="stat-value" id="total-requests">0</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-grid">
+            <!-- Token Usage Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>📊 Token Usage</h2>
+                    <span class="refresh-indicator" id="refresh-tokens">●</span>
+                </div>
+                <div class="card-body">
+                    <div class="metric-large">
+                        <span class="metric-value" id="total-tokens">0</span>
+                        <span class="metric-label">Total Tokens</span>
+                    </div>
+                    <canvas id="token-chart"></canvas>
+                    <div class="token-breakdown" id="token-breakdown"></div>
+                </div>
+            </div>
+
+            <!-- Cost Tracking Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>💰 Cost Tracking</h2>
+                    <span class="refresh-indicator" id="refresh-cost">●</span>
+                </div>
+                <div class="card-body">
+                    <div class="metric-large">
+                        <span class="metric-value" id="total-cost">$0.00</span>
+                        <span class="metric-label">Total Cost</span>
+                    </div>
+                    <canvas id="cost-chart"></canvas>
+                    <div class="cost-breakdown" id="cost-breakdown"></div>
+                </div>
+            </div>
+
+            <!-- Performance Metrics Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>⚡ Performance</h2>
+                    <span class="refresh-indicator" id="refresh-perf">●</span>
+                </div>
+                <div class="card-body">
+                    <div class="metrics-grid">
+                        <div class="metric">
+                            <span class="metric-label">Avg Response Time</span>
+                            <span class="metric-value" id="avg-response">0ms</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">P95</span>
+                            <span class="metric-value" id="p95">0ms</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">P99</span>
+                            <span class="metric-value" id="p99">0ms</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Throughput</span>
+                            <span class="metric-value" id="throughput">0/min</span>
+                        </div>
+                    </div>
+                    <canvas id="performance-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Bottleneck Analysis Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>🔍 Bottleneck Analysis</h2>
+                    <span class="refresh-indicator" id="refresh-bottleneck">●</span>
+                </div>
+                <div class="card-body">
+                    <div id="bottlenecks-list" class="bottlenecks-list">
+                        <div class="no-bottlenecks">✓ No bottlenecks detected</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Model Pricing Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>💵 Model Pricing</h2>
+                </div>
+                <div class="card-body">
+                    <div class="pricing-table" id="pricing-table"></div>
+                </div>
+            </div>
+
+            <!-- Recommendations Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>💡 Cost Optimization</h2>
+                </div>
+                <div class="card-body">
+                    <div id="recommendations-list" class="recommendations-list">
+                        <div class="no-recommendations">✓ No recommendations at this time</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>

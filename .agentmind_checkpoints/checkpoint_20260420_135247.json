@@ -1,0 +1,450 @@
+{
+  "checkpoint_name": "checkpoint_20260420_135247",
+  "timestamp": "2026-04-20T13:52:47.660128",
+  "strategy": "broadcast",
+  "coordination_strategy": "centralized",
+  "agents": [
+    {
+      "name": "Agent-1",
+      "role": "assistant",
+      "config": {
+        "name": "Agent-1",
+        "role": "assistant",
+        "backstory": null,
+        "temperature": 0.7,
+        "max_tokens": 1000,
+        "tools": [],
+        "system_prompt": null,
+        "memory_limit": 50
+      },
+      "memory": [
+        {
+          "content": "\u5206\u6790\u5e02\u573a\u8d8b\u52bf",
+          "sender": "system",
+          "role": "system",
+          "timestamp": "2026-04-20T13:52:47.658209",
+          "metadata": {}
+        },
+        {
+          "content": "\u6211\u7406\u89e3\u4e86'\u5206\u6790\u5e02\u573a\u8d8b\u52bf'\uff0c\u8fd9\u662f\u4e00\u4e2a\u5f88\u597d\u7684\u8bdd\u9898\u3002\u8ba9\u6211\u5206\u4eab\u6211\u7684\u89c1\u89e3...",
+          "sender": "Agent-1",
+          "role": "agent",
+          "timestamp": "2026-04-20T13:52:47.658424",
+          "metadata": {
+            "agent_role": "assistant",
+            "model": "demo-model",
+            "usage": {
+              "prompt_tokens": 50,
+              "completion_tokens": 30,
+              "total_tokens": 80
+            },
+            "mode": "simple"
+          }
+        },
+        {
+          "content": "\u8bbe\u8ba1\u7528\u6237\u754c\u9762",
+          "sender": "system",
+          "role": "system",
+          "timestamp": "2026-04-20T13:52:47.659207",
+          "metadata": {}
+        },
+        {
+          "content": "\u6211\u7406\u89e3\u4e86'\u8bbe\u8ba1\u7528\u6237\u754c\u9762'\uff0c\u8fd9\u662f\u4e00\u4e2a\u5f88\u597d\u7684\u8bdd\u9898\u3002\u8ba9\u6211\u5206\u4eab\u6211\u7684\u89c1\u89e3...",
+          "sender": "Agent-1",
+          "role": "agent",
+          "timestamp": "2026-04-20T13:52:47.659263",
+          "metadata": {
+            "agent_role": "assistant",
+            "model": "demo-model",
+            "usage": {
+              "prompt_tokens": 50,
+              "completion_tokens": 30,
+              "total_tokens": 80
+            },
+            "mode": "simple"
+          }
+        },
+        {
+          "content": "\u4f18\u5316\u7cfb\u7edf\u6027\u80fd",
+          "sender": "system",
+          "role": "system",
+          "timestamp": "2026-04-20T13:52:47.660006",
+          "metadata": {}
+        },
+        {
+          "content": "\u6211\u7406\u89e3\u4e86'\u4f18\u5316\u7cfb\u7edf\u6027\u80fd'\uff0c\u8fd9\u662f\u4e00\u4e2a\u5f88\u597d\u7684\u8bdd\u9898\u3002\u8ba9\u6211\u5206\u4eab\u6211\u7684\u89c1\u89e3...",
+          "sender": "Agent-1",
+          "role": "agent",
+          "timestamp": "2026-04-20T13:52:47.660057",
+          "metadata": {
+            "agent_role": "assistant",
+            "model": "demo-model",
+            "usage": {
+              "prompt_tokens": 50,
+              "completion_tokens": 30,
+              "total_tokens": 80
+            },
+            "mode": "simple"
+          }
+        }
+      ],
+      "is_active": true,
+      "state": "idle"
+    },
+    {
+      "name": "Agent-2",
+      "role": "assistant",
+      "config": {
+        "name": "Agent-2",
+        "role": "assistant",
+        "backstory": null,
+        "temperature": 0.7,
+        "max_tokens": 1000,
+        "tools": [],
+        "system_prompt": null,
+        "memory_limit": 50
+      },
+      "memory": [
+        {
+          "content": "\u5206\u6790\u5e02\u573a\u8d8b\u52bf",
+          "sender": "system",
+          "role": "system",
+          "timestamp": "2026-04-20T13:52:47.658209",
+          "metadata": {}
+        },
+        {
+          "content": "\u6211\u7406\u89e3\u4e86'\u5206\u6790\u5e02\u573a\u8d8b\u52bf'\uff0c\u8fd9\u662f\u4e00\u4e2a\u5f88\u597d\u7684\u8bdd\u9898\u3002\u8ba9\u6211\u5206\u4eab\u6211\u7684\u89c1\u89e3...",
+          "sender": "Agent-2",
+          "role": "agent",
+          "timestamp": "2026-04-20T13:52:47.658489",
+          "metadata": {
+            "agent_role": "assistant",
+            "model": "demo-model",
+            "usage": {
+              "prompt_tokens": 50,
+              "completion_tokens": 30,
+              "total_tokens": 80
+            },
+            "mode": "simple"
+          }
+        },
+        {
+          "content": "\u8bbe\u8ba1\u7528\u6237\u754c\u9762",
+          "sender": "system",
+          "role": "system",
+          "timestamp": "2026-04-20T13:52:47.659207",
+          "metadata": {}
+        },
+        {
+          "content": "\u6211\u7406\u89e3\u4e86'\u8bbe\u8ba1\u7528\u6237\u754c\u9762'\uff0c\u8fd9\u662f\u4e00\u4e2a\u5f88\u597d\u7684\u8bdd\u9898\u3002\u8ba9\u6211\u5206\u4eab\u6211\u7684\u89c1\u89e3...",
+          "sender": "Agent-2",
+          "role": "agent",
+          "timestamp": "2026-04-20T13:52:47.659281",
+          "metadata": {
+            "agent_role": "assistant",
+            "model": "demo-model",
+            "usage": {
+              "prompt_tokens": 50,
+              "completion_tokens": 30,
+              "total_tokens": 80
+            },
+            "mode": "simple"
+          }
+        },
+        {
+          "content": "\u4f18\u5316\u7cfb\u7edf\u6027\u80fd",
+          "sender": "system",
+          "role": "system",
+          "timestamp": "2026-04-20T13:52:47.660006",
+          "metadata": {}
+        },
+        {
+          "content": "\u6211\u7406\u89e3\u4e86'\u4f18\u5316\u7cfb\u7edf\u6027\u80fd'\uff0c\u8fd9\u662f\u4e00\u4e2a\u5f88\u597d\u7684\u8bdd\u9898\u3002\u8ba9\u6211\u5206\u4eab\u6211\u7684\u89c1\u89e3...",
+          "sender": "Agent-2",
+          "role": "agent",
+          "timestamp": "2026-04-20T13:52:47.660074",
+          "metadata": {
+            "agent_role": "assistant",
+            "model": "demo-model",
+            "usage": {
+              "prompt_tokens": 50,
+              "completion_tokens": 30,
+              "total_tokens": 80
+            },
+            "mode": "simple"
+          }
+        }
+      ],
+      "is_active": true,
+      "state": "idle"
+    },
+    {
+      "name": "Agent-3",
+      "role": "assistant",
+      "config": {
+        "name": "Agent-3",
+        "role": "assistant",
+        "backstory": null,
+        "temperature": 0.7,
+        "max_tokens": 1000,
+        "tools": [],
+        "system_prompt": null,
+        "memory_limit": 50
+      },
+      "memory": [
+        {
+          "content": "\u5206\u6790\u5e02\u573a\u8d8b\u52bf",
+          "sender": "system",
+          "role": "system",
+          "timestamp": "2026-04-20T13:52:47.658209",
+          "metadata": {}
+        },
+        {
+          "content": "\u6211\u7406\u89e3\u4e86'\u5206\u6790\u5e02\u573a\u8d8b\u52bf'\uff0c\u8fd9\u662f\u4e00\u4e2a\u5f88\u597d\u7684\u8bdd\u9898\u3002\u8ba9\u6211\u5206\u4eab\u6211\u7684\u89c1\u89e3...",
+          "sender": "Agent-3",
+          "role": "agent",
+          "timestamp": "2026-04-20T13:52:47.658506",
+          "metadata": {
+            "agent_role": "assistant",
+            "model": "demo-model",
+            "usage": {
+              "prompt_tokens": 50,
+              "completion_tokens": 30,
+              "total_tokens": 80
+            },
+            "mode": "simple"
+          }
+        },
+        {
+          "content": "\u8bbe\u8ba1\u7528\u6237\u754c\u9762",
+          "sender": "system",
+          "role": "system",
+          "timestamp": "2026-04-20T13:52:47.659207",
+          "metadata": {}
+        },
+        {
+          "content": "\u6211\u7406\u89e3\u4e86'\u8bbe\u8ba1\u7528\u6237\u754c\u9762'\uff0c\u8fd9\u662f\u4e00\u4e2a\u5f88\u597d\u7684\u8bdd\u9898\u3002\u8ba9\u6211\u5206\u4eab\u6211\u7684\u89c1\u89e3...",
+          "sender": "Agent-3",
+          "role": "agent",
+          "timestamp": "2026-04-20T13:52:47.659296",
+          "metadata": {
+            "agent_role": "assistant",
+            "model": "demo-model",
+            "usage": {
+              "prompt_tokens": 50,
+              "completion_tokens": 30,
+              "total_tokens": 80
+            },
+            "mode": "simple"
+          }
+        },
+        {
+          "content": "\u4f18\u5316\u7cfb\u7edf\u6027\u80fd",
+          "sender": "system",
+          "role": "system",
+          "timestamp": "2026-04-20T13:52:47.660006",
+          "metadata": {}
+        },
+        {
+          "content": "\u6211\u7406\u89e3\u4e86'\u4f18\u5316\u7cfb\u7edf\u6027\u80fd'\uff0c\u8fd9\u662f\u4e00\u4e2a\u5f88\u597d\u7684\u8bdd\u9898\u3002\u8ba9\u6211\u5206\u4eab\u6211\u7684\u89c1\u89e3...",
+          "sender": "Agent-3",
+          "role": "agent",
+          "timestamp": "2026-04-20T13:52:47.660089",
+          "metadata": {
+            "agent_role": "assistant",
+            "model": "demo-model",
+            "usage": {
+              "prompt_tokens": 50,
+              "completion_tokens": 30,
+              "total_tokens": 80
+            },
+            "mode": "simple"
+          }
+        }
+      ],
+      "is_active": true,
+      "state": "idle"
+    }
+  ],
+  "tasks": {},
+  "conversation_history": [
+    {
+      "content": "\u5206\u6790\u5e02\u573a\u8d8b\u52bf",
+      "sender": "system",
+      "role": "system",
+      "timestamp": "2026-04-20T13:52:47.658209",
+      "metadata": {}
+    },
+    {
+      "content": "\u6211\u7406\u89e3\u4e86'\u5206\u6790\u5e02\u573a\u8d8b\u52bf'\uff0c\u8fd9\u662f\u4e00\u4e2a\u5f88\u597d\u7684\u8bdd\u9898\u3002\u8ba9\u6211\u5206\u4eab\u6211\u7684\u89c1\u89e3...",
+      "sender": "Agent-1",
+      "role": "agent",
+      "timestamp": "2026-04-20T13:52:47.658424",
+      "metadata": {
+        "agent_role": "assistant",
+        "model": "demo-model",
+        "usage": {
+          "prompt_tokens": 50,
+          "completion_tokens": 30,
+          "total_tokens": 80
+        },
+        "mode": "simple"
+      }
+    },
+    {
+      "content": "\u6211\u7406\u89e3\u4e86'\u5206\u6790\u5e02\u573a\u8d8b\u52bf'\uff0c\u8fd9\u662f\u4e00\u4e2a\u5f88\u597d\u7684\u8bdd\u9898\u3002\u8ba9\u6211\u5206\u4eab\u6211\u7684\u89c1\u89e3...",
+      "sender": "Agent-2",
+      "role": "agent",
+      "timestamp": "2026-04-20T13:52:47.658489",
+      "metadata": {
+        "agent_role": "assistant",
+        "model": "demo-model",
+        "usage": {
+          "prompt_tokens": 50,
+          "completion_tokens": 30,
+          "total_tokens": 80
+        },
+        "mode": "simple"
+      }
+    },
+    {
+      "content": "\u6211\u7406\u89e3\u4e86'\u5206\u6790\u5e02\u573a\u8d8b\u52bf'\uff0c\u8fd9\u662f\u4e00\u4e2a\u5f88\u597d\u7684\u8bdd\u9898\u3002\u8ba9\u6211\u5206\u4eab\u6211\u7684\u89c1\u89e3...",
+      "sender": "Agent-3",
+      "role": "agent",
+      "timestamp": "2026-04-20T13:52:47.658506",
+      "metadata": {
+        "agent_role": "assistant",
+        "model": "demo-model",
+        "usage": {
+          "prompt_tokens": 50,
+          "completion_tokens": 30,
+          "total_tokens": 80
+        },
+        "mode": "simple"
+      }
+    },
+    {
+      "content": "\u8bbe\u8ba1\u7528\u6237\u754c\u9762",
+      "sender": "system",
+      "role": "system",
+      "timestamp": "2026-04-20T13:52:47.659207",
+      "metadata": {}
+    },
+    {
+      "content": "\u6211\u7406\u89e3\u4e86'\u8bbe\u8ba1\u7528\u6237\u754c\u9762'\uff0c\u8fd9\u662f\u4e00\u4e2a\u5f88\u597d\u7684\u8bdd\u9898\u3002\u8ba9\u6211\u5206\u4eab\u6211\u7684\u89c1\u89e3...",
+      "sender": "Agent-1",
+      "role": "agent",
+      "timestamp": "2026-04-20T13:52:47.659263",
+      "metadata": {
+        "agent_role": "assistant",
+        "model": "demo-model",
+        "usage": {
+          "prompt_tokens": 50,
+          "completion_tokens": 30,
+          "total_tokens": 80
+        },
+        "mode": "simple"
+      }
+    },
+    {
+      "content": "\u6211\u7406\u89e3\u4e86'\u8bbe\u8ba1\u7528\u6237\u754c\u9762'\uff0c\u8fd9\u662f\u4e00\u4e2a\u5f88\u597d\u7684\u8bdd\u9898\u3002\u8ba9\u6211\u5206\u4eab\u6211\u7684\u89c1\u89e3...",
+      "sender": "Agent-2",
+      "role": "agent",
+      "timestamp": "2026-04-20T13:52:47.659281",
+      "metadata": {
+        "agent_role": "assistant",
+        "model": "demo-model",
+        "usage": {
+          "prompt_tokens": 50,
+          "completion_tokens": 30,
+          "total_tokens": 80
+        },
+        "mode": "simple"
+      }
+    },
+    {
+      "content": "\u6211\u7406\u89e3\u4e86'\u8bbe\u8ba1\u7528\u6237\u754c\u9762'\uff0c\u8fd9\u662f\u4e00\u4e2a\u5f88\u597d\u7684\u8bdd\u9898\u3002\u8ba9\u6211\u5206\u4eab\u6211\u7684\u89c1\u89e3...",
+      "sender": "Agent-3",
+      "role": "agent",
+      "timestamp": "2026-04-20T13:52:47.659296",
+      "metadata": {
+        "agent_role": "assistant",
+        "model": "demo-model",
+        "usage": {
+          "prompt_tokens": 50,
+          "completion_tokens": 30,
+          "total_tokens": 80
+        },
+        "mode": "simple"
+      }
+    },
+    {
+      "content": "\u4f18\u5316\u7cfb\u7edf\u6027\u80fd",
+      "sender": "system",
+      "role": "system",
+      "timestamp": "2026-04-20T13:52:47.660006",
+      "metadata": {}
+    },
+    {
+      "content": "\u6211\u7406\u89e3\u4e86'\u4f18\u5316\u7cfb\u7edf\u6027\u80fd'\uff0c\u8fd9\u662f\u4e00\u4e2a\u5f88\u597d\u7684\u8bdd\u9898\u3002\u8ba9\u6211\u5206\u4eab\u6211\u7684\u89c1\u89e3...",
+      "sender": "Agent-1",
+      "role": "agent",
+      "timestamp": "2026-04-20T13:52:47.660057",
+      "metadata": {
+        "agent_role": "assistant",
+        "model": "demo-model",
+        "usage": {
+          "prompt_tokens": 50,
+          "completion_tokens": 30,
+          "total_tokens": 80
+        },
+        "mode": "simple"
+      }
+    },
+    {
+      "content": "\u6211\u7406\u89e3\u4e86'\u4f18\u5316\u7cfb\u7edf\u6027\u80fd'\uff0c\u8fd9\u662f\u4e00\u4e2a\u5f88\u597d\u7684\u8bdd\u9898\u3002\u8ba9\u6211\u5206\u4eab\u6211\u7684\u89c1\u89e3...",
+      "sender": "Agent-2",
+      "role": "agent",
+      "timestamp": "2026-04-20T13:52:47.660074",
+      "metadata": {
+        "agent_role": "assistant",
+        "model": "demo-model",
+        "usage": {
+          "prompt_tokens": 50,
+          "completion_tokens": 30,
+          "total_tokens": 80
+        },
+        "mode": "simple"
+      }
+    },
+    {
+      "content": "\u6211\u7406\u89e3\u4e86'\u4f18\u5316\u7cfb\u7edf\u6027\u80fd'\uff0c\u8fd9\u662f\u4e00\u4e2a\u5f88\u597d\u7684\u8bdd\u9898\u3002\u8ba9\u6211\u5206\u4eab\u6211\u7684\u89c1\u89e3...",
+      "sender": "Agent-3",
+      "role": "agent",
+      "timestamp": "2026-04-20T13:52:47.660089",
+      "metadata": {
+        "agent_role": "assistant",
+        "model": "demo-model",
+        "usage": {
+          "prompt_tokens": 50,
+          "completion_tokens": 30,
+          "total_tokens": 80
+        },
+        "mode": "simple"
+      }
+    }
+  ],
+  "metrics": {
+    "total_collaborations": 3,
+    "successful_collaborations": 3,
+    "failed_collaborations": 0,
+    "total_tasks": 0,
+    "completed_tasks": 0,
+    "failed_tasks": 0,
+    "total_messages": 0,
+    "average_collaboration_time": 0.00020700000000000002,
+    "deadlocks_detected": 0,
+    "deadlocks_resolved": 0
+  },
+  "shared_context": {}
+}

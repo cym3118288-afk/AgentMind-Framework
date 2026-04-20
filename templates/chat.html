@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgentMind Chat - Multi-Agent Collaboration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="chat-container">
+        <!-- Sidebar with agent list -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>🤖 Agents</h2>
+                <span class="agent-count" id="agentCount">0</span>
+            </div>
+            <div class="agent-list" id="agentList">
+                <!-- Agents will be populated here -->
+            </div>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <span class="user-emoji">👤</span>
+                    <input type="text" id="usernameInput" placeholder="Your name" value="User" maxlength="20">
+                </div>
+            </div>
+        </div>
+
+        <!-- Main chat area -->
+        <div class="chat-main">
+            <div class="chat-header">
+                <h1>💬 AgentMind Chat</h1>
+                <p class="chat-subtitle">Multi-Agent Collaboration Interface</p>
+            </div>
+
+            <div class="messages-container" id="messagesContainer">
+                <!-- Messages will appear here -->
+            </div>
+
+            <div class="input-area">
+                <div class="emoji-picker-container">
+                    <button class="emoji-btn" id="emojiBtn">😊</button>
+                    <div class="emoji-picker" id="emojiPicker">
+                        <div class="emoji-grid">
+                            <span class="emoji-item">😀</span>
+                            <span class="emoji-item">😂</span>
+                            <span class="emoji-item">😍</span>
+                            <span class="emoji-item">🤔</span>
+                            <span class="emoji-item">😎</span>
+                            <span class="emoji-item">😊</span>
+                            <span class="emoji-item">🥳</span>
+                            <span class="emoji-item">😢</span>
+                            <span class="emoji-item">😡</span>
+                            <span class="emoji-item">👍</span>
+                            <span class="emoji-item">👎</span>
+                            <span class="emoji-item">❤️</span>
+                            <span class="emoji-item">🔥</span>
+                            <span class="emoji-item">⭐</span>
+                            <span class="emoji-item">💡</span>
+                            <span class="emoji-item">🎉</span>
+                            <span class="emoji-item">🚀</span>
+                            <span class="emoji-item">💻</span>
+                            <span class="emoji-item">📱</span>
+                            <span class="emoji-item">🎨</span>
+                            <span class="emoji-item">🎵</span>
+                            <span class="emoji-item">🍕</span>
+                            <span class="emoji-item">☕</span>
+                            <span class="emoji-item">🌟</span>
+                        </div>
+                    </div>
+                </div>
+                <textarea
+                    id="messageInput"
+                    placeholder="Type your message here... (Press Enter to send, Shift+Enter for new line)"
+                    rows="1"
+                ></textarea>
+                <button class="send-btn" id="sendBtn">
+                    <span>Send</span>
+                    <span class="send-icon">➤</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>

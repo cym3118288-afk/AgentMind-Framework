@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgentMind - Agent Designer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            gap: 0;
+            min-height: 600px;
+        }
+
+        .sidebar {
+            background: #f8f9fa;
+            padding: 20px;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        .sidebar h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .agent-template {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: move;
+            border: 2px solid #667eea;
+            transition: all 0.3s;
+        }
+
+        .agent-template:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .agent-template h4 {
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .agent-template p {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .canvas {
+            background: #fafafa;
+            position: relative;
+            min-height: 600px;
+            padding: 20px;
+        }
+
+        .canvas-empty {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #999;
+        }
+
+        .canvas-empty h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .agent-node {
+            position: absolute;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 200px;
+            cursor: move;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .agent-node:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            transform: translateY(-2px);
+        }
+
+        .agent-node.selected {
+            border-color: #764ba2;
+            box-shadow: 0 8px 24px rgba(118, 75, 162, 0.4);
+        }
+
+        .agent-node h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .agent-node .role {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .agent-node .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        .properties-panel {
+            background: #f8f9fa;
+            padding: 20px;
+            border-left: 1px solid #e0e0e0;
+            overflow-y: auto;
+        }
+
+        .properties-panel h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .code-output {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .connection-line {
+            position: absolute;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .connection-line line {
+            stroke: #667eea;
+            stroke-width: 2;
+            stroke-dasharray: 5, 5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Agent Designer</h1>
+            <p>Drag and drop to design your multi-agent system</p>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <h3>Agent Templates</h3>
+                <div class="agent-template" draggable="true" data-role="researcher">
+                    <h4>Researcher</h4>
+                    <p>Finds and analyzes information</p>
+                </div>
+                <div class="agent-template" draggable="true" data-role="writer">
+                    <h4>Writer</h4>
+                    <p>Creates engaging content</p>
+                </div>
+                <div class="agent-template" draggable="true" data-role="reviewer">
+                    <h4>Reviewer</h4>
+                    <p>Provides critical feedback</p>
+                </div>
+                <div class="agent-template" draggable="true" data-role="analyst">
+                    <h4>Analyst</h4>
+                    <p>Analyzes data and patterns</p>
+                </div>
+                <div class="agent-template" draggable="true" data-role="coordinator">
+                    <h4>Coordinator</h4>
+                    <p>Manages team workflow</p>
+                </div>
+                <div class="agent-template" draggable="true" data-role="custom">
+                    <h4>Custom Agent</h4>
+                    <p>Define your own role</p>
+                </div>
+            </div>
+
+            <div class="canvas" id="canvas">
+                <svg id="connections" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></svg>
+                <div class="canvas-empty" id="canvas-empty">
+                    <h3>Drag agents here to start</h3>
+                    <p>Build your multi-agent system visually</p>
+                </div>
+            </div>
+
+            <div class="properties-panel">
+                <h3>Properties</h3>
+                <div id="properties-content">
+                    <p style="color: #999; text-align: center; margin-top: 50px;">Select an agent to edit properties</p>
+                </div>
+
+                <button class="btn" onclick="generateCode()">Generate Code</button>
+                <button class="btn btn-secondary" onclick="clearCanvas()">Clear Canvas</button>
+
+                <div id="code-output" style="display: none;">
+                    <h3 style="margin-top: 30px; margin-bottom: 15px;">Generated Code</h3>
+                    <div class="code-output" id="generated-code"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let agents = [];
+        let selectedAgent = null;
+        let draggedElement = null;
+        let offsetX = 0;
+        let offsetY = 0;
+        let agentCounter = 0;
+
+        // Template drag start
+        document.querySelectorAll('.agent-template').forEach(template => {
+            template.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('role', template.dataset.role);
+                e.dataTransfer.setData('name', template.querySelector('h4').textContent);
+            });
+        });
+
+        // Canvas drop handling
+        const canvas = document.getElementById('canvas');
+
+        canvas.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        canvas.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const role = e.dataTransfer.getData('role');
+            const name = e.dataTransfer.getData('name');
+
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left - 100;
+            const y = e.clientY - rect.top - 50;
+
+            createAgent(name, role, x, y);
+        });
+
+        function createAgent(name, role, x, y) {
+            agentCounter++;
+            const agent = {
+                id: agentCounter,
+                name: name + ' ' + agentCounter,
+                role: role,
+                x: x,
+                y: y,
+                systemPrompt: `You are a ${role} agent.`,
+                model: 'llama3.2',
+                temperature: 0.7
+            };
+
+            agents.push(agent);
+            renderAgent(agent);
+            document.getElementById('canvas-empty').style.display = 'none';
+        }
+
+        function renderAgent(agent) {
+            const node = document.createElement('div');
+            node.className = 'agent-node';
+            node.id = 'agent-' + agent.id;
+            node.style.left = agent.x + 'px';
+            node.style.top = agent.y + 'px';
+            node.draggable = true;
+
+            node.innerHTML = `
+                <button class="delete-btn" onclick="deleteAgent(${agent.id})">×</button>
+                <h4>${agent.name}</h4>
+                <span class="role">${agent.role}</span>
+                <p style="font-size: 0.9em; color: #666; margin-top: 8px;">${agent.systemPrompt.substring(0, 50)}...</p>
+            `;
+
+            node.addEventListener('click', () => selectAgent(agent.id));
+            node.addEventListener('dragstart', (e) => {
+                draggedElement = node;
+                const rect = node.getBoundingClientRect();
+                offsetX = e.clientX - rect.left;
+                offsetY = e.clientY - rect.top;
+            });
+
+            node.addEventListener('dragend', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                agent.x = e.clientX - rect.left - offsetX;
+                agent.y = e.clientY - rect.top - offsetY;
+                node.style.left = agent.x + 'px';
+                node.style.top = agent.y + 'px';
+                draggedElement = null;
+            });
+
+            canvas.appendChild(node);
+        }
+
+        function selectAgent(id) {
+            selectedAgent = agents.find(a => a.id === id);
+
+            document.querySelectorAll('.agent-node').forEach(n => n.classList.remove('selected'));
+            document.getElementById('agent-' + id).classList.add('selected');
+
+            showProperties(selectedAgent);
+        }
+
+        function showProperties(agent) {
+            const content = document.getElementById('properties-content');
+            content.innerHTML = `
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" value="${agent.name}" onchange="updateAgent('name', this.value)">
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <input type="text" value="${agent.role}" onchange="updateAgent('role', this.value)">
+                </div>
+                <div class="form-group">
+                    <label>System Prompt</label>
+                    <textarea onchange="updateAgent('systemPrompt', this.value)">${agent.systemPrompt}</textarea>
+                </div>
+                <div class="form-group">
+                    <label>Model</label>
+                    <select onchange="updateAgent('model', this.value)">
+                        <option value="llama3.2" ${agent.model === 'llama3.2' ? 'selected' : ''}>Llama 3.2</option>
+                        <option value="gpt-4" ${agent.model === 'gpt-4' ? 'selected' : ''}>GPT-4</option>
+                        <option value="claude-3-opus" ${agent.model === 'claude-3-opus' ? 'selected' : ''}>Claude 3 Opus</option>
+                        <option value="mistral" ${agent.model === 'mistral' ? 'selected' : ''}>Mistral</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Temperature</label>
+                    <input type="number" min="0" max="2" step="0.1" value="${agent.temperature}" onchange="updateAgent('temperature', parseFloat(this.value))">
+                </div>
+            `;
+        }
+
+        function updateAgent(field, value) {
+            if (selectedAgent) {
+                selectedAgent[field] = value;
+                const node = document.getElementById('agent-' + selectedAgent.id);
+                if (field === 'name') {
+                    node.querySelector('h4').textContent = value;
+                } else if (field === 'role') {
+                    node.querySelector('.role').textContent = value;
+                } else if (field === 'systemPrompt') {
+                    node.querySelector('p').textContent = value.substring(0, 50) + '...';
+                }
+            }
+        }
+
+        function deleteAgent(id) {
+            agents = agents.filter(a => a.id !== id);
+            document.getElementById('agent-' + id).remove();
+
+            if (selectedAgent && selectedAgent.id === id) {
+                selectedAgent = null;
+                document.getElementById('properties-content').innerHTML = '<p style="color: #999; text-align: center; margin-top: 50px;">Select an agent to edit properties</p>';
+            }
+
+            if (agents.length === 0) {
+                document.getElementById('canvas-empty').style.display = 'block';
+            }
+        }
+
+        function clearCanvas() {
+            if (confirm('Clear all agents?')) {
+                agents = [];
+                document.querySelectorAll('.agent-node').forEach(n => n.remove());
+                document.getElementById('canvas-empty').style.display = 'block';
+                document.getElementById('properties-content').innerHTML = '<p style="color: #999; text-align: center; margin-top: 50px;">Select an agent to edit properties</p>';
+                document.getElementById('code-output').style.display = 'none';
+            }
+        }
+
+        function generateCode() {
+            if (agents.length === 0) {
+                alert('Add some agents first!');
+                return;
+            }
+
+            let code = `from agentmind import Agent, AgentMind\nfrom agentmind.llm import OllamaProvider\nimport asyncio\n\nasync def main():\n    # Initialize LLM provider\n    llm = OllamaProvider(model="${agents[0].model}")\n    mind = AgentMind(llm_provider=llm)\n    \n    # Create agents\n`;
+
+            agents.forEach(agent => {
+                const varName = agent.name.toLowerCase().replace(/\s+/g, '_');
+                code += `    ${varName} = Agent(\n`;
+                code += `        name="${agent.name}",\n`;
+                code += `        role="${agent.role}",\n`;
+                code += `        system_prompt="${agent.systemPrompt}"\n`;
+                code += `    )\n`;
+                code += `    mind.add_agent(${varName})\n\n`;
+            });
+
+            code += `    # Run collaboration\n`;
+            code += `    result = await mind.collaborate(\n`;
+            code += `        "Your task here",\n`;
+            code += `        max_rounds=3\n`;
+            code += `    )\n    \n`;
+            code += `    print(result)\n\n`;
+            code += `if __name__ == "__main__":\n`;
+            code += `    asyncio.run(main())\n`;
+
+            document.getElementById('generated-code').textContent = code;
+            document.getElementById('code-output').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

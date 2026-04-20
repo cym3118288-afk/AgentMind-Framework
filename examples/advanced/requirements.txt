@@ -1,0 +1,2 @@
+# Requirements for advanced examples
+agentmind>=0.2.0

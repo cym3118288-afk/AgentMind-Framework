@@ -1,0 +1,25 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy dashboard files
+COPY dashboard/package*.json ./
+
+# Install dependencies
+RUN npm ci --only=production
+
+# Copy dashboard source
+COPY dashboard/ .
+
+# Build dashboard
+RUN npm run build
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1
+
+# Run dashboard
+CMD ["npm", "start"]

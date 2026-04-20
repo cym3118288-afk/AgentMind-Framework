@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Designer Enhanced - AgentMind</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-header {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .btn-header:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 80px);
+        }
+
+        .sidebar {
+            width: 300px;
+            background: white;
+            border-right: 1px solid #e1e8ed;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .canvas {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .properties {
+            width: 350px;
+            background: white;
+            border-left: 1px solid #e1e8ed;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #667eea;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .category-tab {
+            padding: 6px 12px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .category-tab.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .agent-template {
+            background: white;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: move;
+            transition: all 0.2s;
+        }
+
+        .agent-template:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .agent-template h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .agent-template .icon {
+            font-size: 24px;
+            margin-right: 8px;
+        }
+
+        .agent-template p {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .agent-card {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .agent-card:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
+        }
+
+        .agent-card.selected {
+            border-color: #764ba2;
+            box-shadow: 0 8px 24px rgba(118, 75, 162, 0.2);
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+            transition: all 0.2s;
+        }
+
+        .remove-btn:hover {
+            background: #ee5a6f;
+            transform: scale(1.1);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .drop-zone {
+            border: 2px dashed #e1e8ed;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            color: #999;
+            transition: all 0.2s;
+        }
+
+        .drop-zone.drag-over {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e1e8ed;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            background: #764ba2;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #48dbfb;
+        }
+
+        .btn-secondary:hover {
+            background: #0abde3;
+        }
+
+        .btn-success {
+            background: #1dd1a1;
+        }
+
+        .btn-success:hover {
+            background: #10ac84;
+        }
+
+        .test-panel {
+            background: #f8f9fa;
+            border: 1px solid #e1e8ed;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .test-output {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 2000;
+            display: none;
+        }
+
+        .notification.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>Agent Designer Enhanced</h1>
+            <p>Drag and drop to design your multi-agent system</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn-header" onclick="showImportModal()">Import</button>
+            <button class="btn-header" onclick="showTemplateGallery()">Templates</button>
+            <button class="btn-header" onclick="showTestPanel()">Test</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <div class="section-title">
+                Agent Templates
+                <button class="btn-header" style="padding: 4px 8px; font-size: 12px;" onclick="loadTemplates()">Refresh</button>
+            </div>
+
+            <div class="category-tabs" id="categoryTabs"></div>
+            <div id="templateList"></div>
+        </div>
+
+        <div class="canvas" id="canvas">
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="value" id="agentCount">0</div>
+                    <div class="label">Agents</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value" id="roleCount">0</div>
+                    <div class="label">Unique Roles</div>
+                </div>
+            </div>
+
+            <div class="drop-zone" id="dropZone">
+                <h3>Drag agents here to start</h3>
+                <p>Build your multi-agent team by dragging templates from the left</p>
+            </div>
+
+            <div id="agentList"></div>
+        </div>
+
+        <div class="properties">
+            <div class="section-title">Configuration</div>
+
+            <div class="form-group">
+                <label>Team Name</label>
+                <input type="text" id="teamName" placeholder="My Agent Team" value="My Agent Team">
+            </div>
+
+            <div class="form-group">
+                <label>LLM Provider</label>
+                <select id="llmProvider">
+                    <option value="ollama">Ollama (Local)</option>
+                    <option value="openai">OpenAI</option>
+                    <option value="anthropic">Anthropic</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Model</label>
+                <input type="text" id="model" placeholder="llama3.2" value="llama3.2">
+            </div>
+
+            <div class="form-group">
+                <label>Max Rounds</label>
+                <input type="number" id="maxRounds" value="5" min="1" max="20">
+            </div>
+
+            <button class="btn btn-success" onclick="saveConfig()">Save Config</button>
+            <button class="btn" onclick="generateCode()">Generate Code</button>
+            <button class="btn btn-secondary" onclick="exportConfig()">Export</button>
+            <button class="btn" onclick="clearCanvas()">Clear All</button>
+
+            <div class="test-panel" id="testPanel" style="display: none;">
+                <div class="section-title">Real-Time Testing</div>
+                <div class="form-group">
+                    <label>Test Input</label>
+                    <input type="text" id="testInput" placeholder="Enter test message">
+                </div>
+                <button class="btn" onclick="runTest()">Run Test</button>
+                <div class="test-output" id="testOutput"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="importModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Import Configuration</h2>
+                <button class="modal-close" onclick="closeModal('importModal')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Upload File (JSON/YAML)</label>
+                <input type="file" id="importFile" accept=".json,.yaml,.yml">
+            </div>
+            <button class="btn" onclick="importConfig()">Import</button>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        let agents = [];
+        let selectedAgent = null;
+        let agentCounter = 0;
+        let templates = {};
+        let currentCategory = 'development';
+        let ws = null;
+
+        // Load templates on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadTemplates();
+            connectWebSocket();
+        });
+
+        async function loadTemplates() {
+            try {
+                const response = await fetch('/api/templates');
+                const data = await response.json();
+                templates = data.templates;
+                renderCategoryTabs();
+                renderTemplates(currentCategory);
+            } catch (error) {
+                console.error('Error loading templates:', error);
+            }
+        }
+
+        function renderCategoryTabs() {
+            const tabsContainer = document.getElementById('categoryTabs');
+            tabsContainer.innerHTML = '';
+
+            for (const category in templates) {
+                const tab = document.createElement('button');
+                tab.className = 'category-tab' + (category === currentCategory ? ' active' : '');
+                tab.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+                tab.onclick = () => {
+                    currentCategory = category;
+                    renderCategoryTabs();
+                    renderTemplates(category);
+                };
+                tabsContainer.appendChild(tab);
+            }
+        }
+
+        function renderTemplates(category) {
+            const templateList = document.getElementById('templateList');
+            templateList.innerHTML = '';
+
+            const categoryTemplates = templates[category] || [];
+
+            categoryTemplates.forEach(template => {
+                const div = document.createElement('div');
+                div.className = 'agent-template';
+                div.draggable = true;
+                div.dataset.template = JSON.stringify(template);
+
+                div.innerHTML = `
+                    <h3><span class="icon">${template.icon}</span>${template.name}</h3>
+                    <p>${template.description}</p>
+                `;
+
+                div.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('template', JSON.stringify(template));
+                });
+
+                templateList.appendChild(div);
+            });
+        }
+
+        const dropZone = document.getElementById('dropZone');
+        const canvas = document.getElementById('canvas');
+
+        [dropZone, canvas].forEach(element => {
+            element.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('drag-over');
+            });
+
+            element.addEventListener('dragleave', () => {
+                dropZone.classList.remove('drag-over');
+            });
+
+            element.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('drag-over');
+
+                const templateData = e.dataTransfer.getData('template');
+                if (templateData) {
+                    const template = JSON.parse(templateData);
+                    addAgent(template);
+                }
+            });
+        });
+
+        function addAgent(template) {
+            agentCounter++;
+            const agent = {
+                id: agentCounter,
+                name: template.name,
+                role: template.role,
+                icon: template.icon,
+                system_prompt: template.system_prompt,
+                plugins: template.plugins || [],
+                capabilities: template.capabilities || []
+            };
+
+            agents.push(agent);
+            renderAgents();
+            updateStats();
+
+            if (agents.length > 0) {
+                dropZone.style.display = 'none';
+            }
+
+            showNotification(`Added ${agent.name} to team`);
+        }
+
+        function removeAgent(id) {
+            agents = agents.filter(a => a.id !== id);
+            renderAgents();
+            updateStats();
+
+            if (agents.length === 0) {
+                dropZone.style.display = 'block';
+            }
+        }
+
+        function renderAgents() {
+            const agentList = document.getElementById('agentList');
+            agentList.innerHTML = agents.map(agent => `
+                <div class="agent-card ${selectedAgent === agent.id ? 'selected' : ''}"
+                     onclick="selectAgent(${agent.id})">
+                    <button class="remove-btn" onclick="event.stopPropagation(); removeAgent(${agent.id})">×</button>
+                    <h3>${agent.icon} ${agent.name}</h3>
+                    <div class="role">Role: ${agent.role}</div>
+                    <div class="prompt">${agent.system_prompt}</div>
+                </div>
+            `).join('');
+        }
+
+        function selectAgent(id) {
+            selectedAgent = id;
+            renderAgents();
+        }
+
+        function updateStats() {
+            document.getElementById('agentCount').textContent = agents.length;
+            const uniqueRoles = new Set(agents.map(a => a.role)).size;
+            document.getElementById('roleCount').textContent = uniqueRoles;
+        }
+
+        async function saveConfig() {
+            const config = {
+                team_name: document.getElementById('teamName').value,
+                llm_provider: document.getElementById('llmProvider').value,
+                model: document.getElementById('model').value,
+                max_rounds: parseInt(document.getElementById('maxRounds').value),
+                agents: agents.map(a => ({
+                    name: a.name,
+                    role: a.role,
+                    system_prompt: a.system_prompt,
+                    plugins: a.plugins,
+                    capabilities: a.capabilities
+                }))
+            };
+
+            try {
+                const response = await fetch('/api/configs', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(config)
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    showNotification('Configuration saved successfully!');
+                } else {
+                    showNotification('Error: ' + (data.error || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                showNotification('Error saving configuration', 'error');
+            }
+        }
+
+        async function generateCode() {
+            const config = {
+                team_name: document.getElementById('teamName').value,
+                llm_provider: document.getElementById('llmProvider').value,
+                model: document.getElementById('model').value,
+                max_rounds: parseInt(document.getElementById('maxRounds').value),
+                agents: agents.map(a => ({
+                    name: a.name,
+                    role: a.role,
+                    system_prompt: a.system_prompt
+                }))
+            };
+
+            // Save first, then export as Python
+            try {
+                const saveResponse = await fetch('/api/configs', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(config)
+                });
+
+                const saveData = await saveResponse.json();
+                if (saveData.success) {
+                    window.location.href = `/api/configs/${saveData.config_id}/export?format=python`;
+                }
+            } catch (error) {
+                showNotification('Error generating code', 'error');
+            }
+        }
+
+        async function exportConfig() {
+            const format = prompt('Export format (json/yaml/python):', 'json');
+            if (!format) return;
+
+            const config = {
+                team_name: document.getElementById('teamName').value,
+                llm_provider: document.getElementById('llmProvider').value,
+                model: document.getElementById('model').value,
+                max_rounds: parseInt(document.getElementById('maxRounds').value),
+                agents: agents.map(a => ({
+                    name: a.name,
+                    role: a.role,
+                    system_prompt: a.system_prompt
+                }))
+            };
+
+            try {
+                const saveResponse = await fetch('/api/configs', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(config)
+                });
+
+                const saveData = await saveResponse.json();
+                if (saveData.success) {
+                    window.location.href = `/api/configs/${saveData.config_id}/export?format=${format}`;
+                }
+            } catch (error) {
+                showNotification('Error exporting configuration', 'error');
+            }
+        }
+
+        function clearCanvas() {
+            if (confirm('Are you sure you want to clear all agents?')) {
+                agents = [];
+                renderAgents();
+                updateStats();
+                dropZone.style.display = 'block';
+            }
+        }
+
+        function showImportModal() {
+            document.getElementById('importModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        async function importConfig() {
+            const fileInput = document.getElementById('importFile');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                showNotification('Please select a file', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('/api/configs/import', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    showNotification('Configuration imported successfully!');
+                    closeModal('importModal');
+                    // Reload the configuration
+                    const configResponse = await fetch(`/api/configs/${data.config_id}`);
+                    const config = await configResponse.json();
+                    loadConfigIntoUI(config);
+                } else {
+                    showNotification('Error: ' + (data.error || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                showNotification('Error importing configuration', 'error');
+            }
+        }
+
+        function loadConfigIntoUI(config) {
+            document.getElementById('teamName').value = config.team_name || '';
+            document.getElementById('llmProvider').value = config.llm_provider || 'ollama';
+            document.getElementById('model').value = config.model || 'llama3.2';
+            document.getElementById('maxRounds').value = config.max_rounds || 5;
+
+            agents = config.agents.map((a, i) => ({
+                id: i + 1,
+                name: a.name,
+                role: a.role,
+                icon: a.icon || '🤖',
+                system_prompt: a.system_prompt || '',
+                plugins: a.plugins || [],
+                capabilities: a.capabilities || []
+            }));
+
+            agentCounter = agents.length;
+            renderAgents();
+            updateStats();
+            dropZone.style.display = agents.length > 0 ? 'none' : 'block';
+        }
+
+        function showTestPanel() {
+            const panel = document.getElementById('testPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function connectWebSocket() {
+            ws = new WebSocket(`ws://${window.location.host}/ws/test`);
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                const output = document.getElementById('testOutput');
+
+                if (data.type === 'test_response') {
+                    output.textContent += `\n[${data.agent}]: ${data.response}`;
+                    output.scrollTop = output.scrollHeight;
+                } else if (data.type === 'workflow_complete') {
+                    output.textContent += `\n\n✓ ${data.result}`;
+                    output.scrollTop = output.scrollHeight;
+                }
+            };
+        }
+
+        function runTest() {
+            const input = document.getElementById('testInput').value;
+            if (!input || !ws) return;
+
+            const output = document.getElementById('testOutput');
+            output.textContent = `Testing with input: "${input}"\n`;
+
+            const config = {
+                team_name: document.getElementById('teamName').value,
+                agents: agents.map(a => ({
+                    name: a.name,
+                    role: a.role,
+                    system_prompt: a.system_prompt
+                }))
+            };
+
+            ws.send(JSON.stringify({
+                action: 'test_workflow',
+                config: config,
+                input: input
+            }));
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = 'notification show';
+            notification.style.background = type === 'error' ? '#ff4757' : '#1dd1a1';
+            notification.style.color = 'white';
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function showTemplateGallery() {
+            showNotification('Template gallery feature coming soon!');
+        }
+    </script>
+</body>
+</html>

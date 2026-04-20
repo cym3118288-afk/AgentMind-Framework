@@ -16,25 +16,99 @@ Build collaborative AI systems with minimal code and maximum flexibility.
 
 ---
 
-## 🎬 See It In Action
+## 🎬 Quick Demo
 
-<!-- Add demo GIF/video here when available -->
+See AgentMind in action with this 2-minute demo showing real multi-agent collaboration:
+
+```python
+from agentmind import Agent, AgentMind
+from agentmind.llm import OllamaProvider
+import asyncio
+
+async def main():
+    # Initialize with Ollama (or use OpenAI/Anthropic)
+    llm = OllamaProvider(model="llama3.2")
+    mind = AgentMind(llm_provider=llm)
+    
+    # Create specialized agents
+    researcher = Agent(
+        name="Researcher",
+        role="research",
+        system_prompt="You are a thorough researcher who finds facts."
+    )
+    
+    writer = Agent(
+        name="Writer",
+        role="writer",
+        system_prompt="You are a creative writer who crafts engaging content."
+    )
+    
+    # Add agents to the system
+    mind.add_agent(researcher)
+    mind.add_agent(writer)
+    
+    # Start collaboration - agents work together automatically!
+    result = await mind.start_collaboration(
+        "Write a blog post about quantum computing",
+        max_rounds=3,
+        use_llm=True
+    )
+    
+    # Get the collaborative result
+    print(result.final_output)
+    print(f"\nSuccess: {result.success}")
+    print(f"Rounds: {result.total_rounds}")
+    print(f"Messages: {result.total_messages}")
+
+asyncio.run(main())
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  🎥 Demo: Multi-Agent Research Team in Action               │
-│                                                              │
-│  Watch agents collaborate in real-time to research,         │
-│  analyze, and write comprehensive reports.                  │
-│                                                              │
-│  [Demo GIF placeholder - Add animated demo here]            │
-└─────────────────────────────────────────────────────────────┘
+
+**Expected Output:**
+```
+[AgentMind] Initialized - Multi-agent collaboration framework started!
+[+] Added agent: Researcher (research)
+[+] Added agent: Writer (writer)
+[*] Starting multi-agent collaboration: Write a blog post about quantum computing
+[>] Round 1: Received 2 responses
+
+=== Collaboration Summary ===
+• Researcher: Quantum computing leverages quantum mechanics principles for computation.
+  Key concepts include superposition, entanglement, and quantum gates. Current research
+  focuses on error correction and scalability...
+  
+• Writer: Let me transform these technical details into an engaging narrative. Imagine
+  a world where computers can solve problems that would take classical computers
+  millennia. That's the promise of quantum computing...
+
+[*] Collaboration completed successfully
+
+Success: True
+Rounds: 1
+Messages: 3
 ```
 
 **Try it yourself:**
 ```bash
-# Install and run in 30 seconds
+# Run the interactive demo
+python demo_quick_start.py
+
+# Or install and try examples
 pip install agentmind
+python examples/research_team.py
 ```
+
+**What just happened?**
+1. Two agents with different roles (researcher + writer) were created
+2. They automatically collaborated on the task
+3. Each agent contributed based on their expertise
+4. The system coordinated their responses and produced a final output
+
+**Key Features Demonstrated:**
+- ✅ Multi-agent collaboration with role specialization
+- ✅ Automatic coordination and message routing
+- ✅ LLM-powered intelligent responses
+- ✅ Built-in memory and context management
+- ✅ Real-time progress tracking
 
 ## Why AgentMind?
 

@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  agentmind-api:
+    build: .
+    container_name: agentmind-api
+    ports:
+      - "8000:8000"
+      - "11434:11434"
+    environment:
+      - MODE=api
+      - OLLAMA_MODEL=llama3.2
+      - OLLAMA_HOST=http://localhost:11434
+    volumes:
+      - ollama-data:/root/.ollama
+      - ./traces:/app/traces
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  ollama-data:
+    driver: local

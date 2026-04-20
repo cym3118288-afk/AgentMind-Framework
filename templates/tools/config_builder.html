@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgentMind - Configuration Builder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .form-section {
+            padding: 30px;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+            max-height: 800px;
+        }
+
+        .preview-section {
+            padding: 30px;
+            background: #f8f9fa;
+            overflow-y: auto;
+            max-height: 800px;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 5px;
+            color: #888;
+            font-size: 0.85em;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .code-preview {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.6;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab:hover {
+            color: #667eea;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .copy-btn:hover {
+            background: #764ba2;
+        }
+
+        .preview-container {
+            position: relative;
+        }
+
+        .section-divider {
+            margin: 30px 0;
+            border-top: 1px solid #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Configuration Builder</h1>
+            <p>Generate production-ready AgentMind configurations</p>
+        </div>
+
+        <div class="content">
+            <div class="form-section">
+                <h2 class="section-title">System Configuration</h2>
+
+                <div class="form-group">
+                    <label>Project Name</label>
+                    <input type="text" id="projectName" value="my-agentmind-project" oninput="updatePreview()">
+                    <small>Name of your AgentMind project</small>
+                </div>
+
+                <div class="form-group">
+                    <label>LLM Provider</label>
+                    <select id="llmProvider" onchange="updatePreview()">
+                        <option value="ollama">Ollama (Local)</option>
+                        <option value="openai">OpenAI</option>
+                        <option value="anthropic">Anthropic</option>
+                        <option value="litellm">LiteLLM (Multi-provider)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Model Name</label>
+                    <input type="text" id="modelName" value="llama3.2" oninput="updatePreview()">
+                    <small>e.g., llama3.2, gpt-4, claude-3-opus</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Temperature</label>
+                    <input type="number" id="temperature" value="0.7" min="0" max="2" step="0.1" oninput="updatePreview()">
+                    <small>Controls randomness (0.0 = deterministic, 2.0 = very random)</small>
+                </div>
+
+                <div class="section-divider"></div>
+                <h2 class="section-title">Memory Configuration</h2>
+
+                <div class="form-group">
+                    <label>Memory Backend</label>
+                    <select id="memoryBackend" onchange="updatePreview()">
+                        <option value="in-memory">In-Memory</option>
+                        <option value="redis">Redis</option>
+                        <option value="file">File-based</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Max History Length</label>
+                    <input type="number" id="maxHistory" value="100" min="10" max="1000" oninput="updatePreview()">
+                    <small>Maximum number of messages to keep in memory</small>
+                </div>
+
+                <div class="section-divider"></div>
+                <h2 class="section-title">Features</h2>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="enableRetry" checked onchange="updatePreview()">
+                    <label for="enableRetry">Enable automatic retry with backoff</label>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="enableTracing" checked onchange="updatePreview()">
+                    <label for="enableTracing">Enable performance tracing</label>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="enableCostTracking" checked onchange="updatePreview()">
+                    <label for="enableCostTracking">Enable cost tracking</label>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="enableStreaming" onchange="updatePreview()">
+                    <label for="enableStreaming">Enable streaming responses</label>
+                </div>
+
+                <div class="section-divider"></div>
+                <h2 class="section-title">API Server</h2>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="enableAPI" checked onchange="updatePreview()">
+                    <label for="enableAPI">Enable REST API server</label>
+                </div>
+
+                <div class="form-group">
+                    <label>API Host</label>
+                    <input type="text" id="apiHost" value="0.0.0.0" oninput="updatePreview()">
+                </div>
+
+                <div class="form-group">
+                    <label>API Port</label>
+                    <input type="number" id="apiPort" value="8000" min="1000" max="65535" oninput="updatePreview()">
+                </div>
+
+                <button class="btn" onclick="downloadConfig()">Download Configuration</button>
+                <button class="btn btn-secondary" onclick="resetForm()">Reset to Defaults</button>
+            </div>
+
+            <div class="preview-section">
+                <h2 class="section-title">Preview</h2>
+
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('python')">Python Code</button>
+                    <button class="tab" onclick="switchTab('yaml')">YAML Config</button>
+                    <button class="tab" onclick="switchTab('docker')">Docker Compose</button>
+                </div>
+
+                <div class="preview-container">
+                    <button class="copy-btn" onclick="copyToClipboard()">Copy</button>
+                    <div class="code-preview" id="codePreview"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'python';
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            updatePreview();
+        }
+
+        function updatePreview() {
+            const config = getConfig();
+            let code = '';
+
+            if (currentTab === 'python') {
+                code = generatePythonCode(config);
+            } else if (currentTab === 'yaml') {
+                code = generateYAMLConfig(config);
+            } else if (currentTab === 'docker') {
+                code = generateDockerCompose(config);
+            }
+
+            document.getElementById('codePreview').textContent = code;
+        }
+
+        function getConfig() {
+            return {
+                projectName: document.getElementById('projectName').value,
+                llmProvider: document.getElementById('llmProvider').value,
+                modelName: document.getElementById('modelName').value,
+                temperature: parseFloat(document.getElementById('temperature').value),
+                memoryBackend: document.getElementById('memoryBackend').value,
+                maxHistory: parseInt(document.getElementById('maxHistory').value),
+                enableRetry: document.getElementById('enableRetry').checked,
+                enableTracing: document.getElementById('enableTracing').checked,
+                enableCostTracking: document.getElementById('enableCostTracking').checked,
+                enableStreaming: document.getElementById('enableStreaming').checked,
+                enableAPI: document.getElementById('enableAPI').checked,
+                apiHost: document.getElementById('apiHost').value,
+                apiPort: parseInt(document.getElementById('apiPort').value)
+            };
+        }
+
+        function generatePythonCode(config) {
+            let code = `"""
+${config.projectName} - AgentMind Configuration
+Generated on ${new Date().toISOString()}
+"""
+
+from agentmind import Agent, AgentMind
+`;
+
+            // LLM Provider import
+            if (config.llmProvider === 'ollama') {
+                code += `from agentmind.llm import OllamaProvider\n`;
+            } else if (config.llmProvider === 'litellm') {
+                code += `from agentmind.llm import LiteLLMProvider\n`;
+            }
+
+            // Memory import
+            if (config.memoryBackend === 'redis') {
+                code += `from agentmind.memory import RedisMemoryBackend\n`;
+            } else if (config.memoryBackend === 'file') {
+                code += `from agentmind.memory import FileMemoryBackend\n`;
+            }
+
+            // Optional features
+            if (config.enableRetry) {
+                code += `from agentmind.utils.retry import RetryConfig, retry_with_backoff\n`;
+            }
+            if (config.enableTracing) {
+                code += `from agentmind.utils.observability import Tracer\n`;
+            }
+            if (config.enableCostTracking) {
+                code += `from agentmind.utils.observability import CostTracker\n`;
+            }
+
+            code += `\nimport asyncio\nimport os\n\n`;
+
+            // Configuration class
+            code += `class Config:\n`;
+            code += `    """Application configuration"""\n`;
+            code += `    PROJECT_NAME = "${config.projectName}"\n`;
+            code += `    MODEL_NAME = "${config.modelName}"\n`;
+            code += `    TEMPERATURE = ${config.temperature}\n`;
+            code += `    MAX_HISTORY = ${config.maxHistory}\n`;
+            if (config.enableAPI) {
+                code += `    API_HOST = "${config.apiHost}"\n`;
+                code += `    API_PORT = ${config.apiPort}\n`;
+            }
+            code += `\n`;
+
+            // Setup function
+            code += `async def setup_agentmind():\n`;
+            code += `    """Initialize AgentMind with configuration"""\n`;
+            code += `    \n`;
+
+            // LLM Provider setup
+            if (config.llmProvider === 'ollama') {
+                code += `    # Initialize Ollama provider\n`;
+                code += `    llm = OllamaProvider(\n`;
+                code += `        model=Config.MODEL_NAME,\n`;
+                code += `        temperature=Config.TEMPERATURE\n`;
+                code += `    )\n`;
+            } else if (config.llmProvider === 'litellm') {
+                code += `    # Initialize LiteLLM provider\n`;
+                code += `    llm = LiteLLMProvider(\n`;
+                code += `        model=Config.MODEL_NAME,\n`;
+                code += `        temperature=Config.TEMPERATURE,\n`;
+                code += `        api_key=os.getenv("LLM_API_KEY")\n`;
+                code += `    )\n`;
+            }
+
+            code += `    \n`;
+
+            // Memory backend setup
+            if (config.memoryBackend === 'redis') {
+                code += `    # Initialize Redis memory backend\n`;
+                code += `    memory = RedisMemoryBackend(\n`;
+                code += `        host=os.getenv("REDIS_HOST", "localhost"),\n`;
+                code += `        port=int(os.getenv("REDIS_PORT", 6379))\n`;
+                code += `    )\n`;
+            } else if (config.memoryBackend === 'file') {
+                code += `    # Initialize file-based memory backend\n`;
+                code += `    memory = FileMemoryBackend(\n`;
+                code += `        storage_path="./memory"\n`;
+                code += `    )\n`;
+            }
+
+            code += `    \n`;
+            code += `    # Create AgentMind instance\n`;
+            code += `    mind = AgentMind(\n`;
+            code += `        llm_provider=llm,\n`;
+            if (config.memoryBackend !== 'in-memory') {
+                code += `        memory_backend=memory,\n`;
+            }
+            code += `        max_history=Config.MAX_HISTORY\n`;
+            code += `    )\n`;
+            code += `    \n`;
+            code += `    return mind\n\n`;
+
+            // Main function
+            code += `async def main():\n`;
+            code += `    """Main application entry point"""\n`;
+            if (config.enableTracing) {
+                code += `    tracer = Tracer(session_id="main")\n`;
+                code += `    tracer.start()\n`;
+                code += `    \n`;
+            }
+
+            code += `    # Setup AgentMind\n`;
+            code += `    mind = await setup_agentmind()\n`;
+            code += `    \n`;
+            code += `    # Create your agents here\n`;
+            code += `    agent = Agent(\n`;
+            code += `        name="Assistant",\n`;
+            code += `        role="assistant",\n`;
+            code += `        system_prompt="You are a helpful AI assistant."\n`;
+            code += `    )\n`;
+            code += `    mind.add_agent(agent)\n`;
+            code += `    \n`;
+            code += `    # Run collaboration\n`;
+            code += `    result = await mind.collaborate(\n`;
+            code += `        "Your task here",\n`;
+            code += `        max_rounds=3\n`;
+            code += `    )\n`;
+            code += `    \n`;
+            code += `    print(result)\n`;
+
+            if (config.enableTracing) {
+                code += `    \n`;
+                code += `    tracer.end()\n`;
+                code += `    print(tracer.get_summary())\n`;
+            }
+
+            code += `\n`;
+            code += `if __name__ == "__main__":\n`;
+            code += `    asyncio.run(main())\n`;
+
+            return code;
+        }
+
+        function generateYAMLConfig(config) {
+            let yaml = `# ${config.projectName} Configuration
+# Generated on ${new Date().toISOString()}
+
+project:
+  name: ${config.projectName}
+
+llm:
+  provider: ${config.llmProvider}
+  model: ${config.modelName}
+  temperature: ${config.temperature}
+`;
+
+            if (config.enableStreaming) {
+                yaml += `  streaming: true\n`;
+            }
+
+            yaml += `\nmemory:
+  backend: ${config.memoryBackend}
+  max_history: ${config.maxHistory}
+`;
+
+            if (config.memoryBackend === 'redis') {
+                yaml += `  redis:
+    host: localhost
+    port: 6379
+`;
+            } else if (config.memoryBackend === 'file') {
+                yaml += `  file:
+    storage_path: ./memory
+`;
+            }
+
+            yaml += `\nfeatures:
+  retry: ${config.enableRetry}
+  tracing: ${config.enableTracing}
+  cost_tracking: ${config.enableCostTracking}
+  streaming: ${config.enableStreaming}
+`;
+
+            if (config.enableAPI) {
+                yaml += `\napi:
+  enabled: true
+  host: ${config.apiHost}
+  port: ${config.apiPort}
+  cors: true
+`;
+            }
+
+            return yaml;
+        }
+
+        function generateDockerCompose(config) {
+            let compose = `version: '3.8'
+
+services:
+  agentmind:
+    build: .
+    container_name: ${config.projectName}
+    ports:
+`;
+
+            if (config.enableAPI) {
+                compose += `      - "${config.apiPort}:${config.apiPort}"\n`;
+            }
+
+            compose += `    environment:
+      - MODEL_NAME=${config.modelName}
+      - TEMPERATURE=${config.temperature}
+`;
+
+            if (config.llmProvider !== 'ollama') {
+                compose += `      - LLM_API_KEY=\${LLM_API_KEY}\n`;
+            }
+
+            if (config.memoryBackend === 'redis') {
+                compose += `      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+`;
+            }
+
+            compose += `    volumes:
+      - ./data:/app/data
+`;
+
+            if (config.memoryBackend === 'file') {
+                compose += `      - ./memory:/app/memory\n`;
+            }
+
+            if (config.llmProvider === 'ollama') {
+                compose += `    depends_on:
+      - ollama
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ${config.projectName}-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+`;
+            }
+
+            if (config.memoryBackend === 'redis') {
+                compose += `
+  redis:
+    image: redis:7-alpine
+    container_name: ${config.projectName}-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+`;
+            }
+
+            compose += `\nvolumes:
+`;
+            if (config.llmProvider === 'ollama') {
+                compose += `  ollama_data:\n`;
+            }
+            if (config.memoryBackend === 'redis') {
+                compose += `  redis_data:\n`;
+            }
+
+            return compose;
+        }
+
+        function copyToClipboard() {
+            const code = document.getElementById('codePreview').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = event.target;
+                btn.textContent = 'Copied!';
+                setTimeout(() => {
+                    btn.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        function downloadConfig() {
+            const config = getConfig();
+            let content, filename;
+
+            if (currentTab === 'python') {
+                content = generatePythonCode(config);
+                filename = 'main.py';
+            } else if (currentTab === 'yaml') {
+                content = generateYAMLConfig(config);
+                filename = 'config.yaml';
+            } else if (currentTab === 'docker') {
+                content = generateDockerCompose(config);
+                filename = 'docker-compose.yml';
+            }
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function resetForm() {
+            document.getElementById('projectName').value = 'my-agentmind-project';
+            document.getElementById('llmProvider').value = 'ollama';
+            document.getElementById('modelName').value = 'llama3.2';
+            document.getElementById('temperature').value = '0.7';
+            document.getElementById('memoryBackend').value = 'in-memory';
+            document.getElementById('maxHistory').value = '100';
+            document.getElementById('enableRetry').checked = true;
+            document.getElementById('enableTracing').checked = true;
+            document.getElementById('enableCostTracking').checked = true;
+            document.getElementById('enableStreaming').checked = false;
+            document.getElementById('enableAPI').checked = true;
+            document.getElementById('apiHost').value = '0.0.0.0';
+            document.getElementById('apiPort').value = '8000';
+            updatePreview();
+        }
+
+        // Initialize preview
+        updatePreview();
+    </script>
+</body>
+</html>

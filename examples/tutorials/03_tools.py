@@ -155,7 +155,7 @@ async def example_1_basic_tool():
     """Example 1: Using a basic tool"""
     print("\n=== Example 1: Basic Tool Usage ===\n")
 
-    llm = OllamaProvider(model="llama3.2:3b")
+    # llm = OllamaProvider(model="llama3.2:3b")
 
     # Create tool registry and add tool
     registry = ToolRegistry()
@@ -176,7 +176,7 @@ async def example_2_multiple_tools():
     """Example 2: Agent with multiple tools"""
     print("\n=== Example 2: Multiple Tools ===\n")
 
-    llm = OllamaProvider(model="llama3.2:3b")
+    # llm = OllamaProvider(model="llama3.2:3b")
 
     # Create registry with multiple tools
     registry = ToolRegistry()

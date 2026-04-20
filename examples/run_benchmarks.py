@@ -59,8 +59,7 @@ async def main():
     print("\nRunning evaluation...")
     print("This may take several minutes...\n")
 
-    _results = await evaluator.evaluate(
-    pass  # Result captured for tracing
+    await evaluator.evaluate(
         mind,
         max_rounds=3,
         parallel=False,  # Set to True for faster execution

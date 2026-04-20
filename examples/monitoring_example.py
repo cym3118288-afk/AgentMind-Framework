@@ -84,8 +84,7 @@ async def example_opentelemetry_tracing():
 
         # Trace collaboration
         with tracer.trace_operation("collaboration", task="analyze_data", agent_count=1):
-            _result = await mind.start_collaboration("Analyze this data", max_rounds=2)
-            pass  # Result captured for tracing
+            await mind.start_collaboration("Analyze this data", max_rounds=2)
 
         print("Tracing completed - check console output for spans")
 

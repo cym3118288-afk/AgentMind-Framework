@@ -501,9 +501,7 @@ async def manage_iot_infrastructure(devices: List[IoTDevice], llm_provider) -> I
     mind = await create_iot_management_system(llm_provider)
 
     # Format device data
-    # _device_summary = "\n".join(
-        [f"- {d.name} ({d.device_type.value}): {d.status.value} at {d.location}" for d in devices]
-    )
+    # device_summary = "\n".join([f"- {d.name} ({d.device_type.value}): {d.status.value} at {d.location}" for d in devices])
 
     # Format the management request
     management_request = """

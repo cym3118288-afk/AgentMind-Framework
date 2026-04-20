@@ -67,6 +67,30 @@ Integrates Hugging Face models and pipelines with AgentMind:
 
 **Run**: `python huggingface_integration.py`
 
+### 6. AutoGen Integration (`autogen_integration.py`)
+
+Microsoft AutoGen compatibility layer:
+- AutoGen-style agent interface
+- Group chat management
+- Code execution capabilities
+- Hybrid AutoGen + AgentMind systems
+
+**Install**: `pip install pyautogen`
+
+**Run**: `python autogen_integration.py`
+
+### 7. CrewAI Integration (`crewai_integration.py`)
+
+CrewAI-style crews and task-based workflows:
+- Task-based agent collaboration
+- Sequential, hierarchical, and consensus processes
+- Task dependencies and context
+- Role-based agent profiles
+
+**Install**: `pip install crewai`
+
+**Run**: `python crewai_integration.py`
+
 ## Quick Start
 
 1. Install AgentMind:

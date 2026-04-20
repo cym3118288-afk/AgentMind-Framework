@@ -1,0 +1,28 @@
+# Requirements for integration examples
+
+# Core
+agentmind>=0.2.0
+
+# LangChain integration
+langchain>=0.1.0
+langchain-community>=0.0.20
+
+# LlamaIndex integration
+llama-index>=0.9.0
+
+# Haystack integration
+haystack-ai>=2.0.0
+
+# Hugging Face integration
+transformers>=4.30.0
+torch>=2.0.0
+
+# AutoGen integration
+pyautogen>=0.2.0
+
+# CrewAI integration
+crewai>=0.1.0
+
+# Optional: for enhanced functionality
+# openai>=1.0.0  # For OpenAI models
+# anthropic>=0.3.0  # For Claude models

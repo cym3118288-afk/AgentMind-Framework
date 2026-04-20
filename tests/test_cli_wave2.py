@@ -9,6 +9,9 @@ from pathlib import Path
 from click.testing import CliRunner
 from unittest.mock import patch, MagicMock
 
+# Skip if click is not available
+pytest.importorskip("click")
+
 # Import CLI commands
 import sys
 
@@ -190,7 +193,8 @@ class TestAgentCreateCommand:
     def test_agent_create_basic(self, runner):
         """Test basic agent creation."""
         result = runner.invoke(
-            cli, ["agent", "create", "--name", "TestAgent", "--role", "Tester", "--no - interactive"]
+            cli,
+            ["agent", "create", "--name", "TestAgent", "--role", "Tester", "--no - interactive"],
         )
 
         assert result.exit_code == 0

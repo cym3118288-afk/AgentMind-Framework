@@ -152,7 +152,9 @@ class TestDependencyResolution:
         resolver = DependencyResolver()
 
         resolver.add_plugin(
-            "plugin - a", "1.0.0", [PluginDependency(name="plugin - missing", version_spec=">=1.0.0")]
+            "plugin - a",
+            "1.0.0",
+            [PluginDependency(name="plugin - missing", version_spec=">=1.0.0")],
         )
 
         available = {"plugin - a": "1.0.0"}

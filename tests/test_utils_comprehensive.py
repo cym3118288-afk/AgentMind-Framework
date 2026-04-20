@@ -188,7 +188,9 @@ class TestCostEstimate:
 
     def test_cost_estimate_initialization(self):
         """Test cost estimate initialization"""
-        cost = CostEstimate(prompt_cost=0.01, completion_cost=0.02, total_cost=0.03, model="gpt - 4")
+        cost = CostEstimate(
+            prompt_cost=0.01, completion_cost=0.02, total_cost=0.03, model="gpt - 4"
+        )
         assert cost.prompt_cost == 0.01
         assert cost.completion_cost == 0.02
         assert cost.total_cost == 0.03

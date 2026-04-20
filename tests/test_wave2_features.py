@@ -16,6 +16,9 @@ from datetime import datetime
 import tempfile
 import os
 
+# Skip all tests if fastapi is not available
+pytest.importorskip("fastapi")
+
 
 # Test Agent Designer Enhanced
 class TestAgentDesignerEnhanced:
